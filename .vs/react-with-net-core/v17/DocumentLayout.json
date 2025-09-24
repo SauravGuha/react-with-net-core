@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\repos\\MyFolder\\Projects\\Reactivities4\\backend\\",
+  "WorkspaceRootPath": "C:\\Users\\saurav\\source\\Projects\\react-with-net-core\\",
   "Documents": [],
   "DocumentGroupContainers": [
     {
@@ -66,10 +66,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:130:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             }
           ]
         }
