@@ -35,3 +35,4 @@ dist-ssr
 /backend/.vs/backend/v17/DocumentLayout.backup.json
 *.vsidx
 /backend/.vs/backend/v17/DocumentLayout.json
+/backend/.vs/backend/DesignTimeBuild/.dtbcache.v2
