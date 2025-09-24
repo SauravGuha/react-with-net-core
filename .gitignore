@@ -37,3 +37,6 @@ dist-ssr
 /backend/.vs/backend/v17/DocumentLayout.json
 /backend/.vs/backend/DesignTimeBuild/.dtbcache.v2
 /backend/.vs/backend/config/applicationhost.config
+/backend/WebApp/WebApp.csproj.user
+/backend/.vs/backend/CopilotIndices/17.14.827.52834/CodeChunks.db
+/backend/.vs/backend/CopilotIndices/17.14.827.52834/SemanticSymbols.db
