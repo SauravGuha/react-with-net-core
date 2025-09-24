@@ -1,4 +1,6 @@
 
+using Api;
+
 namespace WebApp;
 
 public class Program
@@ -8,8 +10,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddApi();
 
-        builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
@@ -25,8 +27,8 @@ public class Program
 
         app.UseAuthorization();
 
-
-        app.MapControllers();
+        //Add api routes
+        app.AddApiRoutes();
 
         app.Run();
     }
