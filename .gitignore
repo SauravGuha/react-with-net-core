@@ -36,3 +36,4 @@ dist-ssr
 *.vsidx
 /backend/.vs/backend/v17/DocumentLayout.json
 /backend/.vs/backend/DesignTimeBuild/.dtbcache.v2
+/backend/.vs/backend/config/applicationhost.config
