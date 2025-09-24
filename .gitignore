@@ -23,3 +23,15 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sw?
+/.vs/react-with-net-core/FileContentIndex/1f6d1c61-7161-4aba-8e36-38ed2c413702.vsidx
+/.vs/react-with-net-core/v17/DocumentLayout.backup.json
+/.vs/slnx.sqlite
+/backend/.vs/backend/CopilotIndices/17.12.68.61481/CodeChunks.db
+*.db-shm
+*.db-wal
+/backend/.vs/backend/CopilotIndices/17.12.68.61481/SemanticSymbols.db-shm
+/backend/.vs/backend/CopilotIndices/17.12.68.61481/SemanticSymbols.db-wal
+/backend/.vs/backend/FileContentIndex/193c0bbe-8ab1-42d7-9f42-1f8288f1ed38.vsidx
+/backend/.vs/backend/v17/DocumentLayout.backup.json
+*.vsidx
+/backend/.vs/backend/v17/DocumentLayout.json
