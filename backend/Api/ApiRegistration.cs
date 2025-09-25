@@ -15,7 +15,7 @@ namespace Api
             return collection;
         }
 
-        public static IEndpointRouteBuilder AddApiRoutes(this IEndpointRouteBuilder endpointRouteBuilder)
+        public static IEndpointRouteBuilder MapApiRoutes(this IEndpointRouteBuilder endpointRouteBuilder)
         {
             endpointRouteBuilder.MapControllerRoute("default", "api/{controller}/{action}/{id?}");
             return endpointRouteBuilder;
