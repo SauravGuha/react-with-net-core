@@ -29,6 +29,12 @@ namespace Application.Validators
                     vc.AddFailure("Event date cannot be less than current date");
                 }
             });
+            RuleFor(x => x.Latitude)
+            .NotNull().NotEmpty()
+            .InclusiveBetween(-90, 90);
+            RuleFor(x => x.Longitude)
+            .NotNull().NotEmpty()
+            .InclusiveBetween(-180, 180);
         }
     }
 }

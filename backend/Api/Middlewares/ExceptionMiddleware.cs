@@ -1,19 +1,21 @@
 
 
 using System.Net;
+using Application.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Middlewares
 {
     public class ExceptionMiddleware : IMiddleware
     {
-        private readonly IWebHostEnvironment webHostEnvironment;
-        public ExceptionMiddleware(IWebHostEnvironment webHostEnvironment)
+        private readonly ILogger<ExceptionMiddleware> logger;
+        public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger)
         {
-            this.webHostEnvironment = webHostEnvironment;
-
+            this.logger = logger;
         }
+
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
@@ -23,15 +25,10 @@ namespace Api.Middlewares
             catch (Exception ex)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                context.Response.ContentType = "text/xml";
-                if (webHostEnvironment.EnvironmentName.ToLower() != "development")
-                {
-                    await context.Response.WriteAsync(ex.Message);
-                }
-                else
-                {
-                    await context.Response.WriteAsync(ex.ToString());
-                }
+                context.Response.ContentType = "application/json";
+                var appException = Result<Exception>.Failure(ex.Message, 500);
+                await context.Response.WriteAsJsonAsync(appException);
+                logger.LogError(ex.ToString());
             }
         }
     }
