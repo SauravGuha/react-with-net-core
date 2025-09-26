@@ -41,6 +41,7 @@ namespace Api.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteActivity([FromQuery] Guid id, CancellationToken cancellationToken)
         {
+            await Task.Delay(2000, cancellationToken);
             var result = await this.Mediator.Send(new ActivityDeleteCommand { Id = id }, cancellationToken);
             return Ok(result);
         }
