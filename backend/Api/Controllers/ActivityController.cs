@@ -13,21 +13,21 @@ namespace Api.Controllers
         public async Task<IActionResult> GetAllActivities(CancellationToken cancellationToken)
         {
             var result = await this.Mediator.Send(new ActivityQueryRequest(), cancellationToken);
-            return Ok(result);
+            return ReturnResult(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetActivityById([FromQuery] Guid id, CancellationToken cancellationToken)
         {
             var result = await this.Mediator.Send(new ActivityQueryRequest() { Id = id }, cancellationToken);
-            return Ok(result);
+            return ReturnResult(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateActivity([FromBody] ActivityCommandViewModel viewModel, CancellationToken cancellationToken)
         {
             var result = await this.Mediator.Send(new ActivityCommandRequest { Activity = viewModel });
-            return Ok(result);
+            return ReturnResult(result);
         }
 
         [HttpPut]
@@ -35,7 +35,7 @@ namespace Api.Controllers
          CancellationToken cancellationToken)
         {
             var result = await this.Mediator.Send(new ActivityCommandRequest { Id = id, Activity = viewModel }, cancellationToken);
-            return Ok(result);
+            return ReturnResult(result);
         }
 
         [HttpDelete]
@@ -43,7 +43,7 @@ namespace Api.Controllers
         {
             await Task.Delay(2000, cancellationToken);
             var result = await this.Mediator.Send(new ActivityDeleteCommand { Id = id }, cancellationToken);
-            return Ok(result);
+            return ReturnResult(result);
         }
     }
 }

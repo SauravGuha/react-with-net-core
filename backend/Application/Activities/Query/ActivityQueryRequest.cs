@@ -1,5 +1,6 @@
 
 
+using Application.Core;
 using Application.ViewModels;
 using AutoMapper;
 using Domain.Models;
@@ -8,12 +9,12 @@ using MediatR;
 
 namespace Application.Activities.Query
 {
-    public class ActivityQueryRequest : IRequest<IEnumerable<ActivityViewModel>>
+    public class ActivityQueryRequest : IRequest<Result<IEnumerable<ActivityViewModel>>>
     {
         public Guid? Id { get; set; }
     }
 
-    public class ActivityQueryRequestHandler : IRequestHandler<ActivityQueryRequest, IEnumerable<ActivityViewModel>>
+    public class ActivityQueryRequestHandler : IRequestHandler<ActivityQueryRequest, Result<IEnumerable<ActivityViewModel>>>
     {
         private readonly IActivityQueryRepository activityQueryRepository;
         private readonly IMapper mapper;
@@ -24,20 +25,21 @@ namespace Application.Activities.Query
             this.activityQueryRepository = activityQueryRepository;
         }
 
-        public async Task<IEnumerable<ActivityViewModel>> Handle(ActivityQueryRequest request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<ActivityViewModel>>> Handle(ActivityQueryRequest request, CancellationToken cancellationToken)
         {
-            IEnumerable<Activity> result = new List<Activity>();
+            List<Activity> result = new List<Activity>();
             if (request.Id == null)
-                result = await this.activityQueryRepository.GetAllAsync(null, cancellationToken);
+                result.AddRange(await this.activityQueryRepository.GetAllAsync(null, cancellationToken));
             else
             {
                 var activity = await this.activityQueryRepository.GetById(request.Id.GetValueOrDefault(), cancellationToken);
                 if (activity != null)
-                    result.Append(activity);
+                    result.AddRange(activity);
                 else
-                    throw new KeyNotFoundException($"{request.Id} not found");
+                    return Result<IEnumerable<ActivityViewModel>>.Failure($"{request.Id} not found", 404);
             }
-            return mapper.Map<IEnumerable<ActivityViewModel>>(result)!;
+            var handlerResult = mapper.Map<IEnumerable<ActivityViewModel>>(result)!;
+            return Result<IEnumerable<ActivityViewModel>>.Success(handlerResult);
         }
     }
 }
