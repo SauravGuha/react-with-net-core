@@ -37,7 +37,7 @@ namespace Application.Activities.Query
                 else
                     throw new KeyNotFoundException($"{request.Id} not found");
             }
-            return mapper.Map<IEnumerable<ActivityViewModel>>(result!);
+            return mapper.Map<IEnumerable<ActivityViewModel>>(result)!;
         }
     }
 }

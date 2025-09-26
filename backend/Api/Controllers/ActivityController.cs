@@ -3,6 +3,7 @@
 using Application.Activities.Command;
 using Application.Activities.Query;
 using Application.ViewModels;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -34,7 +35,7 @@ namespace Api.Controllers
         public async Task<IActionResult> UpdateActivity([FromQuery] Guid id, [FromBody] ActivityCommandViewModel viewModel,
          CancellationToken cancellationToken)
         {
-            var result = await this.Mediator.Send(new ActivityCommandRequest { Id = id, Activity = viewModel });
+            var result = await this.Mediator.Send(new ActivityCommandRequest { Id = id, Activity = viewModel }, cancellationToken);
             return Ok(result);
         }
 

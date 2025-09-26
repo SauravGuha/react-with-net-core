@@ -33,6 +33,7 @@ public class Program
 
         //Add api routes
         app.MapApiRoutes();
+        app.UseException();
         app.Services.InitialiseDb().GetAwaiter().GetResult();
 
         app.Run();
