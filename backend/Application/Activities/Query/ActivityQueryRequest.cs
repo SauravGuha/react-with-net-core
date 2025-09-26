@@ -26,14 +26,14 @@ namespace Application.Activities.Query
 
         public async Task<IEnumerable<ActivityViewModel>> Handle(ActivityQueryRequest request, CancellationToken cancellationToken)
         {
-            IEnumerable<Activity> result = null;
+            IEnumerable<Activity> result = new List<Activity>();
             if (request.Id == null)
                 result = await this.activityQueryRepository.GetAllAsync(null, cancellationToken);
             else
             {
                 var activity = await this.activityQueryRepository.GetById(request.Id.GetValueOrDefault(), cancellationToken);
                 if (activity != null)
-                    result = new List<Activity> { activity };
+                    result.Append(activity);
                 else
                     throw new KeyNotFoundException($"{request.Id} not found");
             }
