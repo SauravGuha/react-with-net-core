@@ -3,7 +3,6 @@
 using Application.Activities.Command;
 using Application.Activities.Query;
 using Application.ViewModels;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
