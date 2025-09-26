@@ -1,5 +1,6 @@
 
 using Api;
+using Application;
 using Persistence;
 
 namespace WebApp;
@@ -13,6 +14,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddApi();
         builder.Services.AddPersistence(builder.Configuration);
+        builder.Services.AddApplication();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();

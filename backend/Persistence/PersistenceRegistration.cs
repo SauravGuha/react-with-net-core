@@ -15,6 +15,7 @@ namespace Persistence
         {
             sc.AddDbContext<ActivityDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("default")));
             sc.AddScoped<IActivityQueryRepository, ActivityQueryRepository>();
+            sc.AddScoped<IActivityCommandRepository, ActivityCommandRepository>();
             return sc;
         }
 

@@ -29,17 +29,14 @@ namespace Persistence.Repository.ActivityRepository
             if (condition != null)
                 result = await query.Where(condition).ToListAsync(token);
             else
-            {
                 result = await query.ToListAsync(token);
-            }
 
             return result;
         }
 
         public async Task<Activity?> GetById(Guid id, CancellationToken token)
         {
-            var activity = await activityDbContext.Activities.FindAsync(id, token);
-            return activity;
+            return await activityDbContext.Activities.FindAsync(id, token);
         }
     }
 }
