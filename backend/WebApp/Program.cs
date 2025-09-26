@@ -1,7 +1,6 @@
 
 using Api;
 using Application;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Persistence;
 
 namespace WebApp;
