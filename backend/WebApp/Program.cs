@@ -1,6 +1,7 @@
 
 using Api;
 using Application;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Persistence;
 
 namespace WebApp;
@@ -18,6 +19,15 @@ public class Program
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(pb =>
+            {
+                pb.AllowAnyHeader()
+                .AllowAnyOrigin()
+                .AllowAnyMethod();
+            });
+        });
 
         var app = builder.Build();
 
@@ -28,6 +38,7 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseCors();
 
         app.UseAuthorization();
 
