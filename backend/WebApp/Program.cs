@@ -15,9 +15,6 @@ public class Program
         builder.Services.AddApi();
         builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddApplication();
-
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
         builder.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(pb =>
@@ -27,6 +24,16 @@ public class Program
                 .AllowAnyMethod();
             });
         });
+        builder.Services.AddAuthentication()
+        .AddJwtBearer(options =>
+        {
+            options.Authority = builder.Configuration.GetSection("Issuer").Value;
+            options.Audience = "reactivities-api";
+            options.RequireHttpsMetadata = builder.Configuration.GetSection("Environment").Value == "Development";
+        });
+
+        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        builder.Services.AddOpenApi();
 
         var app = builder.Build();
 
@@ -36,14 +43,17 @@ public class Program
             app.MapOpenApi();
         }
 
-        app.UseHttpsRedirection();
-        app.UseCors();
+        if (app.Environment.IsDevelopment())
+            app.UseHttpsRedirection();
 
+        app.UseCors();
+        app.UseException();
+
+        app.UseAuthentication();
         app.UseAuthorization();
 
         //Add api routes
         app.MapApiRoutes();
-        app.UseException();
         app.Services.InitialiseDb().GetAwaiter().GetResult();
 
         app.Run();

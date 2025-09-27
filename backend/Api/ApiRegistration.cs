@@ -2,7 +2,6 @@
 using Api.Controllers;
 using Api.Middlewares;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,7 +19,8 @@ namespace Api
 
         public static IEndpointRouteBuilder MapApiRoutes(this IEndpointRouteBuilder endpointRouteBuilder)
         {
-            endpointRouteBuilder.MapControllerRoute("default", "api/{controller}/{action}/{id?}");
+            endpointRouteBuilder.MapControllerRoute("default", "api/{controller}/{action}/{id?}")
+            .RequireAuthorization();
             return endpointRouteBuilder;
         }
 
