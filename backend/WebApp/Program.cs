@@ -29,7 +29,7 @@ public class Program
         {
             options.Authority = builder.Configuration.GetSection("Issuer").Value;
             options.Audience = "reactivities-api";
-            options.RequireHttpsMetadata = builder.Configuration.GetSection("Environment").Value == "Development";
+            options.RequireHttpsMetadata = builder.Configuration.GetSection("Environment").Value != "Development";
         });
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -43,7 +43,7 @@ public class Program
             app.MapOpenApi();
         }
 
-        if (app.Environment.IsDevelopment())
+        if (!app.Environment.IsDevelopment())
             app.UseHttpsRedirection();
 
         app.UseCors();

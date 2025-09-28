@@ -30,33 +30,34 @@ services:
     depends_on:
       - postgres
 
-  sql2:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sql2
-    hostname: sql2
-    environment:
-        - ACCEPT_EULA=Y
-        - SA_PASSWORD=@Bcd.1234
-    ports:
-        - "1433:1433"
-    volumes:
-      - sqlserver_data:/var/opt/mssql
+  # sql2:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: sql2
+  #   hostname: sql2
+  #   environment:
+  #       - ACCEPT_EULA=Y
+  #       - SA_PASSWORD=@Bcd.1234
+  #   ports:
+  #       - "1433:1433"
+  #   volumes:
+  #     - sqlserver_data:/var/opt/mssql
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: reactivities_api
-    ports:
-      - "5071:8080"
-    depends_on:
-      - keycloak
-      - sql2
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__default=Server=sql2,1433;Database=reactivities4;User Id=sa;Password=@Bcd.1234;TrustServerCertificate=True
-      - Issuer=http://localhost:8080/realms/reactivities_realm
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: reactivities_api
+  #   ports:
+  #     - "5071:8080"
+  #   depends_on:
+  #     - keycloak
+  #     - sql2
+  #     - postgres
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:8080
+  #     - ConnectionStrings__default=Server=sql2,1433;Database=reactivities4;User Id=sa;Password=@Bcd.1234;TrustServerCertificate=True
+  #     - Issuer=http://keycloak:8080/realms/reactivities_realm
 
 volumes:
   postgres_data:
