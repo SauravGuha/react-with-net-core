@@ -42,6 +42,20 @@ namespace Persistence
                     });
                     await db.SaveChangesAsync();
                 }
+
+                if (!db.Users.Any())
+                {
+                    db.Users.Add(new User
+                    {
+                        Id = Guid.Parse("da9be18d-7e82-4f4f-a094-d447fc6ad057"),
+                        PhoneNumber = "2345236356",
+                        ImageUrl = "",
+                        Email = "bob@example.com",
+                        FirstName = "bob",
+                        LastName = "jack",
+                        UserName = "bob"
+                    });
+                }
             }
         }
     }
