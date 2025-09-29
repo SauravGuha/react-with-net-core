@@ -1,7 +1,10 @@
 
 
 using Application.Activities.Query;
+using Application.Validators;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace Application
 {
@@ -11,6 +14,8 @@ namespace Application
         {
             sc.AddAutoMapper(cfg => { }, typeof(ActivityQueryRequest).Assembly);
             sc.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ActivityQueryRequest).Assembly));
+            sc.AddValidatorsFromAssemblyContaining<ActivityCommandValidator>();
+            sc.AddFluentValidationAutoValidation();
             return sc;
         }
     }

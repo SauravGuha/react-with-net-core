@@ -1,5 +1,7 @@
 
 
+using System.Net;
+using Application.Core;
 using Application.ViewModels;
 using AutoMapper;
 using Domain.Models;
@@ -8,13 +10,13 @@ using MediatR;
 
 namespace Application.Activities.Command
 {
-    public class ActivityCommandRequest : IRequest<IEnumerable<ActivityViewModel>>
+    public class ActivityCommandRequest : IRequest<Result<IEnumerable<ActivityViewModel>>>
     {
         public Guid? Id { get; set; }
         public required ActivityCommandViewModel Activity { get; set; }
     }
 
-    public class ActivityCommandRequestHandler : IRequestHandler<ActivityCommandRequest, IEnumerable<ActivityViewModel>>
+    public class ActivityCommandRequestHandler : IRequestHandler<ActivityCommandRequest, Result<IEnumerable<ActivityViewModel>>>
     {
         private readonly IActivityCommandRepository activityCommand;
         private readonly IActivityQueryRepository activityQueryRepository;
@@ -27,7 +29,7 @@ namespace Application.Activities.Command
             this.activityQueryRepository = activityQueryRepository;
 
         }
-        public async Task<IEnumerable<ActivityViewModel>> Handle(ActivityCommandRequest request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<ActivityViewModel>>> Handle(ActivityCommandRequest request, CancellationToken cancellationToken)
         {
             var result = new List<ActivityViewModel>();
             //add
@@ -39,7 +41,8 @@ namespace Application.Activities.Command
                 && e.City.ToLower() == entity.City.ToLower(),
                  cancellationToken);
                 if (activities.Any())
-                    throw new InvalidOperationException("Cannot create event on the same date, same venue");
+                    return Result<IEnumerable<ActivityViewModel>>.SetError("Cannot create event on the same date, same venue",
+                    (int)HttpStatusCode.Conflict);
                 else
                 {
                     var newActivity = await activityCommand.CreateAsync(entity!, cancellationToken);
@@ -51,7 +54,7 @@ namespace Application.Activities.Command
             {
                 var activity = await this.activityQueryRepository.GetById(request.Id.GetValueOrDefault(), cancellationToken);
                 if (activity == null)
-                    throw new KeyNotFoundException($"{request.Id} not found");
+                    return Result<IEnumerable<ActivityViewModel>>.SetError($"{request.Id} not found", (int)HttpStatusCode.NotFound);
                 else
                 {
                     mapper.Map(request.Activity, activity);
@@ -60,7 +63,7 @@ namespace Application.Activities.Command
                 }
             }
 
-            return result;
+            return Result<IEnumerable<ActivityViewModel>>.SetSuccess(result);
         }
     }
 }
