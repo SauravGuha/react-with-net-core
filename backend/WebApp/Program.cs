@@ -2,6 +2,7 @@
 using Api;
 using Application;
 using Domain.Models;
+using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Persistence;
 
@@ -24,6 +25,8 @@ public class Program
         })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ActivityDbContext>();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddInfrastructure();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();

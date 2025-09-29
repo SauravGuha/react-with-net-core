@@ -34,9 +34,15 @@ namespace Persistence.Repository.ActivityRepository
             return result;
         }
 
-        public async Task<Activity?> GetById(Guid id, CancellationToken token)
+        public async Task<Activity?> GetById(Guid id, CancellationToken token, params string[] includeProperties)
         {
-            return await activityDbContext.Activities.FindAsync(id, token);
+            var query = activityDbContext.Activities.AsQueryable();
+
+            foreach (var property in includeProperties)
+            {
+                query = query.Include(property);
+            }
+            return await query.FirstOrDefaultAsync(e => e.Id == id, token);
         }
     }
 }
