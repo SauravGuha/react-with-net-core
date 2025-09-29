@@ -30,7 +30,8 @@ namespace Application.Activities.Query
         {
             IEnumerable<Activity>? result = null;
             if (request.Id == null)
-                result = await this.activityQueryRepository.GetAllAsync(null, cancellationToken, nameof(Activity.Attendees));
+                result = await this.activityQueryRepository
+                .GetAllAsync(null, cancellationToken, nameof(Activity.Attendees), $"{nameof(Activity.Attendees)}.User");
             else
             {
                 var activity = await this.activityQueryRepository.GetById(request.Id.GetValueOrDefault(), cancellationToken, nameof(Activity.Attendees));

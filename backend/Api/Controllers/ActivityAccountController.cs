@@ -1,6 +1,7 @@
 
 
 using Application.ViewModels;
+using AutoMapper;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,9 +13,11 @@ namespace Api.Controllers
     {
         private readonly SignInManager<User> signInManager;
         private readonly UserManager<User> userManager;
+        private readonly IMapper mapper;
 
-        public ActivityAccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        public ActivityAccountController(SignInManager<User> signInManager, UserManager<User> userManager, IMapper mapper)
         {
+            this.mapper = mapper;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
@@ -67,14 +70,7 @@ namespace Api.Controllers
         public async Task<IActionResult> UserDetail()
         {
             var userDetails = await userManager.GetUserAsync(this.HttpContext.User);
-            return Ok(new
-            {
-                userDetails!.Bio,
-                userDetails!.DisplayName,
-                userDetails!.Email,
-                userDetails!.ImageUrl,
-                userDetails!.Id,
-            });
+            return Ok(this.mapper.Map<UserViewModel>(userDetails));
         }
 
     }
