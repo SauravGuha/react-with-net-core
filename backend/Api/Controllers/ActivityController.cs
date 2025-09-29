@@ -19,7 +19,7 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetActivityById([FromQuery] Guid id, CancellationToken cancellationToken)
         {
-            var result = await this.Mediator.Send(new ActivityQueryRequest() { Id = id }, cancellationToken);
+            var result = await this.Mediator.Send(new ActivityQueryByIdRequest() { Id = id }, cancellationToken);
             return this.ReturnResult(result);
         }
 

@@ -1,5 +1,6 @@
 
 
+using System.Linq.Expressions;
 using System.Net;
 using Application.Core;
 using Application.ViewModels;
@@ -12,7 +13,6 @@ namespace Application.Activities.Query
 {
     public class ActivityQueryRequest : IRequest<Result<IEnumerable<ActivityViewModel>>>
     {
-        public Guid? Id { get; set; }
     }
 
     public class ActivityQueryRequestHandler : IRequestHandler<ActivityQueryRequest, Result<IEnumerable<ActivityViewModel>>>
@@ -28,19 +28,10 @@ namespace Application.Activities.Query
 
         public async Task<Result<IEnumerable<ActivityViewModel>>> Handle(ActivityQueryRequest request, CancellationToken cancellationToken)
         {
-            IEnumerable<Activity>? result = null;
-            if (request.Id == null)
-                result = await this.activityQueryRepository
+
+            IEnumerable<Activity> result = await this.activityQueryRepository
                 .GetAllAsync(null, cancellationToken, nameof(Activity.Attendees), $"{nameof(Activity.Attendees)}.User");
-            else
-            {
-                var activity = await this.activityQueryRepository.GetById(request.Id.GetValueOrDefault(), cancellationToken, nameof(Activity.Attendees));
-                if (activity != null)
-                    result = new List<Activity> { activity };
-                else
-                    return Result<IEnumerable<ActivityViewModel>>.SetError("Key not found", (int)HttpStatusCode.NotFound);
-            }
-            return Result<IEnumerable<ActivityViewModel>>.SetSuccess(mapper.Map<IEnumerable<ActivityViewModel>>(result!)!);
+            return Result<IEnumerable<ActivityViewModel>>.SetSuccess(mapper.Map<IEnumerable<ActivityViewModel>>(result)!);
         }
     }
 }
