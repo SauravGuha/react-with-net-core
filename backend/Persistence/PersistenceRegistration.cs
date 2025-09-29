@@ -2,6 +2,7 @@
 
 using Domain.Models;
 using Domain.Repositories.ActivityRepository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ namespace Persistence
             using (var scope = sp.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<ActivityDbContext>();
+                var userMananger = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
                 await db.Database.MigrateAsync();
 
                 if (!db.Activities.Any())
@@ -42,6 +44,27 @@ namespace Persistence
                     });
                     await db.SaveChangesAsync(); ;
                 }
+
+                if (!db.Users.Any())
+                {
+                    await userMananger.CreateAsync(new User
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Email = "tom@yopmail.com",
+                        DisplayName = "tom",
+                        UserName = "tom@yopmail.com",
+                        EmailConfirmed = true
+                    }, "@Bcd.1234");
+                    await userMananger.CreateAsync(new User
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Email = "jerry@yopmail.com",
+                        DisplayName = "jerry",
+                        UserName = "jerry@yopmail.com",
+                        EmailConfirmed = true
+                    }, "@Bcd.1234");
+                }
+
             }
         }
     }
