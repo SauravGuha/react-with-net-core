@@ -62,5 +62,20 @@ namespace Api.Controllers
                 return Conflict("Email already exists");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> UserDetail()
+        {
+            var userDetails = await userManager.GetUserAsync(this.HttpContext.User);
+            return Ok(new
+            {
+                userDetails!.Bio,
+                userDetails!.DisplayName,
+                userDetails!.Email,
+                userDetails!.ImageUrl,
+                userDetails!.Id,
+            });
+        }
+
     }
 }
