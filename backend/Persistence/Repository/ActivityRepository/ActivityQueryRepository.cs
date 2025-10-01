@@ -24,7 +24,6 @@ namespace Persistence.Repository.ActivityRepository
             {
                 query = query.Include(property);
             }
-
             IEnumerable<Activity> result = await query.Where(condition).ToListAsync(token);
 
             return result;
@@ -40,5 +39,11 @@ namespace Persistence.Repository.ActivityRepository
             }
             return await query.FirstOrDefaultAsync(e => e.Id == id, token);
         }
+
+        public Task<IQueryable<Activity>> GetAllAsync(Expression<Func<Activity, bool>> condition, CancellationToken token)
+        {
+            return Task.FromResult(this.activityDbContext.Activities.Where(condition));
+        }
+
     }
 }
