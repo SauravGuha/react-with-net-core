@@ -4,6 +4,7 @@ using System.Net;
 using Application.Core;
 using Application.ViewModels;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain.Models;
 using Domain.Repositories.ActivityRepository;
 using MediatR;
@@ -28,9 +29,11 @@ namespace Application.Activities.Query
 
         public async Task<Result<ActivityViewModel>> Handle(ActivityQueryByIdRequest request, CancellationToken cancellationToken)
         {
-            var activity = await this.activityQueryRepository.GetById(request.Id, cancellationToken, nameof(Activity.Attendees));
+            var activity = (await this.activityQueryRepository.GetAllAsync(e => e.Id == request.Id, cancellationToken))
+            .ProjectTo<ActivityViewModel>(mapper.ConfigurationProvider)
+            .FirstOrDefault();
             if (activity != null)
-                return Result<ActivityViewModel>.SetSuccess(mapper.Map<ActivityViewModel>(activity)!);
+                return Result<ActivityViewModel>.SetSuccess(activity);
             else
                 return Result<ActivityViewModel>.SetError("Key not found", (int)HttpStatusCode.NotFound);
         }

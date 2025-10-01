@@ -48,7 +48,7 @@ namespace Application.Activities.Command
                     (int)HttpStatusCode.Conflict);
                 else
                 {
-                    entity!.Attendees.Add(new Attendees
+                    entity!.Attendees.Add(new Domain.Models.Attendees
                     {
                         IsHost = true,
                         IsAttending = true,

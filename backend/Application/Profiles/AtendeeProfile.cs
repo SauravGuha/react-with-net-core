@@ -2,7 +2,7 @@
 
 using Application.ViewModels;
 using AutoMapper;
-using Domain.Models;
+
 
 namespace Application.Profiles
 {
@@ -10,7 +10,8 @@ namespace Application.Profiles
     {
         public AtendeeProfile()
         {
-            CreateMap<Attendees, AttendeeViewModel>();
+            CreateMap<Domain.Models.Attendees, AttendeeViewModel>();
+            CreateMap<AttendeeCommandViewModel, Domain.Models.Attendees>();
         }
     }
 }

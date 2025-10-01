@@ -1,5 +1,6 @@
 
 
+using Api.Filters;
 using Application.Activities.Command;
 using Application.Activities.Query;
 using Application.ViewModels;
@@ -31,6 +32,7 @@ namespace Api.Controllers
         }
 
         [HttpPut]
+        [TypeFilter(typeof(ActivityUpdateFilter))]
         public async Task<IActionResult> UpdateActivity([FromQuery] Guid id, [FromBody] ActivityCommandViewModel viewModel,
          CancellationToken cancellationToken)
         {
@@ -39,6 +41,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete]
+        [TypeFilter(typeof(ActivityUpdateFilter))]
         public async Task<IActionResult> DeleteActivity([FromQuery] Guid id, CancellationToken cancellationToken)
         {
             await Task.Delay(2000, cancellationToken);

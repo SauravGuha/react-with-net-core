@@ -2,11 +2,13 @@
 
 using Domain.Models;
 using Domain.Repositories.ActivityRepository;
+using Domain.Repositories.AttendeeRespository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Repository.ActivityRepository;
+using Persistence.Repository.AttendeesRepo;
 
 namespace Persistence
 {
@@ -17,6 +19,8 @@ namespace Persistence
             sc.AddDbContext<ActivityDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("default")));
             sc.AddScoped<IActivityQueryRepository, ActivityQueryRepository>();
             sc.AddScoped<IActivityCommandRepository, ActivityCommandRepository>();
+            sc.AddScoped<IAttendeeCommandRepository, AttendeeCommandRepository>();
+            sc.AddScoped<IAttendeeQueryRepository, AttendeeQueryRepository>();
             return sc;
         }
 
