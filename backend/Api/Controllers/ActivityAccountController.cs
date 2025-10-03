@@ -1,6 +1,7 @@
 
 
 using Application.Photo.Command;
+using Application.Photo.Query;
 using Application.ViewModels;
 using AutoMapper;
 using Domain.Models;
@@ -79,11 +80,19 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadPhoto(IFormFile userPhoto, CancellationToken token)
         {
-            var user = await userManager.GetUserAsync(this.HttpContext.User);
+
             var stream = userPhoto.OpenReadStream();
             var result = await this.Mediator.Send(new PhotoCommandRequest { PhotoStream = stream }, token);
+            var user = await userManager.GetUserAsync(this.HttpContext.User);
             user!.ImageUrl = result.Value?.Url;
             await this.userManager.UpdateAsync(user!);
+            return this.ReturnResult(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UserImages(CancellationToken token)
+        {
+            var result = await this.Mediator.Send(new PhotoQueryRequest { }, token);
             return this.ReturnResult(result);
         }
     }
