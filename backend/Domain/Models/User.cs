@@ -12,5 +12,7 @@ namespace Domain.Models
         public string? ImageUrl { get; set; }
 
         public virtual ICollection<Attendees> Attendees { get; set; } = [];
+
+        public virtual ICollection<Photo> Photos { get; set; } = [];
     }
 }
