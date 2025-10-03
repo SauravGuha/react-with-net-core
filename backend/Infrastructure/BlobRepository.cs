@@ -1,6 +1,7 @@
 
 
 
+using System.Dynamic;
 using Azure.Storage.Blobs;
 using Domain.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -30,15 +31,12 @@ namespace Infrastructure
             throw new NotImplementedException();
         }
 
-        public async Task<string> StoreImageAsync(string userId, byte[] data, CancellationToken token)
+        public async Task<ImageCreateResult> StoreImageAsync(string userId, Stream data, CancellationToken token)
         {
-            var blobClient = blobContainer.GetBlobClient(userId);
+            var blobClient = blobContainer.GetBlobClient($"{userId}/{Guid.NewGuid()}");
+            var result = await blobClient.UploadAsync(data, token);
 
-            using (var ms = new MemoryStream(data))
-            {
-                var result = await blobClient.UploadAsync(ms, token);
-                return result!.Value.VersionId;
-            }
+            return new ImageCreateResult(result!.Value.VersionId, blobClient.Uri.AbsoluteUri);
         }
     }
 }

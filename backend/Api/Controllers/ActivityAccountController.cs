@@ -1,9 +1,11 @@
 
 
+using Application.Photo.Command;
 using Application.ViewModels;
 using AutoMapper;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -73,5 +75,13 @@ namespace Api.Controllers
             return Ok(this.mapper.Map<UserViewModel>(userDetails));
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> UploadPhoto(IFormFile userPhoto, CancellationToken token)
+        {
+            var stream = userPhoto.OpenReadStream();
+            var result = await this.Mediator.Send(new PhotoCommandRequest { PhotoStream = stream }, token);
+            return this.ReturnResult(result);
+        }
     }
 }
