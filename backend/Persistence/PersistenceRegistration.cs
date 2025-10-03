@@ -3,12 +3,14 @@
 using Domain.Models;
 using Domain.Repositories.ActivityRepository;
 using Domain.Repositories.AttendeeRespository;
+using Domain.Repositories.PhotoRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Repository.ActivityRepository;
 using Persistence.Repository.AttendeesRepo;
+using Persistence.Repository.PhotoRepository;
 
 namespace Persistence
 {
@@ -21,6 +23,8 @@ namespace Persistence
             sc.AddScoped<IActivityCommandRepository, ActivityCommandRepository>();
             sc.AddScoped<IAttendeeCommandRepository, AttendeeCommandRepository>();
             sc.AddScoped<IAttendeeQueryRepository, AttendeeQueryRepository>();
+            sc.AddScoped<IPhotoCommandRepository, PhotoCommandRepository>();
+            sc.AddScoped<IPhotoQueryRepository, PhotoQueryRepository>();
             return sc;
         }
 

@@ -2,7 +2,9 @@
 
 using Application.Core;
 using Application.ViewModels;
+using AutoMapper;
 using Domain.Infrastructure;
+using Domain.Repositories.PhotoRepository;
 using MediatR;
 
 namespace Application.Photo.Command
@@ -16,18 +18,31 @@ namespace Application.Photo.Command
     {
         private readonly IUserAccessor userAccessor;
         private readonly IImageRepository imageRepository;
+        private readonly IPhotoCommandRepository photoCommandRepository;
+        private readonly IMapper mapper;
 
-        public PhotoCommandRequestHandler(IUserAccessor userAccessor, IImageRepository imageRepository)
+        public PhotoCommandRequestHandler(IUserAccessor userAccessor, IImageRepository imageRepository,
+         IPhotoCommandRepository photoCommandRepository, IMapper mapper)
         {
+            this.mapper = mapper;
+            this.photoCommandRepository = photoCommandRepository;
             this.userAccessor = userAccessor;
             this.imageRepository = imageRepository;
         }
 
         public async Task<Result<PhotoUploadResultViewModel>> Handle(PhotoCommandRequest request, CancellationToken cancellationToken)
         {
-            var userId = userAccessor.GetUserId();
-            var result = await imageRepository.StoreImageAsync(userId, request.PhotoStream, cancellationToken);
-            return Result<PhotoUploadResultViewModel>.SetSuccess(new PhotoUploadResultViewModel { PublicId = result.photoId, Url = result.url });
+            var userInfo = await userAccessor.GetUserAsync();
+            var result = await imageRepository.StoreImageAsync(userInfo.Id, "jpg", request.PhotoStream, cancellationToken);
+            var photoResult = await photoCommandRepository.CreateAsync(new Domain.Models.Photo
+            {
+                Id = Guid.Parse(result.photoId),
+                PublicId = result.photoId,
+                Url = result.url,
+                UserId = userInfo.Id,
+                CreatedBy = userInfo.Email
+            }, cancellationToken);
+            return Result<PhotoUploadResultViewModel>.SetSuccess(mapper.Map<PhotoUploadResultViewModel>(photoResult)!);
         }
     }
 }

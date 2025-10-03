@@ -31,12 +31,12 @@ namespace Infrastructure
             throw new NotImplementedException();
         }
 
-        public async Task<ImageCreateResult> StoreImageAsync(string userId, Stream data, CancellationToken token)
+        public async Task<ImageCreateResult> StoreImageAsync(string userId, string ext, Stream data, CancellationToken token)
         {
-            var blobClient = blobContainer.GetBlobClient($"{userId}/{Guid.NewGuid()}");
-            var result = await blobClient.UploadAsync(data, token);
-
-            return new ImageCreateResult(result!.Value.VersionId, blobClient.Uri.AbsoluteUri);
+            var imageId = Guid.NewGuid();
+            var blobClient = blobContainer.GetBlobClient($"{userId}/{imageId}.{ext}");
+            await blobClient.UploadAsync(data, token);
+            return new ImageCreateResult(imageId.ToString(), blobClient.Uri.AbsoluteUri);
         }
     }
 }
