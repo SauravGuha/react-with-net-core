@@ -44,3 +44,4 @@ dist-ssr
 /backend/.vs/ProjectEvaluation
 /backend/.vs/backend/v17/.futdcache.v2
 /backend/.vs/backend/CopilotIndices/17.12.68.61481/SemanticSymbols.db
+/backend/WebApp/appsettings.Development.json
