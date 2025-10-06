@@ -1,17 +1,17 @@
 
-export type Activity = {
-  title: string
-  description: string
-  eventDate: string
-  category: string
-  isCancelled: boolean
-  city: string
-  venue: string
-  latitude: number
-  longitude: number
-  id: string
-  createdAt: string
-  updatedAt: string
-  createdBy: string | null
-  updatedBy: string | null
-}
+import z from "zod";
+
+const activityObject = z.object({
+        "id" : z.string(),
+        "title": z.string(),
+        "description": z.string(),
+        "eventDate": z.string(),
+        "category": z.string(),
+        "isCancelled": z.boolean(),
+        "city": z.string(),
+        "venue": z.string(),
+        "latitude": z.number(),
+        "longitude": z.number()
+  });
+
+export type Activity= z.infer<typeof activityObject>;
