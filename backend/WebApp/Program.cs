@@ -15,6 +15,15 @@ public class Program
         builder.Services.AddApi();
         builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddApplication();
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(po =>
+            {
+                po.AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin();
+            });
+        });
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
@@ -28,6 +37,7 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseCors();
 
         app.UseAuthorization();
 
