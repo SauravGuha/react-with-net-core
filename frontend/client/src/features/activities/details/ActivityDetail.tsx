@@ -2,10 +2,11 @@ import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@
 import type { Activity } from "../../../types/activity"
 
 type ActivityDetailsProp = {
-    activity: Activity
+    activity: Activity,
+    unSelectActivity: () => void
 }
 
-export default function ActivityDetail({ activity }: ActivityDetailsProp) {
+export default function ActivityDetail({ activity, unSelectActivity }: ActivityDetailsProp) {
     return (
         <Card>
             <CardMedia component='img' src={`/images/categoryImages/${activity.category.toLowerCase()}.jpg`} />
@@ -16,7 +17,7 @@ export default function ActivityDetail({ activity }: ActivityDetailsProp) {
             </CardContent>
             <CardActions>
                 <Button color="primary" >Edit</Button>
-                <Button color="inherit" >Cancel</Button>
+                <Button color="inherit" onClick={() => { unSelectActivity() }} >Cancel</Button>
             </CardActions>
         </Card>
     )

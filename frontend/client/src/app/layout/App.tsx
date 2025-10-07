@@ -23,12 +23,19 @@ function App() {
     setActivity(activity);
   }
 
+  function unSelectActivity(){
+    setActivity(undefined);
+  }
+
   return (
     <Box sx={{ backgroundColor: "#eeeeee" }}>
       <CssBaseline />
       <NavBar />
       <Container maxWidth='xl' sx={{ marginTop: 1 }}>
-        <Dashboard activities={activities} selectedActivity={selectedActivity} activity={activity} />
+        <Dashboard activities={activities} 
+        selectedActivity={selectedActivity} 
+        activity={activity}
+        unSelectActivity={unSelectActivity} />
       </Container>
     </Box>
   )

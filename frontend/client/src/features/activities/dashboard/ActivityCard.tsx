@@ -2,10 +2,11 @@ import { Button, Card, CardActions, CardContent, Chip, Typography } from "@mui/m
 import type { Activity } from "../../../types/activity"
 
 type ActivityCardProps = {
-    activity: Activity
+    activity: Activity,
+    selectedActivity: (activity: Activity | undefined) => void
 }
 
-export default function ActivityCard({ activity }: ActivityCardProps) {
+export default function ActivityCard({ activity, selectedActivity }: ActivityCardProps) {
     return (
         <Card sx={{ minWidth: 275 }}>
             <CardContent>
@@ -16,7 +17,8 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
             </CardContent>
             <CardActions sx={{ display: "flex", justifyContent: "space-between", pb: 2 }}>
                 <Chip label={activity.category} variant="outlined" />
-                <Button size="small" variant="contained">View</Button>
+                <Button size="small" variant="contained"
+                    onClick={() => selectedActivity(activity)}>View</Button>
             </CardActions>
         </Card>
     )
