@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, Chip, Typography } from "@mui/material"
+import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from "@mui/material"
 import type { Activity } from "../../../types/activity"
 
 type ActivityCardProps = {
@@ -17,8 +17,11 @@ export default function ActivityCard({ activity, selectedActivity }: ActivityCar
             </CardContent>
             <CardActions sx={{ display: "flex", justifyContent: "space-between", pb: 2 }}>
                 <Chip label={activity.category} variant="outlined" />
-                <Button size="small" variant="contained"
-                    onClick={() => selectedActivity(activity)}>View</Button>
+                <Box sx={{display:"flex", gap:1}}>
+                    <Button size="small" color="warning" variant="contained">Delete</Button>
+                    <Button size="small" variant="contained"
+                        onClick={() => selectedActivity(activity)}>View</Button>
+                </Box>
             </CardActions>
         </Card>
     )

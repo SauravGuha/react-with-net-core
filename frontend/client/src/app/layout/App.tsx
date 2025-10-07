@@ -18,24 +18,26 @@ function App() {
   }, []);
 
   const [activity, setActivity] = useState<Activity | undefined>(undefined);
-
   function selectedActivity(activity: Activity | undefined) {
+    setShowform(false);
     setActivity(activity);
   }
 
-  function unSelectActivity(){
-    setActivity(undefined);
+  const [showForm, setShowform] = useState<boolean>(false);
+  function showActivityForm(value: boolean) {
+    setShowform(value);
   }
 
   return (
     <Box sx={{ backgroundColor: "#eeeeee" }}>
       <CssBaseline />
-      <NavBar />
+      <NavBar showActivityForm={showActivityForm} selectedActivity={selectedActivity} />
       <Container maxWidth='xl' sx={{ marginTop: 1 }}>
-        <Dashboard activities={activities} 
-        selectedActivity={selectedActivity} 
-        activity={activity}
-        unSelectActivity={unSelectActivity} />
+        <Dashboard activities={activities}
+          selectedActivity={selectedActivity}
+          activity={activity}
+          showForm={showForm}
+          showActivityForm={showActivityForm} />
       </Container>
     </Box>
   )

@@ -3,10 +3,11 @@ import type { Activity } from "../../../types/activity"
 
 type ActivityDetailsProp = {
     activity: Activity,
-    unSelectActivity: () => void
+    showActivityForm: (value: boolean) => void,
+    selectedActivity: (activity: Activity | undefined) => void,
 }
 
-export default function ActivityDetail({ activity, unSelectActivity }: ActivityDetailsProp) {
+export default function ActivityDetail({ activity, selectedActivity, showActivityForm }: ActivityDetailsProp) {
     return (
         <Card>
             <CardMedia component='img' src={`/images/categoryImages/${activity.category.toLowerCase()}.jpg`} />
@@ -16,8 +17,8 @@ export default function ActivityDetail({ activity, unSelectActivity }: ActivityD
                 <Typography variant="body1">{activity.description}</Typography>
             </CardContent>
             <CardActions>
-                <Button color="primary" >Edit</Button>
-                <Button color="inherit" onClick={() => { unSelectActivity() }} >Cancel</Button>
+                <Button color="inherit" onClick={() => { selectedActivity(undefined) }} >Cancel</Button>
+                <Button color="primary" onClick={() => showActivityForm(true)} >Edit</Button>
             </CardActions>
         </Card>
     )
