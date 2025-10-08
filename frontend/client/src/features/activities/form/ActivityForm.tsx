@@ -1,7 +1,8 @@
 import { Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { categories } from "../../../lib/common";
-import { type Activity } from "../../../types/activity";
+import { activityObject, type Activity } from "../../../types/activity";
 import type { FormEvent } from "react";
+import useActivities from "../../../hooks/useActivities";
 
 type props = {
     activity: Activity | undefined,
@@ -10,6 +11,7 @@ type props = {
 
 export default function ActivityForm({ activity, showActivityForm }: props) {
 
+    const { isUpdating, activityUpdate } = useActivities();
     const formActivity = activity ?? {
         id: "",
         category: "",
@@ -28,8 +30,11 @@ export default function ActivityForm({ activity, showActivityForm }: props) {
     function onSubmit(ele: FormEvent<HTMLFormElement>) {
         ele.preventDefault();
         const formData = new FormData(ele.currentTarget);
-        const postActivity = Object.fromEntries(formData.entries());
-        console.log(postActivity);
+        const postActivity = activityObject.parse(Object.fromEntries(formData.entries()));
+        if (postActivity.id) {
+            postActivity.eventDate = postActivity.eventDate + "T00:00:00.000Z";
+            activityUpdate(postActivity);
+        }
     }
 
 
@@ -40,7 +45,7 @@ export default function ActivityForm({ activity, showActivityForm }: props) {
             </Typography>
             <Box onSubmit={onSubmit} component='form' sx={{ display: 'flex', flexDirection: 'column', gap: '2', padding: 1 }}
                 autoComplete="off">
-                <input type="hidden" id="id" name='id' defaultValue={formActivity.id}/>
+                <input type="hidden" id="id" name='id' defaultValue={formActivity.id} />
                 <TextField sx={{ marginBottom: 1 }} required id='title' name='title' label="Title"
                     variant="outlined" defaultValue={formActivity.title} />
                 <TextField sx={{ marginBottom: 1 }} required id='description' name='description' label="Description"
@@ -56,6 +61,8 @@ export default function ActivityForm({ activity, showActivityForm }: props) {
                         </MenuItem>)
                     }
                 </TextField>
+                <TextField type="checkbox" defaultValue={formActivity.isCancelled}
+                    name="isCancelled" id="isCancelled" label="Cancelled" />
                 <TextField sx={{ marginBottom: 1 }} required id='city' name='city' label="City" variant="outlined"
                     defaultValue={formActivity.city} />
                 <TextField sx={{ marginBottom: 1 }} required id='venue' name='venue' label="Venue" variant="outlined"
@@ -66,7 +73,7 @@ export default function ActivityForm({ activity, showActivityForm }: props) {
                     defaultValue={formActivity.longitude} />
                 <Box sx={{ display: "flex", justifyContent: 'end', gap: 3 }}>
                     <Button color="warning" variant="contained" onClick={() => showActivityForm(false)}>Cancel</Button>
-                    <Button type="submit" color="success" variant="contained">Submit</Button>
+                    <Button type="submit" loading={isUpdating} color="success" variant="contained">Submit</Button>
                 </Box>
             </Box>
         </Paper>

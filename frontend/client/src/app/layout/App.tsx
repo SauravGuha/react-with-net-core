@@ -1,7 +1,6 @@
 
 import CssBaseline from '@mui/material/CssBaseline';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { Activity } from '../../types/activity';
 import { Box, Container } from '@mui/material';
 import NavBar from './NavBar';
@@ -9,13 +8,6 @@ import Dashboard from '../../features/activities/dashboard/Dashboard';
 
 function App() {
 
-  const [activities, setActivities] = useState<Activity[]>([]);
-  useEffect(() => {
-    axios.get<Activity[]>("https://localhost:7135/api/activity/getallactivities")
-      .then(result => {
-        setActivities(result.data);
-      });
-  }, []);
 
   const [activity, setActivity] = useState<Activity | undefined>(undefined);
   function selectedActivity(activity: Activity | undefined) {
@@ -29,11 +21,11 @@ function App() {
   }
 
   return (
-    <Box sx={{ backgroundColor: "#eeeeee" }}>
+    <Box sx={{ backgroundColor: "#eeeeee", minHeight:'100vh' }}>
       <CssBaseline />
       <NavBar showActivityForm={showActivityForm} selectedActivity={selectedActivity} />
       <Container maxWidth='xl' sx={{ marginTop: 1 }}>
-        <Dashboard activities={activities}
+        <Dashboard
           selectedActivity={selectedActivity}
           activity={activity}
           showForm={showForm}
