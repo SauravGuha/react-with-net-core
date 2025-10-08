@@ -1,17 +1,19 @@
 import { Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { categories } from "../../../lib/common";
-import { activityObject, type Activity } from "../../../types/activity";
+import { activityObject } from "../../../types/activity";
 import type { FormEvent } from "react";
 import useActivities from "../../../hooks/useActivities";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-type props = {
-    activity: Activity | undefined,
-    showActivityForm: (value: boolean) => void
-}
+export default function ActivityForm() {
 
-export default function ActivityForm({ activity, showActivityForm }: props) {
-
-    const { isUpdating, activityUpdate, isCreating, activityCreate } = useActivities();
+    let activity = null;
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const { isUpdating, activityUpdate, isCreating, activityCreate, activities } = useActivities();
+    if (id) {
+        activity = activities?.find(e => e.id == id);
+    }
     const formActivity = activity ?? {
         id: "",
         category: "",
@@ -34,12 +36,11 @@ export default function ActivityForm({ activity, showActivityForm }: props) {
         postActivity.eventDate = postActivity.eventDate + "T00:00:00.000Z";
         if (postActivity.id) {
             await activityUpdate(postActivity);
-            showActivityForm(false);
         }
         else {
             await activityCreate(postActivity);
-            showActivityForm(false);
         }
+        navigate(`/activity/${postActivity.id}`);
     }
 
 
@@ -77,7 +78,7 @@ export default function ActivityForm({ activity, showActivityForm }: props) {
                 <TextField sx={{ marginBottom: 1 }} required id='longitude' name='longitude' label="Logitude" variant="outlined"
                     defaultValue={formActivity.longitude} />
                 <Box sx={{ display: "flex", justifyContent: 'end', gap: 3 }}>
-                    <Button color="warning" variant="contained" onClick={() => showActivityForm(false)}>Cancel</Button>
+                    <Button component={Link} to='/activities' color="warning" variant="contained">Cancel</Button>
                     <Button type="submit" loading={isUpdating || isCreating} color="success" variant="contained">Submit</Button>
                 </Box>
             </Box>

@@ -1,17 +1,12 @@
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material"
-import type { Activity } from "../../../types/activity"
 import useActivities from "../../../hooks/useActivities"
+import { Link, useParams } from "react-router-dom";
 
-type ActivityDetailsProp = {
-    activity: Activity,
-    showActivityForm: (value: boolean) => void,
-    selectedActivity: (activity: Activity | undefined) => void,
-}
-
-export default function ActivityDetail({ activity: passedActivity, selectedActivity, showActivityForm }: ActivityDetailsProp) {
+export default function ActivityDetail() {
 
     const { activities } = useActivities();
-    const activity = activities?.find(e => e.id == passedActivity.id)!;
+    const { id } = useParams();
+    const activity = activities?.find(e => e.id == id)!;
 
     return (
         <Card>
@@ -22,8 +17,8 @@ export default function ActivityDetail({ activity: passedActivity, selectedActiv
                 <Typography variant="body1">{activity.description}</Typography>
             </CardContent>
             <CardActions>
-                <Button color="inherit" onClick={() => { selectedActivity(undefined) }} >Cancel</Button>
-                <Button color="primary" onClick={() => showActivityForm(true)} >Edit</Button>
+                <Button component={Link} to="/activities" color="inherit">Cancel</Button>
+                <Button component={Link} to={`/updateactivity/${id}`} color="primary">Edit</Button>
             </CardActions>
         </Card>
     )

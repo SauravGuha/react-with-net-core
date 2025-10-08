@@ -1,13 +1,13 @@
 import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from "@mui/material"
 import type { Activity } from "../../../types/activity"
 import useActivities from "../../../hooks/useActivities"
+import { Link } from "react-router-dom"
 
 type ActivityCardProps = {
-    activity: Activity,
-    selectedActivity: (activity: Activity | undefined) => void
+    activity: Activity
 }
 
-export default function ActivityCard({ activity, selectedActivity }: ActivityCardProps) {
+export default function ActivityCard({ activity }: ActivityCardProps) {
 
     const { isDeleting, activityDelete } = useActivities();
 
@@ -25,8 +25,7 @@ export default function ActivityCard({ activity, selectedActivity }: ActivityCar
                     <Button size="small" color="warning"
                         variant="contained" loading={isDeleting}
                         onClick={() => activityDelete(activity.id)}>Delete</Button>
-                    <Button size="small" variant="contained"
-                        onClick={() => selectedActivity(activity)}>View</Button>
+                    <Button component={Link} to={`/activity/${activity.id}`} size="small" variant="contained">View</Button>
                 </Box>
             </CardActions>
         </Card>
