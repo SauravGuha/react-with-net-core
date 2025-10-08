@@ -35,4 +35,13 @@ const updateActivity = async function(activity: Activity){
     return result.data.length > 0 ? result.data[0] : null;
 }
 
-export {getallactivities, updateActivity};
+const createActivity = async function(activity: Activity){
+    const result = await instance.post<Activity[]>(`activity/CreateActivity`,activity);
+    return result.data.length > 0 ? result.data[0] : null;
+}
+
+const deleteActivity = async function(id:string){
+    await instance.delete(`activity/DeleteActivity?id=${id}`);
+}
+
+export {getallactivities, updateActivity, createActivity, deleteActivity};

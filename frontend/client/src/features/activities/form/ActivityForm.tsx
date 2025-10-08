@@ -11,7 +11,7 @@ type props = {
 
 export default function ActivityForm({ activity, showActivityForm }: props) {
 
-    const { isUpdating, activityUpdate } = useActivities();
+    const { isUpdating, activityUpdate, isCreating, activityCreate } = useActivities();
     const formActivity = activity ?? {
         id: "",
         category: "",
@@ -27,13 +27,18 @@ export default function ActivityForm({ activity, showActivityForm }: props) {
 
     const eventDate = formActivity.eventDate.slice(0, formActivity.eventDate.indexOf('T'));
 
-    function onSubmit(ele: FormEvent<HTMLFormElement>) {
+    async function onSubmit(ele: FormEvent<HTMLFormElement>) {
         ele.preventDefault();
         const formData = new FormData(ele.currentTarget);
         const postActivity = activityObject.parse(Object.fromEntries(formData.entries()));
+        postActivity.eventDate = postActivity.eventDate + "T00:00:00.000Z";
         if (postActivity.id) {
-            postActivity.eventDate = postActivity.eventDate + "T00:00:00.000Z";
-            activityUpdate(postActivity);
+            await activityUpdate(postActivity);
+            showActivityForm(false);
+        }
+        else {
+            await activityCreate(postActivity);
+            showActivityForm(false);
         }
     }
 
@@ -73,7 +78,7 @@ export default function ActivityForm({ activity, showActivityForm }: props) {
                     defaultValue={formActivity.longitude} />
                 <Box sx={{ display: "flex", justifyContent: 'end', gap: 3 }}>
                     <Button color="warning" variant="contained" onClick={() => showActivityForm(false)}>Cancel</Button>
-                    <Button type="submit" loading={isUpdating} color="success" variant="contained">Submit</Button>
+                    <Button type="submit" loading={isUpdating || isCreating} color="success" variant="contained">Submit</Button>
                 </Box>
             </Box>
         </Paper>
