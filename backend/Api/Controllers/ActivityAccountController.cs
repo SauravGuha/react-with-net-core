@@ -95,5 +95,12 @@ namespace Api.Controllers
             var result = await this.Mediator.Send(new PhotoQueryRequest { }, token);
             return this.ReturnResult(result);
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteImage([FromQuery] Guid imageId, CancellationToken token)
+        {
+            var result = await this.Mediator.Send(new PhotoDeleteRequest { ImageId = imageId }, token);
+            return this.ReturnResult(result);
+        }
     }
 }

@@ -1,7 +1,5 @@
 
-
-
-using System.Dynamic;
+using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Domain.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +24,13 @@ namespace Infrastructure
             this.blobService = new BlobServiceClient(blobConnectionString);
             this.blobContainer = blobService.GetBlobContainerClient(containerName);
         }
+
+        public async Task DeleteImage(string userId, string imageId, string ext, CancellationToken token)
+        {
+            var blobClient = blobContainer.GetBlobClient($"{userId}/{imageId}.{ext}");
+            await blobClient.DeleteAsync(cancellationToken: token);
+        }
+
         public string GetImageUrl(string userId, string imageId)
         {
             throw new NotImplementedException();
