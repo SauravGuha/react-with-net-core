@@ -4,12 +4,10 @@ import useActivities from "../../../hooks/useActivities"
 import { Link } from "react-router-dom"
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
+import { eventDateString } from "../../../lib/common";
 
-type ActivityCardProps = {
-    activity: Activity
-}
 
-export default function ActivityCard({ activity }: ActivityCardProps) {
+export default function ActivityCard({ activity }: { activity: Activity }) {
     const isHost = false;
     const isGoing = false;
     const label = isHost ? "You are hosting" : "You are going";
@@ -47,7 +45,7 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
             <CardContent sx={{ p: 0 }}>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 2, px: 2 }}>
                     <ScheduleIcon sx={{ mr: 1 }} />
-                    <Typography variant="body2" sx={{ mr: 5 }}>{activity.eventDate}</Typography>
+                    <Typography variant="body2" sx={{ mr: 5 }}>{eventDateString(activity.eventDate)}</Typography>
                     <FmdGoodIcon sx={{ mr: 1 }} />
                     <Typography variant="body2">{activity.city} / {activity.venue}</Typography>
                 </Box>
@@ -56,7 +54,7 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
                     <Typography variant="body2">Attendees go here</Typography>
                 </Box>
             </CardContent>
-            
+
             <CardActions sx={{ display: "flex", justifyContent: "space-between", pb: 2 }}>
                 <Chip label={activity.category} variant="outlined" />
                 <Box sx={{ display: "flex", gap: 1 }}>

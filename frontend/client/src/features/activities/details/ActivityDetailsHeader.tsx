@@ -1,6 +1,7 @@
 import { Card, Badge, CardMedia, Box, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import type { Activity } from "../../../types/activity";
+import { eventDateString } from "../../../lib/common";
 
 
 export default function ActivityDetailsHeader({ activity }: { activity: Activity }) {
@@ -40,7 +41,7 @@ export default function ActivityDetailsHeader({ activity }: { activity: Activity
                 {/* Text Section */}
                 <Box>
                     <Typography variant="h4" sx={{ fontWeight: 'bold' }}>{activity.title}</Typography>
-                    <Typography variant="subtitle1">{activity.eventDate}</Typography>
+                    <Typography variant="subtitle1">{eventDateString(activity.eventDate)}</Typography>
                     <Typography variant="subtitle2">
                         Hosted by <Link to={`/profiles/username`} style={{ color: 'white', fontWeight: 'bold' }}>Bob</Link>
                     </Typography>

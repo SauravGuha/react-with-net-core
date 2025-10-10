@@ -1,4 +1,4 @@
 .react-calendar {
-    width: 100%;
-    border: none
+    width: 100% !important;
+    border: none !important;
 }
