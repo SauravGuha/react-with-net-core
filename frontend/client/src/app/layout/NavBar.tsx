@@ -1,6 +1,7 @@
 import { Group } from "@mui/icons-material";
 import { AppBar, Box, Button, Container, MenuItem, Toolbar, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { yellow } from "@mui/material/colors";
+import { Link, NavLink } from "react-router-dom";
 
 
 export default function NavBar() {
@@ -10,17 +11,36 @@ export default function NavBar() {
                 <Container maxWidth='xl'>
                     <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
                         <Box sx={{ display: "flex" }}>
-                            <Group fontSize="large" />
-                            <Typography variant="h4" fontWeight='bold'>Reactivities</Typography>
+                            <MenuItem component={Link} to=''>
+                                <Group fontSize="large" />
+                                <Typography variant="h4" fontWeight='bold'>Reactivities</Typography>
+                            </MenuItem>
                         </Box>
                         <Box sx={{ display: "flex" }}>
-                            <MenuItem component={Link} to="/activities"
-                                sx={{ fontSize: '1.2rem', textTransform: "uppercase", fontWeight: 'bold' }}>Activities</MenuItem>
-                            <MenuItem sx={{ fontSize: '1.2rem', textTransform: "uppercase", fontWeight: 'bold' }}>About</MenuItem>
-                            <MenuItem sx={{ fontSize: '1.2rem', textTransform: "uppercase", fontWeight: 'bold' }}>Contact Us</MenuItem>
+                            <MenuItem component={NavLink} to="/activities"
+                                sx={{
+                                    fontSize: '1.2rem',
+                                    textTransform: "uppercase",
+                                    fontWeight: 'bold',
+                                    '&.active': { // active is class that gets added by NavLink
+                                        color: "yellow"
+                                    }
+                                }}>Activities</MenuItem>
+                            <MenuItem sx={{
+                                fontSize: '1.2rem',
+                                textTransform: "uppercase",
+                                fontWeight: 'bold',
+                                '&.active': {
+                                    color: "yellow"
+                                }
+                            }}
+                                component={NavLink} to='/createactivity'>
+                                Create Activity
+                            </MenuItem>
                         </Box>
-                        <Button component={Link} to='/createactivity' size='large'
-                            variant="contained" color="warning">Create Activity</Button>
+                        <MenuItem>
+                            User Menu
+                        </MenuItem>
                     </Toolbar>
                 </Container>
             </AppBar>
