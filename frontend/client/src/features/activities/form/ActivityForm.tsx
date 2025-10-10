@@ -38,7 +38,8 @@ export default function ActivityForm() {
             await activityUpdate(postActivity);
         }
         else {
-            await activityCreate(postActivity);
+            const createdActivity = await activityCreate(postActivity);
+            postActivity.id = createdActivity!.id;
         }
         navigate(`/activity/${postActivity.id}`);
     }
@@ -67,7 +68,7 @@ export default function ActivityForm() {
                         </MenuItem>)
                     }
                 </TextField>
-                <TextField type="checkbox" defaultValue={formActivity.isCancelled}
+                <TextField type="checkbox" defaultValue={formActivity.isCancelled} sx={{ marginBottom: 1 }}
                     name="isCancelled" id="isCancelled" label="Cancelled" />
                 <TextField sx={{ marginBottom: 1 }} required id='city' name='city' label="City" variant="outlined"
                     defaultValue={formActivity.city} />
