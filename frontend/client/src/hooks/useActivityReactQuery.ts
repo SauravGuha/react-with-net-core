@@ -1,21 +1,35 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createActivity, deleteActivity, getActivityByid, getallactivities, updateActivity } from "../lib/apiHelper";
+import { useLoading } from "./appDataContext";
 
 
 
 export default function useActivityReactQuery(id?: string) {
+    const { loading } = useLoading();
     const queryClient = useQueryClient();
 
     const { isPending, isError, data: activities, error } = useQuery({
         queryKey: ["activities"],
-        queryFn: getallactivities,
-        enabled: () => (typeof (id) == "undefined")
+        queryFn: async () => {
+            loading(true);
+            const result = await getallactivities();
+            loading(false);
+            return result;
+        },
+        enabled: () => (typeof (id) == "undefined"),
+        staleTime: 1 * 1000 * 60
     });
 
     const { isPending: isGettingActivity, data: activity } = useQuery({
-        queryKey: ["activity"],
-        queryFn: async () => await getActivityByid(id!),
-        enabled: () => !(typeof (id) == "undefined")
+        queryKey: ["activity", id],
+        queryFn: async () => {
+            loading(true);
+            const result = await getActivityByid(id!);
+            loading(false);
+            return result;
+        },
+        enabled: () => !(typeof (id) == "undefined"),
+        staleTime: 1 * 1000 * 60
     });
 
     const { isPending: isUpdating, mutateAsync: activityUpdate } = useMutation({

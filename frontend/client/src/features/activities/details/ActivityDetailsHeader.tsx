@@ -1,10 +1,11 @@
 import { Card, Badge, CardMedia, Box, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import type { Activity } from "../../../types/activity";
 import { eventDateString } from "../../../lib/common";
+import { useActivityContext } from "../../../hooks/appDataContext";
 
 
-export default function ActivityDetailsHeader({ activity }: { activity: Activity }) {
+export default function ActivityDetailsHeader() {
+    const activity = useActivityContext();
     const isCancelled = activity.isCancelled;
     const isHost = true;
     const isGoing = true;

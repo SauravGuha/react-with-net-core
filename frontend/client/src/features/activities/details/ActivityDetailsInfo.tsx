@@ -1,8 +1,10 @@
 import { CalendarToday, Info, Place } from "@mui/icons-material";
 import { Divider, Grid, Paper, Typography } from "@mui/material";
-import type { Activity } from "../../../types/activity";
+import { useActivityContext } from "../../../hooks/appDataContext";
 
-export default function ActivityDetailsInfo({ activity }: { activity: Activity }) {
+
+export default function ActivityDetailsInfo() {
+        const activity = useActivityContext();
     return (
         <Paper sx={{ mb: 2 }}>
 

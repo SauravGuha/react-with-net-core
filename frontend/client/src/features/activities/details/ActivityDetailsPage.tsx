@@ -5,6 +5,7 @@ import ActivityDetailsHeader from "./ActivityDetailsHeader";
 import ActivityDetailsInfo from "./ActivityDetailsInfo";
 import ActivityDetailsChat from "./ActivityDetailsChat";
 import ActivityDetailsSidebar from "./ActivityDetailsSidebar";
+import { ActivityContext } from "../../../hooks/appDataContext";
 
 export default function ActivityDetailsPage() {
 
@@ -17,16 +18,18 @@ export default function ActivityDetailsPage() {
     else if (activity.id != id) return <Typography variant="h3">Fetching</Typography>
     else {
         return (
-            <Grid container spacing={3}>
-                <Grid size={8}>
-                    <ActivityDetailsHeader activity={activity} />
-                    <ActivityDetailsInfo activity={activity} />
-                    <ActivityDetailsChat />
+            <ActivityContext.Provider value={activity}>
+                <Grid container spacing={3}>
+                    <Grid size={8}>
+                        <ActivityDetailsHeader />
+                        <ActivityDetailsInfo />
+                        <ActivityDetailsChat />
+                    </Grid>
+                    <Grid size={4}>
+                        <ActivityDetailsSidebar />
+                    </Grid>
                 </Grid>
-                <Grid size={4}>
-                    <ActivityDetailsSidebar />
-                </Grid>
-            </Grid>
+            </ActivityContext.Provider>
         )
     }
 }
