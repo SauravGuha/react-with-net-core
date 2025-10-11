@@ -1,6 +1,8 @@
 
 using Api;
 using Application;
+using Domain.Models;
+using Microsoft.AspNetCore.Identity;
 using Persistence;
 
 namespace WebApp;
@@ -24,6 +26,13 @@ public class Program
                 .AllowAnyOrigin();
             });
         });
+        builder.Services.AddAuthorization();
+        builder.Services.AddIdentityApiEndpoints<User>(options =>
+        {
+            options.User.RequireUniqueEmail = true;
+        })
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<ActivityDbContext>();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
@@ -39,9 +48,12 @@ public class Program
         app.UseHttpsRedirection();
         app.UseCors();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         //Add api routes
+        app.MapGroup("api")
+        .MapIdentityApi<User>();
         app.MapApiRoutes();
         app.Services.InitialiseDb().GetAwaiter().GetResult();
 
