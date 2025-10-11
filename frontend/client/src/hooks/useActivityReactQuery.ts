@@ -12,9 +12,13 @@ export default function useActivityReactQuery(id?: string) {
         queryKey: ["activities"],
         queryFn: async () => {
             loading(true);
-            const result = await getallactivities();
-            loading(false);
-            return result;
+            try {
+                const result = await getallactivities();
+                return result;
+            }
+            finally {
+                loading(false);
+            }
         },
         enabled: () => (typeof (id) == "undefined"),
         staleTime: 1 * 1000 * 60
@@ -24,12 +28,17 @@ export default function useActivityReactQuery(id?: string) {
         queryKey: ["activity", id],
         queryFn: async () => {
             loading(true);
-            const result = await getActivityByid(id!);
-            loading(false);
-            return result;
+            try {
+                const result = await getActivityByid(id!);
+                return result;
+            }
+            finally {
+                loading(false);
+            }
         },
         enabled: () => !(typeof (id) == "undefined"),
-        staleTime: 1 * 1000 * 60
+        staleTime: 1 * 1000 * 60,
+        retry: false
     });
 
     const { isPending: isUpdating, mutateAsync: activityUpdate } = useMutation({

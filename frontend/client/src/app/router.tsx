@@ -1,9 +1,11 @@
-import { createBrowserRouter } from "react-router-dom"
+import { createBrowserRouter, NavLink } from "react-router-dom"
 import App from "./layout/App";
 import Home from "../features/home/Home";
 import Dashboard from "../features/activities/dashboard/Dashboard";
 import ActivityDetailsPage from "../features/activities/details/ActivityDetailsPage";
 import ActivityForm from "../features/activities/form/ActivityForm";
+import NotFound from "./component/NotFound";
+import ServerError from "./component/ServerError";
 
 
 export const router = createBrowserRouter([
@@ -29,6 +31,16 @@ export const router = createBrowserRouter([
         {
             path: "/updateactivity/:id",
             element: <ActivityForm key="update" />
+        },
+        {
+            path: "/notfound",
+            element: <NotFound />
+        }, {
+            path: "/servererror",
+            element: <ServerError />
+        }, {
+            path: "*",
+            element: <NavLink replace to='/notfound' />
         }
         ]
     }

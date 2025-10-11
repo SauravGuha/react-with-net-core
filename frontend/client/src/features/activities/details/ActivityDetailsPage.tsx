@@ -12,11 +12,7 @@ export default function ActivityDetailsPage() {
     const { id } = useParams();
     const { isGettingActivity, activity } = useActivityReactQuery(id);
 
-    if (isGettingActivity) return <Typography variant="h3">Fetching</Typography>
-
-    if (!activity) return <Typography variant="h3">Not found</Typography>
-    else if (activity.id != id) return <Typography variant="h3">Fetching</Typography>
-    else {
+    if (!isGettingActivity && activity && activity.id == id) {
         return (
             <ActivityContext.Provider value={activity}>
                 <Grid container spacing={3}>
@@ -31,5 +27,8 @@ export default function ActivityDetailsPage() {
                 </Grid>
             </ActivityContext.Provider>
         )
+    }
+    else if (!isGettingActivity && !activity) {
+        return <Typography variant="h3">Not found</Typography>
     }
 }

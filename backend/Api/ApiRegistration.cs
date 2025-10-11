@@ -14,11 +14,11 @@ namespace Api
         {
             collection.AddControllers(options =>
             {
-                var pb = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
+                // var pb = new AuthorizationPolicyBuilder()
+                // .RequireAuthenticatedUser()
+                // .Build();
 
-                options.Filters.Add(new AuthorizeFilter(pb));
+                // options.Filters.Add(new AuthorizeFilter(pb));
             })
             .AddApplicationPart(typeof(HomeController).Assembly);
             return collection;
