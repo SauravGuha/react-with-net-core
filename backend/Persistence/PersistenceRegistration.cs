@@ -40,7 +40,7 @@ namespace Persistence
                         Latitude = 40.00,
                         IsCancelled = false
                     });
-                    await db.SaveChangesAsync();
+                    await db.SaveChangesAsync(); ;
                 }
             }
         }
