@@ -63,7 +63,7 @@ export default function ActivityDetailsHeader() {
                                 variant="contained"
                                 color="primary"
                                 component={Link}
-                                to={`/manage/activityId`}
+                                to={`/updateactivity/${activity.id}`}
                                 disabled={isCancelled}
                             >
                                 Manage Event

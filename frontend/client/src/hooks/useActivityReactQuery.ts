@@ -45,6 +45,7 @@ export default function useActivityReactQuery(id?: string) {
         mutationFn: updateActivity,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["activities"] });
+            queryClient.invalidateQueries({ queryKey: ["activity", id] });
         },
         onError: (error) => {
             console.error(error);
@@ -65,6 +66,7 @@ export default function useActivityReactQuery(id?: string) {
         mutationFn: deleteActivity,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["activities"] });
+            queryClient.invalidateQueries({ queryKey: ["activity", id] });
         },
         onError: (error) => {
             console.error(error);

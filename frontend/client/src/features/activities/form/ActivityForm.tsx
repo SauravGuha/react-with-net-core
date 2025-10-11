@@ -1,4 +1,4 @@
-import { Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { categories } from "../../../lib/common";
 import { activityObject } from "../../../types/activity";
 import type { FormEvent } from "react";
@@ -34,14 +34,19 @@ export default function ActivityForm() {
         const formData = new FormData(ele.currentTarget);
         const postActivity = activityObject.parse(Object.fromEntries(formData.entries()));
         postActivity.eventDate = postActivity.eventDate + "T00:00:00.000Z";
-        if (postActivity.id) {
-            await activityUpdate(postActivity);
+        try {
+            if (postActivity.id) {
+                await activityUpdate(postActivity);
+            }
+            else {
+                const createdActivity = await activityCreate(postActivity);
+                postActivity.id = createdActivity!.id;
+            }
+            navigate(`/activity/${postActivity.id}`);
         }
-        else {
-            const createdActivity = await activityCreate(postActivity);
-            postActivity.id = createdActivity!.id;
+        catch (err) {
+            console.log(err);
         }
-        navigate(`/activity/${postActivity.id}`);
     }
 
 
@@ -68,8 +73,10 @@ export default function ActivityForm() {
                         </MenuItem>)
                     }
                 </TextField>
-                <TextField type="checkbox" defaultValue={formActivity.isCancelled} sx={{ marginBottom: 1 }}
-                    name="isCancelled" id="isCancelled" label="Cancelled" />
+
+                <FormControlLabel sx={{ mb: 1 }} control={<Checkbox defaultChecked={activity?.isCancelled} />}
+                    label="Cancelled" name="isCancelled" id="isCancelled" />
+
                 <TextField sx={{ marginBottom: 1 }} required id='city' name='city' label="City" variant="outlined"
                     defaultValue={formActivity.city} />
                 <TextField sx={{ marginBottom: 1 }} required id='venue' name='venue' label="Venue" variant="outlined"
