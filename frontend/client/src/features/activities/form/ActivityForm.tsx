@@ -2,7 +2,7 @@ import { Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/materi
 import { categories } from "../../../lib/common";
 import { activityObject } from "../../../types/activity";
 import type { FormEvent } from "react";
-import useActivities from "../../../hooks/useActivities";
+import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function ActivityForm() {
@@ -10,7 +10,7 @@ export default function ActivityForm() {
     let activity = null;
     const { id } = useParams();
     const navigate = useNavigate();
-    const { isUpdating, activityUpdate, isCreating, activityCreate, activities } = useActivities();
+    const { isUpdating, activityUpdate, isCreating, activityCreate, activities } = useActivityReactQuery();
     if (id) {
         activity = activities?.find(e => e.id == id);
     }

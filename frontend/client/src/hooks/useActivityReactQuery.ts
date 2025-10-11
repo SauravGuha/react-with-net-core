@@ -3,7 +3,7 @@ import { createActivity, deleteActivity, getActivityByid, getallactivities, upda
 
 
 
-export default function useActivities(id?: string) {
+export default function useActivityReactQuery(id?: string) {
     const queryClient = useQueryClient();
 
     const { isPending, isError, data: activities, error } = useQuery({

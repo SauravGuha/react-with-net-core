@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Chip, Divider, Typography } from "@mui/material"
 import type { Activity } from "../../../types/activity"
-import useActivities from "../../../hooks/useActivities"
+import useActivityReactQuery from "../../../hooks/useActivityReactQuery"
 import { Link } from "react-router-dom"
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
@@ -14,7 +14,7 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
     const isCancelled = activity.isCancelled;
     const color = isHost ? "secondary" : isGoing ? "warning" : "default";
 
-    const { isDeleting, activityDelete } = useActivities();
+    const { isDeleting, activityDelete } = useActivityReactQuery();
 
     return (
         <Card elevation={3} sx={{ minWidth: 275 }}>

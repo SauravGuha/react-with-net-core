@@ -1,10 +1,10 @@
 import { Box, Typography } from "@mui/material"
 import ActivityCard from "./ActivityCard"
-import useActivities from "../../../hooks/useActivities"
+import useActivityReactQuery from "../../../hooks/useActivityReactQuery"
 
 
 export default function ActivityList() {
-    const { activities, isPending } = useActivities();
+    const { activities, isPending } = useActivityReactQuery();
 
     if (isPending && !activities) return <Typography variant="h3">Loading</Typography>
 

@@ -1,6 +1,6 @@
 
 import CssBaseline from '@mui/material/CssBaseline';
-import { Box, Container } from '@mui/material';
+import { Box, Container, LinearProgress } from '@mui/material';
 import NavBar from './NavBar';
 import { Outlet, useLocation } from 'react-router-dom';
 import "../style.css";
@@ -13,6 +13,7 @@ function App() {
   return (
     <Box sx={{ backgroundColor: "#eeeeee", minHeight: '100vh' }}>
       <CssBaseline />
+      <LinearProgress sx={{ marginTop: 1, marginBottom: 1 }} />
       {location.pathname === '/'
         ? <Home />
         : <>

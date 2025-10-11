@@ -1,5 +1,5 @@
 import { Grid, Typography } from "@mui/material"
-import useActivities from "../../../hooks/useActivities"
+import useActivityReactQuery from "../../../hooks/useActivityReactQuery"
 import { useParams } from "react-router-dom";
 import ActivityDetailsHeader from "./ActivityDetailsHeader";
 import ActivityDetailsInfo from "./ActivityDetailsInfo";
@@ -9,7 +9,7 @@ import ActivityDetailsSidebar from "./ActivityDetailsSidebar";
 export default function ActivityDetailsPage() {
 
     const { id } = useParams();
-    const { isGettingActivity, activity } = useActivities(id);
+    const { isGettingActivity, activity } = useActivityReactQuery(id);
 
     if (isGettingActivity) return <Typography variant="h3">Fetching</Typography>
 
