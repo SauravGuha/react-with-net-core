@@ -35,3 +35,16 @@ export function eventDateString(eventDate: string) {
     const value = new Date(eventDate);
     return value.toString();
 }
+
+export function eventDateInUtcFormat(eventDate: string) {
+    const date = new Date(eventDate);
+    const pad = (n: number) => n.toString().padStart(2, "0");
+
+    const year = date.getFullYear();
+    const month = pad(date.getUTCMonth() + 1);
+    const day = pad(date.getUTCDate());
+    const hour = pad(date.getUTCHours());
+    const min = pad(date.getUTCMinutes());
+
+    return `${year}-${month}-${day}T${hour}:${min}:00`;
+}

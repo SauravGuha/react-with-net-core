@@ -19,7 +19,7 @@ namespace Application.Validators
             RuleFor(x => x.EventDate).Custom((ed, vc) =>
             {
                 var eventDate = DateTime.ParseExact(ed.Trim('Z'), "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
-                if (eventDate.DayOfYear < DateTime.UtcNow.DayOfYear)
+                if (eventDate.Ticks < DateTime.UtcNow.Ticks)
                 {
                     vc.AddFailure("Event date cannot be less than current date");
                 }
