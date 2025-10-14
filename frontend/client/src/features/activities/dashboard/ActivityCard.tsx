@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Chip, Divider, Typography } from "@mui/material"
-import type { Activity } from "../../../types/activity"
+import type { Activity } from "../../../types"
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery"
 import { Link } from "react-router-dom"
 import ScheduleIcon from '@mui/icons-material/Schedule';

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Activity } from "../types/activity";
+import type { Activity } from "../types";
 
 const ActivityContext = createContext<Activity | undefined>(undefined);
 

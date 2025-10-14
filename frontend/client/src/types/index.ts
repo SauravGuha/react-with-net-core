@@ -28,3 +28,38 @@ export const activityResponseObject = z.object({
 
 export type ActivityResponse = z.infer<typeof activityResponseObject>;
 export type Activity = z.infer<typeof activityObject>;
+
+export type LocationIQ = {
+  place_id: string
+  osm_id: string
+  osm_type: string
+  licence: string
+  lat: string
+  lon: string
+  boundingbox: string[]
+  class: string
+  type: string
+  display_name: string
+  display_place: string
+  display_address: string
+  address: Address
+}
+
+export type Address = {
+  name: string
+  suburb: string
+  city: string
+  county: string
+  state: string
+  country: string
+  country_code: string
+}
+
+export type LocationSuggestions = {
+  label: string,
+  id: string,
+  lat: string,
+  lon: string,
+  city: string,
+  venue: string
+}

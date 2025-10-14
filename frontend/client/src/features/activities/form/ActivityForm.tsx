@@ -1,14 +1,13 @@
 import { Autocomplete, Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { categories, eventDateInUtcFormat } from "../../../lib/common";
-import { activityObject } from "../../../types/activity";
+import { activityObject, type LocationIQ } from "../../../types";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ZodError } from "zod";
 import { camelCase } from 'lodash';
-import axios from "axios";
+import { autoComplete, reverseGeoCoding } from "../../../lib/locationIQHelper";
 
-const apiKey = import.meta.env.VITE_LOCATIONIQAPIKEY;
 
 export default function ActivityForm() {
 
@@ -71,9 +70,20 @@ export default function ActivityForm() {
         }
     }
 
+    const [selectedAddress, setSelectedAddress] = useState('');
+    useEffect(() => {
+        if (activity) {
+            const operation = setTimeout(async () => {
+                const locationInfo = await reverseGeoCoding(activity.latitude, activity.longitude);
+                setSelectedAddress(locationInfo.display_name);
+            }, 1000);
+            return () => clearTimeout(operation);
+        }
+    }, [activity]);
+
     const [locationDisbaled, setLocationDisabled] = useState(false);
     const [address, setAddress] = useState("");
-    const [suggestions, setSuggestions] = useState<any[]>([]);
+    const [suggestions, setSuggestions] = useState<LocationIQ[]>([]);
     const cityRef = useRef<HTMLInputElement>(null);
     const venueRef = useRef<HTMLInputElement>(null);
     const latitudeRef = useRef<HTMLInputElement>(null);
@@ -87,16 +97,8 @@ export default function ActivityForm() {
             const operation = setTimeout(async () => {
                 setLocationDisabled(true);
                 try {
-                    const response = await axios.get(`https://api.locationiq.com/v1/autocomplete`, {
-                        params: {
-                            key: apiKey,
-                            q: address,
-                            limit: 1,
-                            format: 'json'
-                        }
-                    });
-                    setSuggestions(response.data);
-                    console.log(response.data);
+                    const suggestionsResponse = await autoComplete(address);
+                    setSuggestions(suggestionsResponse);
                 }
                 finally {
                     setLocationDisabled(false);
@@ -143,14 +145,15 @@ export default function ActivityForm() {
                     id: item.osm_id,
                     lat: item.lat,
                     lon: item.lon,
-                    city: item.address?.city || item.address?.town || "",
-                    venue: item.address?.suburb || item.address?.road || ""
+                    city: item.address?.city || "",
+                    venue: item.display_place || ""
                 }))}
                     freeSolo sx={{ mb: 1 }}
                     renderInput={(params) => <TextField {...params} label="Location" />}
                     onInputChange={(e, v) => {
                         setAddress(v);
                     }}
+                    value={selectedAddress}
                     onChange={(event, value) => {
                         if (value) {
                             if (cityRef.current) { cityRef.current.value = value.city; }

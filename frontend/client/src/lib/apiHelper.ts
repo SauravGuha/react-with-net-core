@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Activity, ActivityResponse } from "../types/activity";
+import type { Activity, ActivityResponse } from "../types";
 import { toast } from "react-toastify";
 import { router } from "../app/router";
 
