@@ -1,11 +1,14 @@
-import { Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { categories, eventDateInUtcFormat } from "../../../lib/common";
 import { activityObject } from "../../../types/activity";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ZodError } from "zod";
 import { camelCase } from 'lodash';
+import axios from "axios";
+
+const apiKey = import.meta.env.VITE_LOCATIONIQAPIKEY;
 
 export default function ActivityForm() {
 
@@ -68,6 +71,41 @@ export default function ActivityForm() {
         }
     }
 
+    const [locationDisbaled, setLocationDisabled] = useState(false);
+    const [address, setAddress] = useState("");
+    const [suggestions, setSuggestions] = useState<any[]>([]);
+    const cityRef = useRef<HTMLInputElement>(null);
+    const venueRef = useRef<HTMLInputElement>(null);
+    const latitudeRef = useRef<HTMLInputElement>(null);
+    const longitudeRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (address.length < 6) {
+            return;
+        }
+        else {
+            const operation = setTimeout(async () => {
+                setLocationDisabled(true);
+                try {
+                    const response = await axios.get(`https://api.locationiq.com/v1/autocomplete`, {
+                        params: {
+                            key: apiKey,
+                            q: address,
+                            limit: 1,
+                            format: 'json'
+                        }
+                    });
+                    setSuggestions(response.data);
+                    console.log(response.data);
+                }
+                finally {
+                    setLocationDisabled(false);
+                }
+            }, 1000);
+            return () => clearTimeout(operation);
+        }
+    }, [address]);
+
 
     return (
         <Paper key={activity ? 'Update' : 'Create'}>
@@ -97,22 +135,48 @@ export default function ActivityForm() {
                 </TextField>
 
                 <input hidden type="checkbox" name="isCancelled" id="isCancelled" defaultChecked={activity?.isCancelled} />
-
                 {/* <FormControlLabel sx={{ mb: 1 }} control={<Checkbox defaultChecked={activity?.isCancelled} />}
                     label="Cancelled" name="isCancelled" id="isCancelled" /> */}
 
+                <Autocomplete options={suggestions.map(item => ({
+                    label: item.display_name,
+                    id: item.osm_id,
+                    lat: item.lat,
+                    lon: item.lon,
+                    city: item.address?.city || item.address?.town || "",
+                    venue: item.address?.suburb || item.address?.road || ""
+                }))}
+                    freeSolo sx={{ mb: 1 }}
+                    renderInput={(params) => <TextField {...params} label="Location" />}
+                    onInputChange={(e, v) => {
+                        setAddress(v);
+                    }}
+                    onChange={(event, value) => {
+                        if (value) {
+                            if (cityRef.current) { cityRef.current.value = value.city; }
+                            if (venueRef.current) { venueRef.current.value = value.venue; }
+                            if (latitudeRef.current) { latitudeRef.current.value = value.lat; }
+                            if (longitudeRef.current) { longitudeRef.current.value = value.lon; }
+                        }
+                    }}
+                    disabled={locationDisbaled} />
                 <TextField sx={{ marginBottom: 1 }} id='city' name='city' label="City" variant="outlined"
                     defaultValue={formActivity.city}
-                    error={!!formErrors.city} helperText={formErrors.city} />
+                    error={!!formErrors.city} helperText={formErrors.city}
+                    inputRef={cityRef} />
                 <TextField sx={{ marginBottom: 1 }} id='venue' name='venue' label="Venue" variant="outlined"
                     defaultValue={formActivity.venue}
-                    error={!!formErrors.venue} helperText={formErrors.venue} />
+                    error={!!formErrors.venue} helperText={formErrors.venue}
+                    inputRef={venueRef} />
                 <TextField sx={{ marginBottom: 1 }} id='latitude' name='latitude' label="Latitude" variant="outlined"
                     defaultValue={formActivity.latitude}
-                    error={!!formErrors.latitude} helperText={formErrors.latitude} />
+                    error={!!formErrors.latitude} helperText={formErrors.latitude}
+                    inputRef={latitudeRef} />
                 <TextField sx={{ marginBottom: 1 }} id='longitude' name='longitude' label="Longitude" variant="outlined"
                     defaultValue={formActivity.longitude}
-                    error={!!formErrors.longitude} helperText={formErrors.longitude} />
+                    error={!!formErrors.longitude} helperText={formErrors.longitude}
+                    inputRef={longitudeRef} />
+
                 <Box sx={{ display: "flex", justifyContent: 'end', gap: 3 }}>
                     <Button component={Link} to='/activities' color="warning" variant="contained">Cancel</Button>
                     <Button type="submit" loading={isUpdating || isCreating} color="success" variant="contained">Submit</Button>
