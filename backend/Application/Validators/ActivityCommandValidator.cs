@@ -21,7 +21,7 @@ namespace Application.Validators
                 var eventDate = DateTime.ParseExact(ed.Trim('Z'), "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture);
                 if (eventDate.Ticks < DateTime.UtcNow.Ticks)
                 {
-                    vc.AddFailure("Event date cannot be less than current date");
+                    vc.AddFailure($"'{nameof(ActivityCommandViewModel.EventDate)}' cannot be less than or equal to current date");
                 }
             });
             RuleFor(x => x.Latitude)

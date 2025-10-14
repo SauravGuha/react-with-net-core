@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ZodError } from "zod";
+import { camelCase } from 'lodash';
 
 export default function ActivityForm() {
 
@@ -55,6 +56,14 @@ export default function ActivityForm() {
                     errors[fieldName] = message;
                 })
             }
+            else {
+                if (err instanceof Array) {
+                    err.forEach((item: string) => {
+                        const errorArray = item.split("'");
+                        errors[camelCase(errorArray[1])] = errorArray.join("");
+                    })
+                }
+            }
             setFormErrors(errors);
         }
     }
@@ -75,7 +84,7 @@ export default function ActivityForm() {
                     multiline maxRows={4} defaultValue={formActivity.description}
                     error={!!formErrors.description} helperText={formErrors.description} />
                 <TextField sx={{ marginBottom: 1 }} type="datetime-local" id='eventDate' name="eventDate" label='Event Date'
-                    defaultValue={eventDate} />
+                    defaultValue={eventDate} error={!!formErrors.eventDate} helperText={formErrors.eventDate} />
                 <TextField sx={{ marginBottom: 1 }} select
                     id='category' name='category' label="Category" variant="outlined"
                     defaultValue={formActivity.category.toLowerCase()}
