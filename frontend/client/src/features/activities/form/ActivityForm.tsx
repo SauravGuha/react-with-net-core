@@ -6,7 +6,6 @@ import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ZodError } from "zod";
 import { camelCase } from 'lodash';
-import useLocationIQ from "../../../hooks/useLocationIQ";
 import useLocationIQReactQuery from "../../../hooks/useLocationIQReactQuery";
 
 

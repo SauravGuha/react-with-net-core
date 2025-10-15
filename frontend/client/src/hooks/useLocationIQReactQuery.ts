@@ -10,7 +10,8 @@ export default function useLocationIQReactQuery(query?: string, lat?: number, lo
             return result;
         },
         enabled: !!query,
-        retry: false
+        retry: false,
+        staleTime: 24 * 60 * 60 * 1000
     });
 
     const { isPending: isReverseGeoCoding, data: locationIq } = useQuery({
@@ -20,7 +21,8 @@ export default function useLocationIQReactQuery(query?: string, lat?: number, lo
             return result;
         },
         enabled: !!lat && !!lon,
-        retry: false
+        retry: false,
+        staleTime: 24 * 60 * 60 * 1000
     });
 
     return { isAutoCompleting, locationIqs, isReverseGeoCoding, locationIq }
