@@ -1,12 +1,12 @@
 import { Autocomplete, Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { categories, eventDateInUtcFormat, getDefaultactivity } from "../../../lib/common";
-import { activityObject, type LocationIQ } from "../../../types";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { activityObject } from "../../../types";
+import { useRef, useState, type FormEvent } from "react";
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ZodError } from "zod";
 import { camelCase } from 'lodash';
-import { autoComplete, reverseGeoCoding } from "../../../lib/locationIQHelper";
+import useLocationIQ from "../../../hooks/useLocationIQ";
 
 
 export default function ActivityForm() {
@@ -59,51 +59,22 @@ export default function ActivityForm() {
         }
     }
 
-    const [selectedAddress, setSelectedAddress] = useState('');
-    useEffect(() => {
-        if (activity) {
-            const operation = setTimeout(async () => {
-                const locationInfo = await reverseGeoCoding(activity.latitude, activity.longitude);
-                setSelectedAddress(locationInfo.display_name);
-            }, 1000);
-            return () => clearTimeout(operation);
-        }
-    }, [activity]);
+    const { isLoading, address,
+        setAddress, suggestions, selectedAddress
+    } = useLocationIQ(formActivity.latitude, formActivity.longitude);
 
-    const [locationDisbaled, setLocationDisabled] = useState(false);
-    const [address, setAddress] = useState("");
-    const [suggestions, setSuggestions] = useState<LocationIQ[]>([]);
     const cityRef = useRef<HTMLInputElement>(null);
     const venueRef = useRef<HTMLInputElement>(null);
     const latitudeRef = useRef<HTMLInputElement>(null);
     const longitudeRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        if (address.length < 6) {
-            return;
-        }
-        else {
-            const operation = setTimeout(async () => {
-                setLocationDisabled(true);
-                try {
-                    const suggestionsResponse = await autoComplete(address);
-                    setSuggestions(suggestionsResponse);
-                }
-                finally {
-                    setLocationDisabled(false);
-                }
-            }, 1000);
-            return () => clearTimeout(operation);
-        }
-    }, [address]);
-
 
     return (
         <Paper key={activity ? 'Update' : 'Create'}>
             <Typography variant="h5" gutterBottom color="Primary">
                 {activity ? 'Update' : 'Create'} Activity
             </Typography>
-            <Box onSubmit={onSubmit} component='form' sx={{ display: 'flex', flexDirection: 'column', gap: '2', padding: 1 }}
+            <Box onSubmit={onSubmit} component='form'
+                sx={{ display: 'flex', flexDirection: 'column', gap: '2', padding: 1 }}
                 autoComplete="off">
                 <input type="hidden" id="id" name='id' defaultValue={formActivity.id} />
                 <TextField autoFocus sx={{ marginBottom: 1 }} id='title' name='title' label="Title"
@@ -139,11 +110,11 @@ export default function ActivityForm() {
                 }))}
                     freeSolo sx={{ mb: 1 }}
                     renderInput={(params) => <TextField {...params} label="Location" />}
-                    onInputChange={(e, v) => {
+                    onInputChange={(_, v) => {
                         setAddress(v);
                     }}
                     value={selectedAddress}
-                    onChange={(event, value) => {
+                    onChange={(_, value) => {
                         if (value) {
                             if (cityRef.current) { cityRef.current.value = value.city; }
                             if (venueRef.current) { venueRef.current.value = value.venue; }
@@ -151,20 +122,21 @@ export default function ActivityForm() {
                             if (longitudeRef.current) { longitudeRef.current.value = value.lon; }
                         }
                     }}
-                    disabled={locationDisbaled} />
-                <TextField sx={{ marginBottom: 1 }} id='city' name='city' label="City" variant="outlined"
+                    loading={isLoading}
+                    noOptionsText={address.length < 6 ? "Type more characters..." : "No results found"} />
+                <TextField sx={{ marginBottom: 1, display: 'none' }} id='city' name='city' label="City" variant="outlined"
                     defaultValue={formActivity.city}
                     error={!!formErrors.city} helperText={formErrors.city}
                     inputRef={cityRef} />
-                <TextField sx={{ marginBottom: 1 }} id='venue' name='venue' label="Venue" variant="outlined"
+                <TextField sx={{ marginBottom: 1, display: 'none' }} id='venue' name='venue' label="Venue" variant="outlined"
                     defaultValue={formActivity.venue}
                     error={!!formErrors.venue} helperText={formErrors.venue}
                     inputRef={venueRef} />
-                <TextField sx={{ marginBottom: 1 }} id='latitude' name='latitude' label="Latitude" variant="outlined"
+                <TextField sx={{ marginBottom: 1, display: 'none' }} id='latitude' name='latitude' label="Latitude" variant="outlined"
                     defaultValue={formActivity.latitude}
                     error={!!formErrors.latitude} helperText={formErrors.latitude}
                     inputRef={latitudeRef} />
-                <TextField sx={{ marginBottom: 1 }} id='longitude' name='longitude' label="Longitude" variant="outlined"
+                <TextField sx={{ marginBottom: 1, display: 'none' }} id='longitude' name='longitude' label="Longitude" variant="outlined"
                     defaultValue={formActivity.longitude}
                     error={!!formErrors.longitude} helperText={formErrors.longitude}
                     inputRef={longitudeRef} />
