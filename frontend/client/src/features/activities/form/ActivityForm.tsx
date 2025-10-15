@@ -7,6 +7,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ZodError } from "zod";
 import { camelCase } from 'lodash';
 import useLocationIQ from "../../../hooks/useLocationIQ";
+import useLocationIQReactQuery from "../../../hooks/useLocationIQReactQuery";
 
 
 export default function ActivityForm() {
@@ -59,9 +60,8 @@ export default function ActivityForm() {
         }
     }
 
-    const { isLoading, address,
-        setAddress, suggestions, selectedAddress
-    } = useLocationIQ(formActivity.latitude, formActivity.longitude);
+    const [address, setAddress] = useState("");
+    const { locationIqs, locationIq, isReverseGeoCoding } = useLocationIQReactQuery(address, formActivity.latitude, formActivity.longitude);
 
     const cityRef = useRef<HTMLInputElement>(null);
     const venueRef = useRef<HTMLInputElement>(null);
@@ -100,20 +100,27 @@ export default function ActivityForm() {
                 {/* <FormControlLabel sx={{ mb: 1 }} control={<Checkbox defaultChecked={activity?.isCancelled} />}
                     label="Cancelled" name="isCancelled" id="isCancelled" /> */}
 
-                <Autocomplete options={suggestions.map(item => ({
+                <Autocomplete options={locationIqs ? locationIqs.map(item => ({
                     label: item.display_name,
                     id: item.osm_id,
                     lat: item.lat,
                     lon: item.lon,
                     city: item.address?.city || "",
                     venue: item.display_place || ""
-                }))}
+                })) : []}
                     freeSolo sx={{ mb: 1 }}
                     renderInput={(params) => <TextField {...params} label="Location" />}
                     onInputChange={(_, v) => {
                         setAddress(v);
                     }}
-                    value={selectedAddress}
+                    value={locationIq ? {
+                        label: locationIq.display_name,
+                        id: locationIq.osm_id,
+                        lat: locationIq.lat,
+                        lon: locationIq.lon,
+                        city: locationIq.address?.city || "",
+                        venue: locationIq.display_place || ""
+                    } : null}
                     onChange={(_, value) => {
                         if (value) {
                             if (cityRef.current) { cityRef.current.value = value.city; }
@@ -122,7 +129,7 @@ export default function ActivityForm() {
                             if (longitudeRef.current) { longitudeRef.current.value = value.lon; }
                         }
                     }}
-                    loading={isLoading}
+                    loading={isReverseGeoCoding}
                     noOptionsText={address.length < 6 ? "Type more characters..." : "No results found"} />
                 <TextField sx={{ marginBottom: 1, display: 'none' }} id='city' name='city' label="City" variant="outlined"
                     defaultValue={formActivity.city}
