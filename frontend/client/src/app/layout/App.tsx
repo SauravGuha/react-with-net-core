@@ -11,8 +11,8 @@ import { useState } from 'react';
 function App() {
 
   const location = useLocation();
+  
   const [loading, setLoading] = useState<boolean>(false);
-
   function updateIsloading(value: boolean) {
     setLoading(value);
   }

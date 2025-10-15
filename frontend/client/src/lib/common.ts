@@ -1,3 +1,4 @@
+import type { Activity } from "../types";
 
 export const categories = [
     {
@@ -47,4 +48,19 @@ export function eventDateInUtcFormat(eventDate: string) {
     const min = pad(date.getUTCMinutes());
 
     return `${year}-${month}-${day}T${hour}:${min}:00`;
+}
+
+export function getDefaultactivity(activity: Activity | undefined) {
+    return activity ?? {
+        id: "",
+        category: "",
+        city: "",
+        description: "",
+        eventDate: new Date().toISOString(),
+        latitude: 0.0,
+        longitude: 0.0,
+        isCancelled: false,
+        title: "",
+        venue: ""
+    };
 }

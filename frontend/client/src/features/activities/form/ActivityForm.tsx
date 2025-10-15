@@ -1,5 +1,5 @@
 import { Autocomplete, Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
-import { categories, eventDateInUtcFormat } from "../../../lib/common";
+import { categories, eventDateInUtcFormat, getDefaultactivity } from "../../../lib/common";
 import { activityObject, type LocationIQ } from "../../../types";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
@@ -11,25 +11,14 @@ import { autoComplete, reverseGeoCoding } from "../../../lib/locationIQHelper";
 
 export default function ActivityForm() {
 
-    let activity = null;
+    let activity = undefined;
     const { id } = useParams();
     const navigate = useNavigate();
     const { isUpdating, activityUpdate, isCreating, activityCreate, activities } = useActivityReactQuery();
     if (id) {
         activity = activities?.find(e => e.id == id);
     }
-    const formActivity = activity ?? {
-        id: "",
-        category: "",
-        city: "",
-        description: "",
-        eventDate: new Date().toISOString(),
-        latitude: 0.0,
-        longitude: 0.0,
-        isCancelled: false,
-        title: "",
-        venue: ""
-    }
+    const formActivity = getDefaultactivity(activity);
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
     const eventDate = eventDateInUtcFormat(formActivity.eventDate);
@@ -117,7 +106,7 @@ export default function ActivityForm() {
             <Box onSubmit={onSubmit} component='form' sx={{ display: 'flex', flexDirection: 'column', gap: '2', padding: 1 }}
                 autoComplete="off">
                 <input type="hidden" id="id" name='id' defaultValue={formActivity.id} />
-                <TextField sx={{ marginBottom: 1 }} id='title' name='title' label="Title"
+                <TextField autoFocus sx={{ marginBottom: 1 }} id='title' name='title' label="Title"
                     variant="outlined" defaultValue={formActivity.title}
                     error={!!formErrors.title} helperText={formErrors.title} />
                 <TextField sx={{ marginBottom: 1 }} id='description' name='description' label="Description"
