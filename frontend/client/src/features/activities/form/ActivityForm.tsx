@@ -7,6 +7,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ZodError } from "zod";
 import { camelCase } from 'lodash';
 import useLocationIQReactQuery from "../../../hooks/useLocationIQReactQuery";
+import { toast } from "react-toastify";
 
 
 export default function ActivityForm() {
@@ -45,7 +46,8 @@ export default function ActivityForm() {
                     const { message, path } = item;
                     const fieldName = path[0].toString();
                     errors[fieldName] = message;
-                })
+                });
+                setFormErrors(errors);
             }
             else {
                 if (err instanceof Array) {
@@ -54,8 +56,8 @@ export default function ActivityForm() {
                         errors[camelCase(errorArray[1])] = errorArray.join("");
                     })
                 }
+                toast.error(Object.entries(errors));
             }
-            setFormErrors(errors);
         }
     }
 
@@ -110,7 +112,9 @@ export default function ActivityForm() {
                     freeSolo sx={{ mb: 1 }}
                     renderInput={(params) => <TextField {...params} label="Location" />}
                     onInputChange={(_, v) => {
-                        setAddress(v);
+                        if (v.length > 6) {
+                            setAddress(v);
+                        }
                     }}
                     value={locationIq ? {
                         label: locationIq.display_name,
