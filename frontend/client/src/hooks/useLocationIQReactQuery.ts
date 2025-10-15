@@ -9,7 +9,7 @@ export default function useLocationIQReactQuery(query?: string, lat?: number, lo
             const result = await autoComplete(query ?? "");
             return result;
         },
-        enabled: !!query,
+        enabled: !!query && !lat && !lon,
         retry: false,
         staleTime: 24 * 60 * 60 * 1000
     });
@@ -20,7 +20,7 @@ export default function useLocationIQReactQuery(query?: string, lat?: number, lo
             const result = await reverseGeoCoding(lat ?? 0, lon ?? 0);
             return result;
         },
-        enabled: !!lat && !!lon,
+        enabled: !!lat && !!lon && !query,
         retry: false,
         staleTime: 24 * 60 * 60 * 1000
     });

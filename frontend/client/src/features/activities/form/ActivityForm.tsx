@@ -54,15 +54,15 @@ export default function ActivityForm() {
                     err.forEach((item: string) => {
                         const errorArray = item.split("'");
                         errors[camelCase(errorArray[1])] = errorArray.join("");
-                    })
+                    });
+                    toast.error("location cannot be empty");
                 }
-                toast.error(Object.entries(errors));
             }
         }
     }
 
     const [address, setAddress] = useState("");
-    const { locationIqs, locationIq, isReverseGeoCoding } = useLocationIQReactQuery(address, formActivity.latitude, formActivity.longitude);
+    const { locationIqs, locationIq, isReverseGeoCoding, isAutoCompleting } = useLocationIQReactQuery(address, formActivity.latitude, formActivity.longitude);
 
     const cityRef = useRef<HTMLInputElement>(null);
     const venueRef = useRef<HTMLInputElement>(null);
@@ -113,6 +113,8 @@ export default function ActivityForm() {
                     renderInput={(params) => <TextField {...params} label="Location" />}
                     onInputChange={(_, v) => {
                         if (v.length > 6) {
+                            formActivity.latitude = undefined;
+                            formActivity.longitude = undefined;
                             setAddress(v);
                         }
                     }}
@@ -132,7 +134,7 @@ export default function ActivityForm() {
                             if (longitudeRef.current) { longitudeRef.current.value = value.lon; }
                         }
                     }}
-                    loading={isReverseGeoCoding}
+                    loading={isReverseGeoCoding || isAutoCompleting}
                     noOptionsText={address.length < 6 ? "Type more characters..." : "No results found"} />
                 <TextField sx={{ marginBottom: 1, display: 'none' }} id='city' name='city' label="City" variant="outlined"
                     defaultValue={formActivity.city}

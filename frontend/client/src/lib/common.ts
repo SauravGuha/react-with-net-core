@@ -57,8 +57,8 @@ export function getDefaultactivity(activity: Activity | undefined) {
         city: "",
         description: "",
         eventDate: new Date().toISOString(),
-        latitude: 0.0,
-        longitude: 0.0,
+        latitude: undefined,
+        longitude: undefined,
         isCancelled: false,
         title: "",
         venue: ""

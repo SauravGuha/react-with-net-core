@@ -12,7 +12,7 @@ export const autoComplete = async function (address: string) {
         params: {
             key: apiKey,
             q: address,
-            limit: 1,
+            limit: 3,
             format: 'json'
         }
     });
