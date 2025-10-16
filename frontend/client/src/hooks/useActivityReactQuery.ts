@@ -21,7 +21,8 @@ export default function useActivityReactQuery(id?: string) {
             }
         },
         enabled: () => (typeof (id) == "undefined"),
-        staleTime: 1 * 1000 * 60
+        staleTime: 1 * 1000 * 60,
+        retry: false
     });
 
     const { isPending: isGettingActivity, data: activity } = useQuery({
