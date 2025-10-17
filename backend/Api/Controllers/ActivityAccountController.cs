@@ -63,18 +63,26 @@ namespace Api.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> UserDetail()
         {
-            var userDetails = await userManager.GetUserAsync(this.HttpContext.User);
-            return Ok(new
+            if (this.HttpContext.User.Identity != null && this.HttpContext.User.Identity.IsAuthenticated)
             {
-                userDetails!.Bio,
-                userDetails!.DisplayName,
-                userDetails!.Email,
-                userDetails!.ImageUrl,
-                userDetails!.Id,
-            });
+                var userDetails = await userManager.GetUserAsync(this.HttpContext.User);
+                return Ok(new
+                {
+                    userDetails!.Bio,
+                    userDetails!.DisplayName,
+                    userDetails!.Email,
+                    userDetails!.ImageUrl,
+                    userDetails!.Id,
+                });
+            }
+            else
+            {
+                return NoContent();
+            }
         }
 
     }

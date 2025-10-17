@@ -13,6 +13,7 @@ export const activityObject = z.object({
   "latitude": z.coerce.number(),
   "longitude": z.coerce.number()
 });
+export type Activity = z.infer<typeof activityObject>;
 
 export const activityResponseObject = z.object({
   "errorMessage": z.string().nullable(),
@@ -21,9 +22,7 @@ export const activityResponseObject = z.object({
   "errorCode": z.number().nullable()
 
 });
-
 export type ActivityResponse = z.infer<typeof activityResponseObject>;
-export type Activity = z.infer<typeof activityObject>;
 
 export type LocationIQ = {
   place_id: string
@@ -59,3 +58,18 @@ export type LocationSuggestions = {
   city: string,
   venue: string
 }
+
+export const loginObject = z.object({
+  email: z.email(),
+  password: z.string()
+});
+export type LoginSchema = z.infer<typeof loginObject>
+
+export const userObject = z.object({
+  "bio": z.string().optional(),
+  "displayName": z.string(),
+  "email": z.string(),
+  "imageUrl": z.string().optional(),
+  "id": z.string()
+});
+export type UserSchema = z.infer<typeof userObject>;

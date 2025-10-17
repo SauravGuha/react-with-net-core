@@ -8,7 +8,7 @@ export default function NotFound() {
         <Paper sx={{ height: 400, display: "flex", flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: 6 }}>
             <SearchOff sx={{ fontSize: 100 }} color="primary" />
             <Typography gutterBottom variant="h3">Not found</Typography>
-            <Button fullWidth component={Link} to="/activities">Go back to dashboard</Button>
+            <Button fullWidth component={Link} to="/">Go back to home</Button>
         </Paper>
     )
 }

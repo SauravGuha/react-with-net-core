@@ -12,13 +12,9 @@ import { toast } from "react-toastify";
 
 export default function ActivityForm() {
 
-    let activity = undefined;
     const { id } = useParams();
     const navigate = useNavigate();
-    const { isUpdating, activityUpdate, isCreating, activityCreate, activities } = useActivityReactQuery();
-    if (id) {
-        activity = activities?.find(e => e.id == id);
-    }
+    const { isUpdating, activityUpdate, isCreating, activityCreate, activity } = useActivityReactQuery(id);
     const formActivity = getDefaultactivity(activity);
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 

@@ -1,0 +1,37 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { userDetails, userLogin, userLogout } from "../lib/apiHelper";
+
+
+export default function useAccountReactQuery() {
+    const queryClient = useQueryClient();
+
+    const { isPending: isLogingIn, mutateAsync: loginUser } = useMutation({
+        mutationFn: userLogin,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user"] });
+        },
+        onError: (err) => {
+            console.error(err);
+        }
+    });
+
+    const { isPending: isLogingOut, mutateAsync: logoutUser } = useMutation({
+        mutationFn: async () => await userLogout(),
+        onSuccess: () => {
+            queryClient.removeQueries({ queryKey: ["user"] });
+            queryClient.removeQueries({ queryKey: ["activities"] });
+        },
+        onError: (err) => {
+            console.error(err);
+        }
+    });
+
+    const { isLoading: isUserDataLoading, data: userData } = useQuery({
+        queryKey: ["user"],
+        queryFn: userDetails,
+        staleTime: 60 * 1000 * 1,
+        retry: false
+    });
+
+    return { isLogingIn, loginUser, isUserDataLoading, userData, isLogingOut, logoutUser };
+}

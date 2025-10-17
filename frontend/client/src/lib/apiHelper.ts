@@ -1,14 +1,16 @@
 import axios from "axios";
-import type { Activity, ActivityResponse } from "../types";
+import type { Activity, ActivityResponse, LoginSchema, UserSchema } from "../types";
 import { toast } from "react-toastify";
-import { router } from "../app/router";
+import { router } from "../app/routes/router";
+
 
 const env = import.meta.env.VITE_ENVIRONMENT;
 const instance = axios.create({
     baseURL: import.meta.env.VITE_BASEURL,
     headers: {
         "Content-Type": "application/json"
-    }
+    },
+    withCredentials: true
 });
 
 const delayer = function (timeSpan: number) {
@@ -88,4 +90,17 @@ const deleteActivity = async function (id: string) {
     await instance.delete(`activity/DeleteActivity?id=${id}`);
 }
 
-export { getallactivities, updateActivity, createActivity, deleteActivity, getActivityByid };
+const userLogin = async function (value: LoginSchema) {
+    await instance.post('activityaccount/login', value);
+}
+
+const userLogout = async function () {
+    await instance.post('activityaccount/logout');
+}
+
+const userDetails = async function () {
+    const result = await instance.get<UserSchema>('activityaccount/UserDetail');
+    return result.data;
+}
+
+export { getallactivities, updateActivity, createActivity, deleteActivity, getActivityByid, userLogin, userLogout, userDetails };

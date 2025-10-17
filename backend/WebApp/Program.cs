@@ -23,7 +23,8 @@ public class Program
             {
                 po.AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowAnyOrigin();
+                .WithOrigins(builder.Configuration.GetSection("WhiteListed").Get<List<string>>().Select(e => e).ToArray())
+                .AllowCredentials();
             });
         });
         builder.Services.AddAuthorization();
@@ -44,8 +45,11 @@ public class Program
         {
             app.MapOpenApi();
         }
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
 
-        app.UseHttpsRedirection();
         app.UseCors();
 
         app.UseAuthentication();

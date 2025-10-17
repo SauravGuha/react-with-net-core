@@ -1,12 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createActivity, deleteActivity, getActivityByid, getallactivities, updateActivity } from "../lib/apiHelper";
 import { useLoading } from "./appDataContext";
+import useAccountReactQuery from "./useAccountReactQuery";
+import { useLocation } from "react-router-dom";
 
 
 
 export default function useActivityReactQuery(id?: string) {
     const { loading } = useLoading();
     const queryClient = useQueryClient();
+    const { userData } = useAccountReactQuery();
+    const location = useLocation();
 
     const { isPending, isError, data: activities, error } = useQuery({
         queryKey: ["activities"],
@@ -20,7 +24,7 @@ export default function useActivityReactQuery(id?: string) {
                 loading(false);
             }
         },
-        enabled: () => (typeof (id) == "undefined"),
+        enabled: () => (typeof (id) == "undefined") && location.pathname == "/activities" && !!userData,
         staleTime: 1 * 1000 * 60,
         retry: false
     });
@@ -37,7 +41,7 @@ export default function useActivityReactQuery(id?: string) {
                 loading(false);
             }
         },
-        enabled: () => !(typeof (id) == "undefined"),
+        enabled: () => !(typeof (id) == "undefined") && !!userData,
         staleTime: 1 * 1000 * 60,
         retry: false
     });

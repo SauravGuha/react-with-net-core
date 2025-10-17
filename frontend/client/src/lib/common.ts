@@ -50,7 +50,7 @@ export function eventDateInUtcFormat(eventDate: string) {
     return `${year}-${month}-${day}T${hour}:${min}:00`;
 }
 
-export function getDefaultactivity(activity: Activity | undefined) {
+export function getDefaultactivity(activity: Activity | undefined | null) {
     return activity ?? {
         id: "",
         category: "",
