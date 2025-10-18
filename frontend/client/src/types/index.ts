@@ -73,3 +73,13 @@ export const userObject = z.object({
   "id": z.string()
 });
 export type UserSchema = z.infer<typeof userObject>;
+
+
+export const registrationObject = z.object({
+  email: z.email(),
+  password: z.string(),
+  displayName: z.string().optional(),
+  bio: z.string().optional(),
+  imageUrl: z.string().optional()
+});
+export type RegistrationSchema = z.infer<typeof registrationObject>;

@@ -7,7 +7,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ZodError } from "zod";
 import { camelCase } from 'lodash';
 import useLocationIQReactQuery from "../../../hooks/useLocationIQReactQuery";
-import { toast } from "react-toastify";
+import ReadonlyTextField from "../../../app/component/ReadonlyTextField";
 
 
 export default function ActivityForm() {
@@ -51,8 +51,8 @@ export default function ActivityForm() {
                         const errorArray = item.split("'");
                         errors[camelCase(errorArray[1])] = errorArray.join("");
                     });
-                    toast.error("location cannot be empty");
                 }
+                setFormErrors(errors);
             }
         }
     }
@@ -132,22 +132,14 @@ export default function ActivityForm() {
                     }}
                     loading={isReverseGeoCoding || isAutoCompleting}
                     noOptionsText={address.length < 6 ? "Type more characters..." : "No results found"} />
-                <TextField sx={{ marginBottom: 1, display: 'none' }} id='city' name='city' label="City" variant="outlined"
-                    defaultValue={formActivity.city}
-                    error={!!formErrors.city} helperText={formErrors.city}
-                    inputRef={cityRef} />
-                <TextField sx={{ marginBottom: 1, display: 'none' }} id='venue' name='venue' label="Venue" variant="outlined"
-                    defaultValue={formActivity.venue}
-                    error={!!formErrors.venue} helperText={formErrors.venue}
-                    inputRef={venueRef} />
-                <TextField sx={{ marginBottom: 1, display: 'none' }} id='latitude' name='latitude' label="Latitude" variant="outlined"
-                    defaultValue={formActivity.latitude}
-                    error={!!formErrors.latitude} helperText={formErrors.latitude}
-                    inputRef={latitudeRef} />
-                <TextField sx={{ marginBottom: 1, display: 'none' }} id='longitude' name='longitude' label="Longitude" variant="outlined"
-                    defaultValue={formActivity.longitude}
-                    error={!!formErrors.longitude} helperText={formErrors.longitude}
-                    inputRef={longitudeRef} />
+                <ReadonlyTextField name="city" defaultValue={formActivity.city}
+                    error={!!formErrors.city} helperText={formErrors.city} inputRef={cityRef} />
+                <ReadonlyTextField name="venue" defaultValue={formActivity.venue}
+                    error={!!formErrors.venue} helperText={formErrors.venue} inputRef={venueRef} />
+                <ReadonlyTextField name="latitude" defaultValue={formActivity.latitude}
+                    error={!!formErrors.latitude} helperText={formErrors.latitude} inputRef={latitudeRef} />
+                <ReadonlyTextField name="longitude" defaultValue={formActivity.longitude}
+                    error={!!formErrors.longitude} helperText={formErrors.longitude} inputRef={longitudeRef} />
 
                 <Box sx={{ display: "flex", justifyContent: 'end', gap: 3 }}>
                     <Button component={Link} to='/activities' color="warning" variant="contained">Cancel</Button>
