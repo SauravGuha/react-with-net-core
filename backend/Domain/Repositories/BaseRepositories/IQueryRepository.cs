@@ -8,7 +8,7 @@ namespace Domain.Repositories
     {
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? condition, CancellationToken token, params string[] includeProperties);
 
-        Task<T?> GetById(Guid id, CancellationToken token);
+        Task<T?> GetById(Guid id, CancellationToken token, params string[] includeProperties);
 
     }
 }

@@ -10,5 +10,7 @@ namespace Domain.Models
         public string? Bio { get; set; }
 
         public string? ImageUrl { get; set; }
+
+        public virtual ICollection<Attendees> Attendees { get; set; } = [];
     }
 }

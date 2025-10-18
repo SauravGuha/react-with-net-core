@@ -17,6 +17,8 @@ namespace Persistence
 
         public DbSet<User> ActivityUser { get; set; }
 
+        public DbSet<Attendees> Attendees { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ActivityEntityConfiguration).Assembly);

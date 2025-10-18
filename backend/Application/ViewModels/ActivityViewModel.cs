@@ -16,5 +16,7 @@ namespace Application.ViewModels
         public required string Venue { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+
+        public IEnumerable<AttendeeViewModel> Attendees { get; set; } = null!;
     }
 }

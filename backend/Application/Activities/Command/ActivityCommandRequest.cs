@@ -4,6 +4,7 @@ using System.Net;
 using Application.Core;
 using Application.ViewModels;
 using AutoMapper;
+using Domain.Infrastructure;
 using Domain.Models;
 using Domain.Repositories.ActivityRepository;
 using MediatR;
@@ -20,17 +21,19 @@ namespace Application.Activities.Command
     {
         private readonly IActivityCommandRepository activityCommand;
         private readonly IActivityQueryRepository activityQueryRepository;
+        private readonly IUserAccessor userAccessor;
         private readonly IMapper mapper;
         public ActivityCommandRequestHandler(IActivityCommandRepository activityCommand, IMapper mapper,
-        IActivityQueryRepository activityQueryRepository)
+        IActivityQueryRepository activityQueryRepository, IUserAccessor userAccessor)
         {
             this.mapper = mapper;
             this.activityCommand = activityCommand;
             this.activityQueryRepository = activityQueryRepository;
-
+            this.userAccessor = userAccessor;
         }
         public async Task<Result<IEnumerable<ActivityViewModel>>> Handle(ActivityCommandRequest request, CancellationToken cancellationToken)
         {
+            var user = await userAccessor.GetUserAsync();
             var result = new List<ActivityViewModel>();
             //add
             if (request.Id == null)
@@ -45,6 +48,15 @@ namespace Application.Activities.Command
                     (int)HttpStatusCode.Conflict);
                 else
                 {
+                    entity!.Attendees.Add(new Domain.Models.Attendees
+                    {
+                        IsHost = true,
+                        IsAttending = true,
+                        UserId = user!.Id,
+                        ActivityId = entity.Id,
+                        CreatedBy = user!.Email,
+                        UpdatedBy = user!.Email
+                    });
                     var newActivity = await activityCommand.CreateAsync(entity!, cancellationToken);
                     result.Add(mapper.Map<ActivityViewModel>(newActivity!)!);
                 }

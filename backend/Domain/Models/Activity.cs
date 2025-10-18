@@ -14,5 +14,7 @@ namespace Domain.Models
         public required string Venue { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+
+        public virtual ICollection<Attendees> Attendees { get; set; } = [];
     }
 }
