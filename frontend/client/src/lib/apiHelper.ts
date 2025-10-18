@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Activity, ActivityResponse, LoginSchema, UserSchema } from "../types";
+import type { Activity, ActivityResponse, LoginSchema, RegistrationSchema, UserSchema } from "../types";
 import { toast } from "react-toastify";
 import { router } from "../app/routes/router";
 
@@ -40,7 +40,6 @@ instance.interceptors.response.use(async (response) => {
             else {
                 toast.error(error.response.data.title);
             }
-
             break;
         case 401:
             toast.error("Unauthenticated");
@@ -50,6 +49,10 @@ instance.interceptors.response.use(async (response) => {
             break;
         case 404:
             router.navigate("/notfound");
+            //toast.error(data.errorMessage);
+            break;
+        case 409:
+            toast.error("Data already exists");
             //toast.error(data.errorMessage);
             break;
         default:
@@ -103,4 +106,12 @@ const userDetails = async function () {
     return result.data;
 }
 
-export { getallactivities, updateActivity, createActivity, deleteActivity, getActivityByid, userLogin, userLogout, userDetails };
+const userRegistration = async function (value: RegistrationSchema) {
+    await instance.post('activityaccount/registeruser', value);
+}
+
+export {
+    getallactivities, updateActivity, createActivity,
+    deleteActivity, getActivityByid, userLogin,
+    userLogout, userDetails, userRegistration
+};

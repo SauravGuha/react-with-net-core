@@ -1,26 +1,25 @@
 import { Box, Button, Paper, TextField } from "@mui/material";
 import { useState, type FormEvent } from "react";
-import { loginObject } from "../../types";
+import { registrationObject } from "../../types";
 import { ZodError } from "zod";
 import { camelCase } from 'lodash';
-
-import useAccountReactQuery from "../../hooks/useAccountReactQuery";
 import { Link, useNavigate } from "react-router-dom";
+import useAccountReactQuery from "../../hooks/useAccountReactQuery";
 
-export default function LoginForm({ urlPath }: { urlPath?: string }) {
 
-    const { isLogingIn, loginUser } = useAccountReactQuery();
+export default function RegisterForm() {
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+    const { isRegistering, registerUser } = useAccountReactQuery();
     const navigate = useNavigate();
 
-    async function onSubmit(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        const data = new FormData(e.currentTarget);
+    async function onSubmit(ele: FormEvent<HTMLFormElement>) {
+        ele.preventDefault();
+        const formData = new FormData(ele.currentTarget);
         const errors: Record<string, string> = {};
         try {
-            const loginData = loginObject.parse(Object.fromEntries(data.entries()));
-            await loginUser(loginData);
-            navigate(urlPath ? urlPath : "/activities");
+            const userRegistrationData = registrationObject.parse(Object.fromEntries(formData.entries()));
+            await registerUser(userRegistrationData);
+            navigate("/activities");
         }
         catch (err) {
             if (err instanceof ZodError) {
@@ -32,6 +31,7 @@ export default function LoginForm({ urlPath }: { urlPath?: string }) {
                 setFormErrors(errors);
             }
             else {
+                debugger;
                 if (err instanceof Array) {
                     err.forEach((item: string) => {
                         const errorArray = item.split("'");
@@ -41,6 +41,7 @@ export default function LoginForm({ urlPath }: { urlPath?: string }) {
                 setFormErrors(errors);
             }
         }
+
     }
 
     return (
@@ -50,11 +51,19 @@ export default function LoginForm({ urlPath }: { urlPath?: string }) {
                 autoComplete="off">
                 <TextField sx={{ marginBottom: 1 }} id='email' name="email" label='Email'
                     defaultValue="" error={!!formErrors.email} helperText={formErrors.email} />
+
                 <TextField sx={{ marginBottom: 1 }} type="password" id='password' name="password" label='Password'
                     defaultValue="" error={!!formErrors.password} helperText={formErrors.password} />
+
+                <TextField sx={{ marginBottom: 1 }} id='displayName' name="displayName" label='Display Name'
+                    defaultValue="" error={!!formErrors.password} helperText={formErrors.password} />
+
+                <TextField sx={{ marginBottom: 1 }} id='bio' name="bio" label='Biography'
+                    defaultValue="" error={!!formErrors.password} helperText={formErrors.password} />
+
                 <Box sx={{ display: "flex", justifyContent: 'space-evenly', gap: 3 }}>
                     <Button fullWidth size="large" component={Link} to='/' color="warning" variant="contained">Cancel</Button>
-                    <Button fullWidth size="large" type="submit" loading={isLogingIn} color="success" variant="contained">Submit</Button>
+                    <Button fullWidth size="large" type="submit" loading={isRegistering} color="success" variant="contained">Submit</Button>
                 </Box>
             </Box>
         </Paper>

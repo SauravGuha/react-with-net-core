@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { userDetails, userLogin, userLogout } from "../lib/apiHelper";
+import { userDetails, userLogin, userLogout, userRegistration } from "../lib/apiHelper";
 
 
 export default function useAccountReactQuery() {
@@ -26,6 +26,13 @@ export default function useAccountReactQuery() {
         }
     });
 
+    const { isPending: isRegistering, mutateAsync: registerUser } = useMutation({
+        mutationFn: userRegistration,
+        onError: (err) => {
+            console.error(err);
+        }
+    });
+
     const { isLoading: isUserDataLoading, data: userData } = useQuery({
         queryKey: ["user"],
         queryFn: userDetails,
@@ -33,5 +40,10 @@ export default function useAccountReactQuery() {
         retry: false
     });
 
-    return { isLogingIn, loginUser, isUserDataLoading, userData, isLogingOut, logoutUser };
+    return {
+        isLogingIn, loginUser,
+        isUserDataLoading, userData,
+        isLogingOut, logoutUser,
+        isRegistering, registerUser
+    };
 }

@@ -8,6 +8,7 @@ import NotFound from "../component/NotFound";
 import ServerError from "../component/ServerError";
 import LoginForm from "../../features/account/LoginForm";
 import Authorization from "./Authorization";
+import RegisterForm from "../../features/account/RegisterForm";
 
 
 export const router = createBrowserRouter([
@@ -39,7 +40,10 @@ export const router = createBrowserRouter([
                 },
             ]
         },
-
+        {
+            path: '/register',
+            element: <RegisterForm />
+        },
         {
             path: "/notfound",
             element: <NotFound />
