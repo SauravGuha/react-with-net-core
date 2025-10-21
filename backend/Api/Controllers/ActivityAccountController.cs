@@ -69,11 +69,20 @@ namespace Api.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> UserDetail()
         {
-            var userDetails = await userManager.GetUserAsync(this.HttpContext.User);
-            return Ok(this.mapper.Map<UserViewModel>(userDetails));
+            if (this.HttpContext.User.Identity != null
+            && this.HttpContext.User.Identity.IsAuthenticated)
+            {
+                var userDetails = await userManager.GetUserAsync(this.HttpContext.User);
+                return Ok(this.mapper.Map<UserViewModel>(userDetails));
+            }
+            else
+            {
+                return NoContent();
+            }
         }
 
 

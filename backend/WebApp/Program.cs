@@ -18,6 +18,16 @@ public class Program
         builder.Services.AddApi();
         builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddApplication();
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(po =>
+            {
+                po.AllowAnyHeader()
+                .AllowAnyMethod()
+                .WithOrigins(builder.Configuration.GetSection("WhiteListed").Get<List<string>>().Select(e => e).ToArray())
+                .AllowCredentials();
+            });
+        });
         builder.Services.AddAuthorization();
         builder.Services.AddIdentityApiEndpoints<User>(options =>
         {
@@ -38,8 +48,12 @@ public class Program
         {
             app.MapOpenApi();
         }
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
 
-        app.UseHttpsRedirection();
+        app.UseCors();
 
         app.UseAuthentication();
         app.UseAuthorization();

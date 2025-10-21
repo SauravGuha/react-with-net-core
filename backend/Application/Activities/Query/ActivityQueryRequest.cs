@@ -52,14 +52,14 @@ namespace Application.Activities.Query
                 }
             }
 
-            IEnumerable<Activity> result = await this.activityQueryRepository
-                .GetAllAsync(defaultFilter, cancellationToken);
-            return Result<IEnumerable<ActivityViewModel>>.SetSuccess(mapper.Map<IEnumerable<ActivityViewModel>>(result)!);
+            // IEnumerable<Activity> result = await this.activityQueryRepository
+            //     .GetAllAsync(defaultFilter, cancellationToken);
+            // return Result<IEnumerable<ActivityViewModel>>.SetSuccess(mapper.Map<IEnumerable<ActivityViewModel>>(result)!);
 
-            // var result = await this.activityQueryRepository.GetAllAsync(defaultFilter, cancellationToken);
-            // var activities = await result.ProjectTo<ActivityViewModel>(mapper.ConfigurationProvider)
-            // .ToListAsync();
-            // return Result<IEnumerable<ActivityViewModel>>.SetSuccess(activities);
+            var result = await this.activityQueryRepository.GetAllAsync(defaultFilter, cancellationToken);
+            var activities = await result.ProjectTo<ActivityViewModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+            return Result<IEnumerable<ActivityViewModel>>.SetSuccess(activities);
         }
     }
 }
