@@ -1,6 +1,6 @@
 import { Autocomplete, Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { categories, eventDateInUtcFormat, getDefaultactivity } from "../../../lib/common";
-import { activityObject, type Activity } from "../../../types";
+import { activityObject, type Activity, type LocationIQ } from "../../../types";
 import { useRef, useState, type FormEvent } from "react";
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import { Link, useNavigate, useParams } from "react-router-dom";

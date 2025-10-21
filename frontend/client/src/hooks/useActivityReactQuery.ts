@@ -18,7 +18,7 @@ export default function useActivityReactQuery(id?: string) {
         queryFn: async () => {
             loading(true);
             try {
-                const result = await getallactivities();
+                const result = await getallactivities<Activity[]>();
                 return result;
             }
             finally {
@@ -35,7 +35,7 @@ export default function useActivityReactQuery(id?: string) {
         queryFn: async () => {
             loading(true);
             try {
-                const result = await getActivityByid(id!);
+                const result = await getActivityByid<Activity>(id!);
                 return result;
             }
             finally {

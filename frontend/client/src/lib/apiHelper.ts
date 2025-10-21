@@ -67,15 +67,15 @@ instance.interceptors.response.use(async (response) => {
     return Promise.reject(error);
 });
 
-const getallactivities = async function () {
+const getallactivities = async function <T>() {
     const result = await instance.get<ActivityResponse>("activity/getallactivities");
-    return result.data.value;
+    return result.data.value as T;
 }
 
 
-const getActivityByid = async function (id: string) {
+const getActivityByid = async function <T>(id: string) {
     const result = await instance.get<ActivityResponse>(`activity/GetActivityById?id=${id}`);
-    return result.data.value.length > 0 ? result.data.value[0] : null;
+    return result.data.value.length > 0 ? result.data.value[0] as T : null;
 
 }
 
