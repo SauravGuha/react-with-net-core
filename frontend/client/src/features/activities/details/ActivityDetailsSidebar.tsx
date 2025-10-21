@@ -1,8 +1,12 @@
 import { Paper, Typography, List, ListItem, Chip, ListItemAvatar, Avatar, ListItemText, Grid } from "@mui/material";
+import { useActivityContext } from "../../../hooks/appDataContext";
 
 export default function ActivityDetailsSidebar() {
-    const following = true;
-    const isHost = true;
+
+    const activity = useActivityContext();
+    const hostAttendee = activity.attendees?.find(e => e.isHost);
+    const attendeesCount = activity?.attendees?.length;
+
     return (
         <>
             <Paper
@@ -15,28 +19,35 @@ export default function ActivityDetailsSidebar() {
                 }}
             >
                 <Typography variant="h6">
-                    2 people going
+                    {attendeesCount} people going
                 </Typography>
             </Paper>
             <Paper sx={{ padding: 2 }}>
-                <Grid container alignItems="center">
+                {activity?.attendees?.map(att => <Grid container alignItems="center">
                     <Grid size={8}>
                         <List sx={{ display: 'flex', flexDirection: 'column' }}>
                             <ListItem>
                                 <ListItemAvatar>
                                     <Avatar
-                                        alt={'attendee name'}
-                                        src={'/assets/user.png'}
+                                        variant="rounded"
+                                        alt={att.user.displayName + ' image'}
+                                        src={att.user.imageUrl ? att.user.imageUrl : '/assets/user.png'}
+                                        sx={{ width: 75, height: 75, mr: 3 }}
                                     />
                                 </ListItemAvatar>
                                 <ListItemText>
-                                    <Typography variant="h6">Bob</Typography>
+                                    <Typography variant="h6">{att.user.displayName}</Typography>
+                                    {att.isAttending && (
+                                        <Typography variant="body2" color="orange">
+                                            Following
+                                        </Typography>
+                                    )}
                                 </ListItemText>
                             </ListItem>
                         </List>
                     </Grid>
                     <Grid size={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-                        {isHost && (
+                        {hostAttendee?.user.id == att.user?.id && (
                             <Chip
                                 label="Host"
                                 color="warning"
@@ -44,13 +55,9 @@ export default function ActivityDetailsSidebar() {
                                 sx={{ borderRadius: 2 }}
                             />
                         )}
-                        {following && (
-                            <Typography variant="body2" color="orange">
-                                Following
-                            </Typography>
-                        )}
                     </Grid>
-                </Grid>
+                </Grid>)}
+
             </Paper>
         </>
     );

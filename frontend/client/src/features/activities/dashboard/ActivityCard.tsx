@@ -11,8 +11,8 @@ import AvatarPopover from "../../../app/component/AvatarPopover";
 export default function ActivityCard({ activity, userData }: { activity: Activity, userData?: UserSchema }) {
     const hostAttendee = activity.attendees?.find(e => e.isHost);
     const isHost = hostAttendee?.user.id == userData?.id;
-    const isGoing = hostAttendee?.isAttending;
-    const label = isHost ? "You are hosting" : "You are going";
+    const isGoing = activity.attendees?.find(e => e.user.id == userData?.id)?.isAttending;
+    const label = isHost ? "You are hosting" : isGoing ? "You are going" : "";
     const isCancelled = activity.isCancelled;
     const color = isHost ? "secondary" : isGoing ? "warning" : "default";
 

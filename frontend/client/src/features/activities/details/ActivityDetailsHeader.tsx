@@ -2,14 +2,16 @@ import { Card, Badge, CardMedia, Box, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import { eventDateString } from "../../../lib/common";
 import { useActivityContext } from "../../../hooks/appDataContext";
+import useAccountReactQuery from "../../../hooks/useAccountReactQuery";
 
 
 export default function ActivityDetailsHeader() {
     const activity = useActivityContext();
+    const { userData } = useAccountReactQuery();
+    const hostAttendee = activity.attendees?.find(e => e.isHost);
     const isCancelled = activity.isCancelled;
-    const isHost = true;
-    const isGoing = true;
-    const loading = false;
+    const isHost = hostAttendee?.user.id == userData?.id;
+    const isGoing = activity.attendees?.find(e => e.user.id == userData?.id)?.isAttending;
 
     return (
         <Card sx={{ position: 'relative', mb: 2, backgroundColor: 'transparent', overflow: 'hidden' }}>
@@ -44,7 +46,8 @@ export default function ActivityDetailsHeader() {
                     <Typography variant="h4" sx={{ fontWeight: 'bold' }}>{activity.title}</Typography>
                     <Typography variant="subtitle1">{eventDateString(activity.eventDate)}</Typography>
                     <Typography variant="subtitle2">
-                        Hosted by <Link to={`/profiles/username`} style={{ color: 'white', fontWeight: 'bold' }}>Bob</Link>
+                        Hosted by <Link to={`/profile/${hostAttendee?.user.id}`}
+                            style={{ color: 'white', fontWeight: 'bold' }}>{hostAttendee?.user.displayName}</Link>
                     </Typography>
                 </Box>
 
@@ -74,7 +77,7 @@ export default function ActivityDetailsHeader() {
                             variant="contained"
                             color={isGoing ? 'primary' : 'info'}
                             onClick={() => { }}
-                            disabled={isCancelled || loading}
+                            disabled={isCancelled}
                         >
                             {isGoing ? 'Cancel Attendance' : 'Join Activity'}
                         </Button>
