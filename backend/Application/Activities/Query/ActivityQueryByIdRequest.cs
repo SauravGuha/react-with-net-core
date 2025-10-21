@@ -11,12 +11,12 @@ using MediatR;
 
 namespace Application.Activities.Query
 {
-    public class ActivityQueryByIdRequest : IRequest<Result<ActivityViewModel>>
+    public class ActivityQueryByIdRequest : IRequest<Result<List<ActivityViewModel>>>
     {
         public Guid Id { get; set; }
     }
 
-    public class ActivityQueryByIdRequestHandler : IRequestHandler<ActivityQueryByIdRequest, Result<ActivityViewModel>>
+    public class ActivityQueryByIdRequestHandler : IRequestHandler<ActivityQueryByIdRequest, Result<List<ActivityViewModel>>>
     {
         private readonly IActivityQueryRepository activityQueryRepository;
         private readonly IMapper mapper;
@@ -27,15 +27,15 @@ namespace Application.Activities.Query
             this.activityQueryRepository = activityQueryRepository;
         }
 
-        public async Task<Result<ActivityViewModel>> Handle(ActivityQueryByIdRequest request, CancellationToken cancellationToken)
+        public async Task<Result<List<ActivityViewModel>>> Handle(ActivityQueryByIdRequest request, CancellationToken cancellationToken)
         {
             var activity = (await this.activityQueryRepository.GetAllAsync(e => e.Id == request.Id, cancellationToken))
             .ProjectTo<ActivityViewModel>(mapper.ConfigurationProvider)
             .FirstOrDefault();
             if (activity != null)
-                return Result<ActivityViewModel>.SetSuccess(activity);
+                return Result<List<ActivityViewModel>>.SetSuccess([activity]);
             else
-                return Result<ActivityViewModel>.SetError("Key not found", (int)HttpStatusCode.NotFound);
+                return Result<List<ActivityViewModel>>.SetError("Key not found", (int)HttpStatusCode.NotFound);
         }
     }
 }

@@ -9,7 +9,7 @@ import AvatarPopover from "../../../app/component/AvatarPopover";
 
 
 export default function ActivityCard({ activity, userData }: { activity: Activity, userData?: UserSchema }) {
-    const hostAttendee = activity.attendees.find(e => e.isHost);
+    const hostAttendee = activity.attendees?.find(e => e.isHost);
     const isHost = hostAttendee?.user.id == userData?.id;
     const isGoing = hostAttendee?.isAttending;
     const label = isHost ? "You are hosting" : "You are going";
@@ -37,7 +37,7 @@ export default function ActivityCard({ activity, userData }: { activity: Activit
                         </>
                     } />
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mr: 2 }}>
-                    {(isHost || isGoing) && <Chip label={label} color={color} />}
+                    {(isHost || isGoing) && <Chip variant="outlined" label={label} color={color} />}
                     {isCancelled && <Chip label='Cancelled' color='error' />}
                 </Box>
             </Box>
@@ -54,7 +54,7 @@ export default function ActivityCard({ activity, userData }: { activity: Activit
                 <Divider sx={{ mb: 3 }} />
                 <Box sx={{ display: "flex", gap: 2, backgroundColor: "grey.200", px: 3 }}>
                     {
-                        activity.attendees.map(item => <AvatarPopover key={userData?.id}
+                        activity.attendees?.map(item => <AvatarPopover key={userData?.id}
                             userData={item.user} />)
                     }
                 </Box>
@@ -66,7 +66,8 @@ export default function ActivityCard({ activity, userData }: { activity: Activit
                     <Button size="small" color="warning"
                         variant="contained" loading={isDeleting}
                         onClick={() => activityDelete(activity.id)}>Delete</Button>
-                    <Button component={Link} to={`/activity/${activity.id}`} size="small" variant="contained">View</Button>
+                    <Button component={Link} to={`/activity/${activity.id}`}
+                        size="small" variant="contained">View</Button>
                 </Box>
             </CardActions>
         </Card>

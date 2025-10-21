@@ -28,7 +28,7 @@ export const activityObject = z.object({
   "venue": z.string(),
   "latitude": z.coerce.number(),
   "longitude": z.coerce.number(),
-  "attendees": z.array(attendee)
+  "attendees": z.array(attendee).optional()
 });
 export type Activity = z.infer<typeof activityObject>;
 
