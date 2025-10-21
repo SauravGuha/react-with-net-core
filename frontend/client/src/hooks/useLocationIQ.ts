@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { LocationIQ } from "../types";
 import { autoComplete, reverseGeoCoding } from "../lib/locationIQHelper";
 
+// No longer being used
 export default function useLocationIQ(lat: number, lon: number) {
     const [isLoading, setIsLoading] = useState(false);
     const [address, setAddress] = useState("");

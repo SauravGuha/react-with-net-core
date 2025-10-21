@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Activity, ActivityResponse, LoginSchema, RegistrationSchema, UserSchema } from "../types";
+import type { Activity, ActivityResponse, attendeeSchema, AttendenceSchema, LoginSchema, RegistrationSchema, UserSchema } from "../types";
 import { toast } from "react-toastify";
 import { router } from "../app/routes/router";
 
@@ -110,8 +110,16 @@ const userRegistration = async function (value: RegistrationSchema) {
     await instance.post('activityaccount/registeruser', value);
 }
 
+const activityAttendence = async function (data: AttendenceSchema) {
+    const result = await instance.put<ActivityResponse>("attendee/CreateUpdateAttendee", data);
+    return Array.isArray(result.data)
+        ? result.data.value[0] as attendeeSchema
+        : result.data.value
+}
+
 export {
     getallactivities, updateActivity, createActivity,
     deleteActivity, getActivityByid, userLogin,
-    userLogout, userDetails, userRegistration
+    userLogout, userDetails, userRegistration,
+    activityAttendence
 };

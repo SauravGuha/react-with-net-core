@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createActivity, deleteActivity, getActivityByid, getallactivities, updateActivity } from "../lib/apiHelper";
+import { activityAttendence, createActivity, deleteActivity, getActivityByid, getallactivities, updateActivity } from "../lib/apiHelper";
 import { useLoading } from "./appDataContext";
 import useAccountReactQuery from "./useAccountReactQuery";
 import { useLocation } from "react-router-dom";
+import type { Activity } from "../types";
 
 
 
@@ -47,10 +48,18 @@ export default function useActivityReactQuery(id?: string) {
     });
 
     const { isPending: isUpdating, mutateAsync: activityUpdate } = useMutation({
-        mutationFn: updateActivity,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["activities"] });
-            queryClient.invalidateQueries({ queryKey: ["activity", id] });
+        mutationFn: async (data: Activity) => {
+            loading(true)
+            try {
+                return updateActivity(data)
+            }
+            finally {
+                loading(false);
+            };
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["activities"] });
+            await queryClient.invalidateQueries({ queryKey: ["activity", id] });
         },
         onError: (error) => {
             console.error(error);
@@ -59,8 +68,8 @@ export default function useActivityReactQuery(id?: string) {
 
     const { isPending: isCreating, mutateAsync: activityCreate } = useMutation({
         mutationFn: createActivity,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["activities"] });
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["activities"] });
         },
         onError: (error) => {
             console.error(error);
@@ -69,9 +78,19 @@ export default function useActivityReactQuery(id?: string) {
 
     const { isPending: isDeleting, mutateAsync: activityDelete } = useMutation({
         mutationFn: deleteActivity,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["activities"] });
-            queryClient.invalidateQueries({ queryKey: ["activity", id] });
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["activities"] });
+            await queryClient.invalidateQueries({ queryKey: ["activity", id] });
+        },
+        onError: (error) => {
+            console.error(error);
+        }
+    });
+
+    const { isPending: isUpdatingAttendee, mutateAsync: addUpdateAttendee } = useMutation({
+        mutationFn: activityAttendence,
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["activity", id] });
         },
         onError: (error) => {
             console.error(error);
@@ -83,6 +102,7 @@ export default function useActivityReactQuery(id?: string) {
         isUpdating, activityUpdate,
         isCreating, activityCreate,
         isDeleting, activityDelete,
-        isGettingActivity, activity
+        isGettingActivity, activity,
+        isUpdatingAttendee, addUpdateAttendee
     };
 }

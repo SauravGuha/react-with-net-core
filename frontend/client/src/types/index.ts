@@ -34,7 +34,8 @@ export type Activity = z.infer<typeof activityObject>;
 
 export const activityResponseObject = z.object({
   "errorMessage": z.string().nullable(),
-  "value": z.array(activityObject),
+  "value": z.union([z.array(activityObject), attendee])
+    .transform(val => Array.isArray(val) ? val : [val]),
   "status": z.boolean(),
   "errorCode": z.number().nullable()
 });
@@ -90,3 +91,11 @@ export const registrationObject = z.object({
   imageUrl: z.string().optional()
 });
 export type RegistrationSchema = z.infer<typeof registrationObject>;
+
+export const attendenceObject = z.object({
+  "isHost": z.boolean(),
+  "isAttending": z.boolean(),
+  "userId": z.string(),
+  "activityId": z.string()
+});
+export type AttendenceSchema = z.infer<typeof attendenceObject>

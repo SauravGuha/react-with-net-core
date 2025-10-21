@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { eventDateString } from "../../../lib/common";
 import { useActivityContext } from "../../../hooks/appDataContext";
 import useAccountReactQuery from "../../../hooks/useAccountReactQuery";
+import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 
 
 export default function ActivityDetailsHeader() {
     const activity = useActivityContext();
     const { userData } = useAccountReactQuery();
+    const { isUpdatingAttendee, addUpdateAttendee, isUpdating, activityUpdate } = useActivityReactQuery(activity.id);
     const hostAttendee = activity.attendees?.find(e => e.isHost);
     const isCancelled = activity.isCancelled;
     const isHost = hostAttendee?.user.id == userData?.id;
@@ -58,7 +60,11 @@ export default function ActivityDetailsHeader() {
                             <Button
                                 variant='contained'
                                 color={isCancelled ? 'success' : 'error'}
-                                onClick={() => { }}
+                                onClick={async () => {
+                                    activity.isCancelled = !isCancelled;
+                                    await activityUpdate(activity);
+                                }}
+                                loading={isUpdating}
                             >
                                 {isCancelled ? 'Re-activate Activity' : 'Cancel Activity'}
                             </Button>
@@ -76,8 +82,15 @@ export default function ActivityDetailsHeader() {
                         <Button
                             variant="contained"
                             color={isGoing ? 'primary' : 'info'}
-                            onClick={() => { }}
-                            disabled={isCancelled}
+                            onClick={async () => {
+                                await addUpdateAttendee({
+                                    activityId: activity.id,
+                                    isAttending: !isGoing,
+                                    isHost: isHost,
+                                    userId: userData!.id
+                                });
+                            }}
+                            disabled={isUpdatingAttendee || isCancelled}
                         >
                             {isGoing ? 'Cancel Attendance' : 'Join Activity'}
                         </Button>

@@ -54,7 +54,7 @@ export default function ActivityCard({ activity, userData }: { activity: Activit
                 <Divider sx={{ mb: 3 }} />
                 <Box sx={{ display: "flex", gap: 2, backgroundColor: "grey.200", px: 3 }}>
                     {
-                        activity.attendees?.map(item => <AvatarPopover key={userData?.id}
+                        activity.attendees?.filter(e => e.isAttending)?.map(item => <AvatarPopover key={item.user?.id}
                             userData={item.user} />)
                     }
                 </Box>

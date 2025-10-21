@@ -1,6 +1,6 @@
 import { Autocomplete, Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { categories, eventDateInUtcFormat, getDefaultactivity } from "../../../lib/common";
-import { activityObject } from "../../../types";
+import { activityObject, type Activity } from "../../../types";
 import { useRef, useState, type FormEvent } from "react";
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -30,7 +30,7 @@ export default function ActivityForm() {
                 await activityUpdate(postActivity);
             }
             else {
-                const createdActivity = await activityCreate(postActivity);
+                const createdActivity = await activityCreate(postActivity) as Activity;
                 postActivity.id = createdActivity!.id;
             }
             navigate(`/activity/${postActivity.id}`);

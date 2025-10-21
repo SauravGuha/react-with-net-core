@@ -5,7 +5,7 @@ export default function ActivityDetailsSidebar() {
 
     const activity = useActivityContext();
     const hostAttendee = activity.attendees?.find(e => e.isHost);
-    const attendeesCount = activity?.attendees?.length;
+    const attendeesCount = activity?.attendees?.filter(e => e.isAttending).length;
 
     return (
         <>
@@ -23,7 +23,7 @@ export default function ActivityDetailsSidebar() {
                 </Typography>
             </Paper>
             <Paper sx={{ padding: 2 }}>
-                {activity?.attendees?.map(att => <Grid container alignItems="center">
+                {activity?.attendees?.filter(e => e.isAttending).map(att => <Grid key={att.user.id} container alignItems="center">
                     <Grid size={8}>
                         <List sx={{ display: 'flex', flexDirection: 'column' }}>
                             <ListItem>
