@@ -1,6 +1,22 @@
 
 import z from "zod";
 
+export const userObject = z.object({
+  "bio": z.string().optional(),
+  "displayName": z.string(),
+  "email": z.string(),
+  "imageUrl": z.string().optional(),
+  "id": z.string()
+});
+export type UserSchema = z.infer<typeof userObject>;
+
+export const attendee = z.object({
+  "isHost": z.boolean(),
+  "isAttending": z.boolean(),
+  "user": userObject
+});
+export type attendeeSchema = z.infer<typeof attendee>;
+
 export const activityObject = z.object({
   "id": z.string(),
   "title": z.string().min(2).max(200),
@@ -11,7 +27,8 @@ export const activityObject = z.object({
   "city": z.string(),
   "venue": z.string(),
   "latitude": z.coerce.number(),
-  "longitude": z.coerce.number()
+  "longitude": z.coerce.number(),
+  "attendees": z.array(attendee)
 });
 export type Activity = z.infer<typeof activityObject>;
 
@@ -20,7 +37,6 @@ export const activityResponseObject = z.object({
   "value": z.array(activityObject),
   "status": z.boolean(),
   "errorCode": z.number().nullable()
-
 });
 export type ActivityResponse = z.infer<typeof activityResponseObject>;
 
@@ -64,15 +80,6 @@ export const loginObject = z.object({
   password: z.string()
 });
 export type LoginSchema = z.infer<typeof loginObject>
-
-export const userObject = z.object({
-  "bio": z.string().optional(),
-  "displayName": z.string(),
-  "email": z.string(),
-  "imageUrl": z.string().optional(),
-  "id": z.string()
-});
-export type UserSchema = z.infer<typeof userObject>;
 
 
 export const registrationObject = z.object({

@@ -1,15 +1,17 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Chip, Divider, Typography } from "@mui/material"
-import type { Activity } from "../../../types"
+import type { Activity, UserSchema } from "../../../types"
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery"
 import { Link } from "react-router-dom"
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import { eventDateString } from "../../../lib/common";
+import AvatarPopover from "../../../app/component/AvatarPopover";
 
 
-export default function ActivityCard({ activity }: { activity: Activity }) {
-    const isHost = false;
-    const isGoing = false;
+export default function ActivityCard({ activity, userData }: { activity: Activity, userData?: UserSchema }) {
+    const hostAttendee = activity.attendees.find(e => e.isHost);
+    const isHost = hostAttendee?.user.id == userData?.id;
+    const isGoing = hostAttendee?.isAttending;
     const label = isHost ? "You are hosting" : "You are going";
     const isCancelled = activity.isCancelled;
     const color = isHost ? "secondary" : isGoing ? "warning" : "default";
@@ -31,7 +33,7 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
                     </>}
                     subheader={
                         <>
-                            Hosted by {<Link to="">Bob</Link>}
+                            Hosted by <Link to={`/profile/${hostAttendee?.user.id}`}>{hostAttendee?.user.displayName}</Link>
                         </>
                     } />
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mr: 2 }}>
@@ -51,7 +53,10 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
                 </Box>
                 <Divider sx={{ mb: 3 }} />
                 <Box sx={{ display: "flex", gap: 2, backgroundColor: "grey.200", px: 3 }}>
-                    <Typography variant="body2">Attendees go here</Typography>
+                    {
+                        activity.attendees.map(item => <AvatarPopover key={userData?.id}
+                            userData={item.user} />)
+                    }
                 </Box>
             </CardContent>
 
