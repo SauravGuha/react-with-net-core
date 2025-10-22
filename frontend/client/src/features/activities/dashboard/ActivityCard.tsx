@@ -27,7 +27,8 @@ export default function ActivityCard({ activity, userData }: { activity: Activit
                         fontSize: 25,
                         fontWeight: "bold"
                     }}
-                    avatar={<Avatar style={{ height: 80, width: 80 }} />}
+                    avatar={<Avatar style={{ height: 80, width: 80 }} alt={activity.category}
+                        src={`/images/categoryImages/${activity.category.toLocaleLowerCase()}.jpg`} />}
                     title={<>
                         <Typography variant="h5">{activity.title}</Typography>
                     </>}

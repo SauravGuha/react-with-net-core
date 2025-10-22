@@ -1,4 +1,4 @@
-import { createBrowserRouter, NavLink } from "react-router-dom"
+import { createBrowserRouter, Navigate } from "react-router-dom"
 import App from "../layout/App";
 import Home from "../../features/home/Home";
 import Dashboard from "../../features/activities/dashboard/Dashboard";
@@ -9,6 +9,7 @@ import ServerError from "../component/ServerError";
 import LoginForm from "../../features/account/LoginForm";
 import Authorization from "./Authorization";
 import RegisterForm from "../../features/account/RegisterForm";
+import ProfilePage from "../../features/profile/ProfilePage";
 
 
 export const router = createBrowserRouter([
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
                     path: "updateactivity/:id",
                     element: <ActivityForm key="update" />
                 },
+                {
+                    path: "profile/:id",
+                    element: <ProfilePage />
+                }
             ]
         },
         {
@@ -52,7 +57,7 @@ export const router = createBrowserRouter([
             element: <ServerError />
         }, {
             path: "*",
-            element: <NavLink replace to='/notfound' />
+            element: <Navigate replace to='/notfound' />
         },
         {
             path: "login",

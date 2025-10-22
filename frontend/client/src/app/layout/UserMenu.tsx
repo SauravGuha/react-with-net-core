@@ -9,7 +9,7 @@ import { Add, Logout, Person } from "@mui/icons-material";
 export default function UserMenu({ data }: { data: UserSchema }) {
 
     const navigate = useNavigate();
-    const { logoutUser } = useAccountReactQuery();
+    const { logoutUser, userData } = useAccountReactQuery();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -33,7 +33,10 @@ export default function UserMenu({ data }: { data: UserSchema }) {
                 size="large"
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Avatar />
+                    <Avatar
+                        key={userData!.id}
+                        alt={userData!.displayName}
+                        src={userData!.imageUrl} />
                     {data.displayName}
                 </Box>
 
@@ -55,7 +58,7 @@ export default function UserMenu({ data }: { data: UserSchema }) {
                     </ListItemIcon>
                     <ListItemText>Create Activity</ListItemText>
                 </MenuItem>
-                <MenuItem component={NavLink} to='/profile'>
+                <MenuItem component={NavLink} to={`/profile/${userData!.id}`}>
                     <ListItemIcon>
                         <Person />
                     </ListItemIcon>
