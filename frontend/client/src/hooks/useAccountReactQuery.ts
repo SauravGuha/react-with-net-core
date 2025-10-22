@@ -1,9 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { userDetails, userLogin, userLogout, userRegistration } from "../lib/apiHelper";
+import { profileDetails, userDetails, userLogin, userLogout, userRegistration } from "../lib/apiHelper";
+import { useLoading } from "./appDataContext";
 
 
-export default function useAccountReactQuery() {
+export default function useAccountReactQuery(id?: string) {
     const queryClient = useQueryClient();
+    const { loading } = useLoading();
 
     const { isPending: isLogingIn, mutateAsync: loginUser } = useMutation({
         mutationFn: userLogin,
@@ -36,6 +38,23 @@ export default function useAccountReactQuery() {
     const { isLoading: isUserDataLoading, data: userData } = useQuery({
         queryKey: ["user"],
         queryFn: userDetails,
+        enabled: typeof (id) == "undefined",
+        staleTime: 60 * 1000 * 1,
+        retry: false
+    });
+
+    const { isLoading: isProfileDataLoading, data: profileData } = useQuery({
+        queryKey: ["user", id],
+        queryFn: async () => {
+            loading(true);
+            try {
+                return await profileDetails(id!);
+            }
+            finally {
+                loading(false);
+            }
+        },
+        enabled: !(typeof (id) == "undefined"),
         staleTime: 60 * 1000 * 1,
         retry: false
     });
@@ -44,6 +63,7 @@ export default function useAccountReactQuery() {
         isLogingIn, loginUser,
         isUserDataLoading, userData,
         isLogingOut, logoutUser,
-        isRegistering, registerUser
+        isRegistering, registerUser,
+        isProfileDataLoading, profileData
     };
 }

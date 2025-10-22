@@ -32,9 +32,18 @@ export const activityObject = z.object({
 });
 export type Activity = z.infer<typeof activityObject>;
 
+export const profileObject = z.object({
+  ...userObject.shape,
+  photos: z.array(z.object({
+    "publicId": z.string(),
+    "url": z.string(),
+  }))
+});
+export type ProfileSchema = z.infer<typeof profileObject>;
+
 export const activityResponseObject = z.object({
   "errorMessage": z.string().nullable(),
-  "value": z.union([z.array(activityObject), attendee])
+  "value": z.union([z.array(activityObject), attendee, profileObject])
     .transform(val => Array.isArray(val) ? val : [val]),
   "status": z.boolean(),
   "errorCode": z.number().nullable()
@@ -99,3 +108,4 @@ export const attendenceObject = z.object({
   "activityId": z.string()
 });
 export type AttendenceSchema = z.infer<typeof attendenceObject>
+

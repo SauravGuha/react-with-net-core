@@ -1,7 +1,8 @@
 import { Avatar, Box, Button, Chip, Divider, Grid, Paper, Stack, Typography } from "@mui/material";
+import type { ProfileSchema } from "../../types";
 
 
-export default function ProfileHeader() {
+export default function ProfileHeader({ profileData }: { profileData: ProfileSchema }) {
     const isFollowing = true;
     return (
         <Paper elevation={3} sx={{ p: 3 }}>
@@ -10,7 +11,7 @@ export default function ProfileHeader() {
                     <Stack direction='row' spacing={3} alignItems='center'>
                         <Avatar sx={{ width: 150, height: 150 }} />
                         <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
-                            <Typography variant="h4">Display Name</Typography>
+                            <Typography variant="h4">{profileData.displayName}</Typography>
                             {
                                 isFollowing && <Chip variant="outlined" color="secondary" label="Following" />
                             }

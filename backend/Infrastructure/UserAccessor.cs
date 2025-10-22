@@ -26,4 +26,10 @@ public class UserAccessor : IUserAccessor
     {
         return this.userManager.GetUserId(this.httpAccessor.HttpContext.User)!;
     }
+
+    public async Task<User> GetUserByIdAsync(string id)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        return user!;
+    }
 }

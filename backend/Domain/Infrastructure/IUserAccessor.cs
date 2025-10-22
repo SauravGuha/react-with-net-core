@@ -8,5 +8,7 @@ namespace Domain.Infrastructure
         Task<User> GetUserAsync();
 
         string GetUserId();
+
+        Task<User> GetUserByIdAsync(string id);
     }
 }

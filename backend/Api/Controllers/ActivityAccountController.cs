@@ -2,6 +2,7 @@
 
 using Application.Photo.Command;
 using Application.Photo.Query;
+using Application.Users.Query;
 using Application.ViewModels;
 using AutoMapper;
 using Domain.Models;
@@ -109,6 +110,13 @@ namespace Api.Controllers
         public async Task<IActionResult> DeleteImage([FromQuery] Guid imageId, CancellationToken token)
         {
             var result = await this.Mediator.Send(new PhotoDeleteRequest { ImageId = imageId }, token);
+            return this.ReturnResult(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ProfileDetails(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await this.Mediator.Send(new UserProfileQueryRequest { Id = id }, cancellationToken);
             return this.ReturnResult(result);
         }
     }

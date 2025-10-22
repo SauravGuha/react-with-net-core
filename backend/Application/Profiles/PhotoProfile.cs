@@ -10,6 +10,7 @@ namespace Application.Profiles
         public PhotoProfile()
         {
             CreateMap<Domain.Models.Photo, PhotoUploadResultViewModel>();
+            CreateMap<Domain.Models.Photo, PhotoViewModel>();
         }
     }
 }
