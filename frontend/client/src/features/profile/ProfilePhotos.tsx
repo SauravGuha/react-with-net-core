@@ -1,6 +1,7 @@
 import { Box, Button, ImageList, ImageListItem, Typography } from "@mui/material";
 import useProfileReactQuery from "../../hooks/useProfileReactQuery";
 import { useState } from "react";
+import PhotoUploadWidget from "../../app/component/PhotoUploadWidget";
 
 
 export default function ProfilePhotos({ id }: { id: string }) {
@@ -14,23 +15,30 @@ export default function ProfilePhotos({ id }: { id: string }) {
     return (
         <Box>
             {
-                isLoggedInUser ? <Button onClick={() => setEditMode(true)}>Add a photo</Button> : <></>
+                isLoggedInUser && (<Box>
+                    <Button onClick={() => setEditMode(!editMode)}>
+                        {
+                            editMode ? 'Cancel' : 'Add Photo'
+                        }
+                    </Button>
+                </Box>)
             }
             {
-
+                editMode
+                    ? <PhotoUploadWidget />
+                    : <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+                        {photos!.map((item) => (
+                            <ImageListItem key={item.publicId}>
+                                <img
+                                    srcSet={`${item.url}`}
+                                    src={`${item.url}`}
+                                    alt={item.publicId}
+                                    loading="lazy"
+                                />
+                            </ImageListItem>
+                        ))}
+                    </ImageList>
             }
-            <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-                {photos!.map((item) => (
-                    <ImageListItem key={item.publicId}>
-                        <img
-                            srcSet={`${item.url}`}
-                            src={`${item.url}`}
-                            alt={item.publicId}
-                            loading="lazy"
-                        />
-                    </ImageListItem>
-                ))}
-            </ImageList>
         </Box>
     )
 }
