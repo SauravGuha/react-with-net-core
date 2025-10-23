@@ -37,7 +37,15 @@ export default function useAccountReactQuery(id?: string) {
 
     const { isLoading: isUserDataLoading, data: userData } = useQuery({
         queryKey: ["user"],
-        queryFn: userDetails,
+        queryFn: async () => {
+            loading(true);
+            try {
+                return await userDetails();
+            }
+            finally {
+                loading(false);
+            }
+        },
         enabled: typeof (id) == "undefined",
         staleTime: 60 * 1000 * 1,
         retry: false
