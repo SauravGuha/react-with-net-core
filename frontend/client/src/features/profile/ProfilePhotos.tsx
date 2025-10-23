@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function ProfilePhotos({ id }: { id: string }) {
     const { isFetchingPhotos, photos, isLoggedInUser } = useProfileReactQuery(id);
-    const { editMode, setEditMode } = useState(false);
+    const [editMode, setEditMode] = useState(false);
 
     if (isFetchingPhotos) return <></>;
 
