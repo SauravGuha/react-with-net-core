@@ -1,8 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoading } from "./appDataContext";
 import { profileDetails, userPhotos } from "../lib/apiHelper";
+import type { UserSchema } from "../types";
+import { useMemo } from "react";
 
 export default function useProfileReactQuery(id?: string) {
+    const queryClient = useQueryClient();
     const { loading } = useLoading();
 
     const { isLoading: isProfileDataLoading, data: profileData } = useQuery({
@@ -37,8 +40,12 @@ export default function useProfileReactQuery(id?: string) {
         retry: false
     });
 
+    const isLoggedInUser = useMemo(() => {
+        return id === queryClient.getQueryData<UserSchema>(["user"])?.id;
+    }, [id, queryClient]);
+
     return {
         isProfileDataLoading, profileData,
-        isFetchingPhotos, photos
+        isFetchingPhotos, photos, isLoggedInUser
     }
 }
