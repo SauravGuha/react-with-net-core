@@ -9,7 +9,7 @@ export default function ProfileHeader({ profileData }: { profileData: ProfileSch
             <Grid container>
                 <Grid size={8}>
                     <Stack direction='row' spacing={3} alignItems='center'>
-                        <Avatar sx={{ width: 150, height: 150 }} />
+                        <Avatar sx={{ width: 150, height: 150 }} src={profileData.photos[0].url} />
                         <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
                             <Typography variant="h4">{profileData.displayName}</Typography>
                             {

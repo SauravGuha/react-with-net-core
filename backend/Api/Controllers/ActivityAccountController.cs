@@ -100,9 +100,9 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> UserImages(CancellationToken token)
+        public async Task<IActionResult> UserImages(Guid id, CancellationToken token)
         {
-            var result = await this.Mediator.Send(new PhotoQueryRequest { }, token);
+            var result = await this.Mediator.Send(new PhotoQueryRequest { UserId = id }, token);
             return this.ReturnResult(result);
         }
 

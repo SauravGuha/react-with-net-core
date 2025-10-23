@@ -11,7 +11,7 @@ namespace Application.Photo.Query
 {
     public class PhotoQueryRequest : IRequest<Result<IEnumerable<PhotoUploadResultViewModel>>>
     {
-
+        public required Guid UserId { get; set; }
     }
 
     public class PhotoQueryRequestHandler : IRequestHandler<PhotoQueryRequest, Result<IEnumerable<PhotoUploadResultViewModel>>>
@@ -28,7 +28,7 @@ namespace Application.Photo.Query
         }
         public async Task<Result<IEnumerable<PhotoUploadResultViewModel>>> Handle(PhotoQueryRequest request, CancellationToken cancellationToken)
         {
-            var user = await userAccessor.GetUserAsync();
+            var user = await userAccessor.GetUserByIdAsync(request.UserId.ToString());
             var userPhotos = await this.photoQueryRepository.GetAllAsync(e => e.UserId == user.Id, cancellationToken);
             var returnModel = mapper.Map<IEnumerable<PhotoUploadResultViewModel>>(userPhotos);
             return Result<IEnumerable<PhotoUploadResultViewModel>>.SetSuccess(returnModel!);

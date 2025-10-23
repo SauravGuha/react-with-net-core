@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Activity, ActivityResponse, attendeeSchema, AttendenceSchema, LoginSchema, ProfileSchema, RegistrationSchema, UserSchema } from "../types";
+import type { Activity, ActivityResponse, attendeeSchema, AttendenceSchema, LoginSchema, PhotoSchema, ProfileSchema, RegistrationSchema, UserSchema } from "../types";
 import { toast } from "react-toastify";
 import { router } from "../app/routes/router";
 
@@ -124,9 +124,15 @@ const profileDetails = async function (id: string) {
         : result.data.value
 }
 
+const userPhotos = async function (userId: string) {
+    const result = await instance.get<ActivityResponse>(`activityaccount/UserImages/${userId}`);
+    return result.data.value as PhotoSchema[];
+}
+
 export {
     getallactivities, updateActivity, createActivity,
     deleteActivity, getActivityByid, userLogin,
     userLogout, userDetails, userRegistration,
-    activityAttendence, profileDetails
+    activityAttendence, profileDetails,
+    userPhotos
 };

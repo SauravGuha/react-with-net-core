@@ -1,12 +1,14 @@
 import { Box, Paper, Tab, Tabs } from "@mui/material";
 import { useState, type SyntheticEvent } from "react";
+import type { ProfileSchema } from "../../types";
+import ProfilePhotos from "./ProfilePhotos";
 
 
-export default function ProfileContent() {
+export default function ProfileContent({ profileData }: { profileData: ProfileSchema }) {
     const [value, setValue] = useState(0);
     const tabContent = [
         { label: 'About', content: <div>About</div> },
-        { label: 'Photos', content: <div>Photos</div> },
+        { label: 'Photos', content: <ProfilePhotos id={profileData.id} /> },
         { label: 'Events', content: <div>Events</div> },
         { label: 'Followers', content: <div>Followers</div> },
         { label: 'Following', content: <div>Following</div> }
