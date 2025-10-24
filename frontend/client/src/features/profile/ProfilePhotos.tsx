@@ -36,7 +36,7 @@ export default function ProfilePhotos({ profileData }: { profileData: ProfileSch
                                     loading="lazy"
                                     style={{ width: '100', height: '164', marginBottom: 4 }}
                                 />
-                                <ImageListItemBar
+                                {isLoggedInUser && <ImageListItemBar
                                     sx={{
                                         background:
                                             'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
@@ -61,7 +61,7 @@ export default function ProfilePhotos({ profileData }: { profileData: ProfileSch
                                         </>
                                     }
                                     actionPosition="right"
-                                />
+                                />}
                             </ImageListItem>
                         ))}
                     </ImageList>
