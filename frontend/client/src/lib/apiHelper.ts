@@ -129,10 +129,26 @@ const userPhotos = async function (userId: string) {
     return result.data.value as PhotoSchema[];
 }
 
+const uploadPhoto = async function (data: Blob) {
+    const formdata = new FormData();
+    formdata.append("userPhoto", data);
+    const result = await instance.post<ActivityResponse>(`activityaccount/UploadPhoto`, formdata, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
+    return result.data.value as PhotoSchema[];
+}
+
+const deletePhoto = async function (id: string) {
+    await instance.delete(`activityaccount/DeleteImage?imageId=${id}`);
+}
+
 export {
     getallactivities, updateActivity, createActivity,
     deleteActivity, getActivityByid, userLogin,
     userLogout, userDetails, userRegistration,
     activityAttendence, profileDetails,
-    userPhotos
+    userPhotos, uploadPhoto,
+    deletePhoto
 };

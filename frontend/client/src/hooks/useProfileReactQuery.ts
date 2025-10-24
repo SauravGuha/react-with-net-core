@@ -1,6 +1,6 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoading } from "./appDataContext";
-import { profileDetails, userPhotos } from "../lib/apiHelper";
+import { deletePhoto, profileDetails, uploadPhoto, userPhotos } from "../lib/apiHelper";
 import type { UserSchema } from "../types";
 import { useMemo } from "react";
 
@@ -40,12 +40,40 @@ export default function useProfileReactQuery(id?: string) {
         retry: false
     });
 
+    const { isPending: isUploading, mutateAsync: profilePhotoUpload } = useMutation({
+        mutationFn: async (data: Blob) => {
+            await uploadPhoto(data);
+        },
+        onError: (err) => {
+            console.error(err);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile", id] });
+            queryClient.invalidateQueries({ queryKey: ["user"] });
+        }
+    });
+
+    const { isPending: isDeleting, mutateAsync: profilePhotoDelete } = useMutation({
+        mutationFn: async (id: string) => {
+            await deletePhoto(id);
+        },
+        onError: (err) => {
+            console.error(err);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile", id] });
+            queryClient.invalidateQueries({ queryKey: ["user"] });
+        }
+    });
+
     const isLoggedInUser = useMemo(() => {
         return id === queryClient.getQueryData<UserSchema>(["user"])?.id;
     }, [id, queryClient]);
 
     return {
         isProfileDataLoading, profileData,
-        isFetchingPhotos, photos, isLoggedInUser
+        isFetchingPhotos, photos, isLoggedInUser,
+        isUploading, profilePhotoUpload,
+        isDeleting, profilePhotoDelete
     }
 }

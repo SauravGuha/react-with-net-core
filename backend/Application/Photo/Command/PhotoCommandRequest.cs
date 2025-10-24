@@ -9,12 +9,12 @@ using MediatR;
 
 namespace Application.Photo.Command
 {
-    public class PhotoCommandRequest : IRequest<Result<PhotoUploadResultViewModel>>
+    public class PhotoCommandRequest : IRequest<Result<List<PhotoUploadResultViewModel>>>
     {
         public required Stream PhotoStream { get; set; }
     }
 
-    public class PhotoCommandRequestHandler : IRequestHandler<PhotoCommandRequest, Result<PhotoUploadResultViewModel>>
+    public class PhotoCommandRequestHandler : IRequestHandler<PhotoCommandRequest, Result<List<PhotoUploadResultViewModel>>>
     {
         private readonly IUserAccessor userAccessor;
         private readonly IImageRepository imageRepository;
@@ -30,7 +30,7 @@ namespace Application.Photo.Command
             this.imageRepository = imageRepository;
         }
 
-        public async Task<Result<PhotoUploadResultViewModel>> Handle(PhotoCommandRequest request, CancellationToken cancellationToken)
+        public async Task<Result<List<PhotoUploadResultViewModel>>> Handle(PhotoCommandRequest request, CancellationToken cancellationToken)
         {
             var userInfo = await userAccessor.GetUserAsync();
             var result = await imageRepository.StoreImageAsync(userInfo.Id, "jpg", request.PhotoStream, cancellationToken);
@@ -42,7 +42,8 @@ namespace Application.Photo.Command
                 UserId = userInfo.Id,
                 CreatedBy = userInfo.Email
             }, cancellationToken);
-            return Result<PhotoUploadResultViewModel>.SetSuccess(mapper.Map<PhotoUploadResultViewModel>(photoResult)!);
+            return Result<List<PhotoUploadResultViewModel>>
+            .SetSuccess(mapper.Map<List<PhotoUploadResultViewModel>>(new List<Domain.Models.Photo> { photoResult })!);
         }
     }
 }

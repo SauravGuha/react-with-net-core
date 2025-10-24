@@ -1,16 +1,16 @@
-import { Box, Button, ImageList, ImageListItem, Typography } from "@mui/material";
+import { Box, Button, IconButton, ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
 import useProfileReactQuery from "../../hooks/useProfileReactQuery";
 import { useState } from "react";
 import PhotoUploadWidget from "../../app/component/PhotoUploadWidget";
+import { DeleteForeverOutlined, StarBorderOutlined } from "@mui/icons-material";
+import type { ProfileSchema } from "../../types";
 
 
-export default function ProfilePhotos({ id }: { id: string }) {
-    const { isFetchingPhotos, photos, isLoggedInUser } = useProfileReactQuery(id);
+export default function ProfilePhotos({ profileData }: { profileData: ProfileSchema }) {
+    const { isFetchingPhotos, photos, isLoggedInUser, profilePhotoDelete } = useProfileReactQuery(profileData.id);
     const [editMode, setEditMode] = useState(false);
 
     if (isFetchingPhotos) return <></>;
-
-    if (!photos || photos.length <= 0) return <Typography>No photos</Typography>
 
     return (
         <Box>
@@ -25,15 +25,42 @@ export default function ProfilePhotos({ id }: { id: string }) {
             }
             {
                 editMode
-                    ? <PhotoUploadWidget />
-                    : <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+                    ? <PhotoUploadWidget userId={profileData.id} />
+                    : <ImageList sx={{ width: '100%', height: 400 }} cols={3} rowHeight={164}>
                         {photos!.map((item) => (
                             <ImageListItem key={item.publicId}>
                                 <img
                                     srcSet={`${item.url}`}
-                                    src={`${item.url}`}
+                                    src={item.url}
                                     alt={item.publicId}
                                     loading="lazy"
+                                    style={{ width: '100', height: '164', marginBottom: 4 }}
+                                />
+                                <ImageListItemBar
+                                    sx={{
+                                        background:
+                                            'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+                                            'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                                    }}
+                                    position="top"
+                                    actionIcon={
+                                        <>
+                                            <IconButton
+                                                sx={{ color: 'white' }}
+                                                aria-label={`star ${item.publicId}`}
+                                                onClick={async () => { await profilePhotoDelete(item.publicId); }}
+                                            >
+                                                <DeleteForeverOutlined />
+                                            </IconButton>
+                                            <IconButton
+                                                sx={{ color: 'white' }}
+                                                aria-label={`star ${item.publicId}`}
+                                            >
+                                                <StarBorderOutlined />
+                                            </IconButton>
+                                        </>
+                                    }
+                                    actionPosition="right"
                                 />
                             </ImageListItem>
                         ))}

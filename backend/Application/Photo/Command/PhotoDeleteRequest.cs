@@ -32,9 +32,14 @@ namespace Application.Photo.Command
             var activity = await photoQueryRepository.GetById(request.ImageId, cancellationToken);
             if (activity != null)
             {
-                var userId = userAccessor.GetUserId();
+                var userData = await userAccessor.GetUserAsync();
                 await photoCommandRepository.DeleteAsync(activity, cancellationToken);
-                await imageRepository.DeleteImage(userId, request.ImageId.ToString(), "jpg", cancellationToken);
+                await imageRepository.DeleteImage(userData.Id, request.ImageId.ToString(), "jpg", cancellationToken);
+                if (userData.ImageUrl?.Contains(request.ImageId.ToString()) == true)
+                {
+                    userData.ImageUrl = "";
+                    await userAccessor.UpdateUser(userData);
+                }
             }
             else
                 return Result<Unit>.SetError($"{request.ImageId} not found", (int)HttpStatusCode.NotFound);

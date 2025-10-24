@@ -1,15 +1,17 @@
 import { Avatar, Box, Button, Chip, Divider, Grid, Paper, Stack, Typography } from "@mui/material";
 import type { ProfileSchema } from "../../types";
+import useAccountReactQuery from "../../hooks/useAccountReactQuery";
 
 
 export default function ProfileHeader({ profileData }: { profileData: ProfileSchema }) {
     const isFollowing = true;
+    const { userData } = useAccountReactQuery();
     return (
         <Paper elevation={3} sx={{ p: 3 }}>
             <Grid container>
                 <Grid size={8}>
                     <Stack direction='row' spacing={3} alignItems='center'>
-                        <Avatar sx={{ width: 150, height: 150 }} src={profileData.photos[0].url} />
+                        <Avatar sx={{ width: 150, height: 150 }} src={userData?.imageUrl} />
                         <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
                             <Typography variant="h4">{profileData.displayName}</Typography>
                             {

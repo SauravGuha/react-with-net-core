@@ -8,7 +8,7 @@ export default function ProfileContent({ profileData }: { profileData: ProfileSc
     const [value, setValue] = useState(0);
     const tabContent = [
         { label: 'About', content: <div>About</div> },
-        { label: 'Photos', content: <ProfilePhotos id={profileData.id} /> },
+        { label: 'Photos', content: <ProfilePhotos profileData={profileData} /> },
         { label: 'Events', content: <div>Events</div> },
         { label: 'Followers', content: <div>Followers</div> },
         { label: 'Following', content: <div>Following</div> }
@@ -17,6 +17,7 @@ export default function ProfileContent({ profileData }: { profileData: ProfileSc
     const handleChange = (event: SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+
     return (
         <Box component={Paper} sx={{ display: 'flex', alignItems: 'flex-start', mt: 2, p: 3, height: 500 }} elevation={3}>
             <Tabs

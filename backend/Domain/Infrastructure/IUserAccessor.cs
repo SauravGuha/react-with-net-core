@@ -10,5 +10,7 @@ namespace Domain.Infrastructure
         string GetUserId();
 
         Task<User> GetUserByIdAsync(string id);
+
+        Task<int> UpdateUser(User user);
     }
 }

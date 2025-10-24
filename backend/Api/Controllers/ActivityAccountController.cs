@@ -94,7 +94,7 @@ namespace Api.Controllers
             var stream = userPhoto.OpenReadStream();
             var result = await this.Mediator.Send(new PhotoCommandRequest { PhotoStream = stream }, token);
             var user = await userManager.GetUserAsync(this.HttpContext.User);
-            user!.ImageUrl = result.Value?.Url;
+            user!.ImageUrl = result.Value?[0].Url;
             await this.userManager.UpdateAsync(user!);
             return this.ReturnResult(result);
         }

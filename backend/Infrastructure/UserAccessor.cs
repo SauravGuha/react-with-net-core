@@ -32,4 +32,13 @@ public class UserAccessor : IUserAccessor
         var user = await userManager.FindByIdAsync(id);
         return user!;
     }
+
+    public async Task<int> UpdateUser(User user)
+    {
+        var result = await userManager.UpdateAsync(user);
+        if (result.Succeeded)
+            return 1;
+        else
+            return 0;
+    }
 }
