@@ -16,5 +16,7 @@ namespace Domain.Models
         public double Longitude { get; set; }
 
         public virtual ICollection<Attendees> Attendees { get; set; } = [];
+
+        public virtual ICollection<Comment> Comments { get; set; } = [];
     }
 }
