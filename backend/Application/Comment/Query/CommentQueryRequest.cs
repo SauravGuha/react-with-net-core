@@ -11,7 +11,7 @@ namespace Application.Comment.Query
 {
     public class CommentQueryRequest : IRequest<Result<List<CommentViewModel>>>
     {
-        public required Guid ActivityId { get; set; }
+        public required string ActivityId { get; set; }
     }
 
     public class CommentQueryHandler : IRequestHandler<CommentQueryRequest, Result<List<CommentViewModel>>>
@@ -33,10 +33,10 @@ namespace Application.Comment.Query
             var param = Expression.Parameter(typeof(Domain.Models.Comment), "e");
             var lambda = Expression.Lambda<Func<Domain.Models.Comment, bool>>(condition, param);
 
-            if (request.ActivityId != Guid.Empty)
+            if (Guid.TryParse(request.ActivityId, out var activityId))
             {
                 var condition2 = Expression.Equal(Expression.Property(param, nameof(Domain.Models.Comment.ActivityId)),
-                                Expression.Constant(request.ActivityId)
+                                Expression.Constant(activityId)
                             );
 
                 condition = Expression.AndAlso(condition, condition2);

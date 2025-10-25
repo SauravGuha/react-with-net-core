@@ -20,13 +20,17 @@ public class Program
         builder.Services.AddApplication();
         builder.Services.AddCors(options =>
         {
-            options.AddDefaultPolicy(po =>
+            var whiteListedSection = builder.Configuration.GetSection("WhiteListed");
+            if (whiteListedSection != null)
             {
-                po.AllowAnyHeader()
-                .AllowAnyMethod()
-                .WithOrigins(builder.Configuration.GetSection("WhiteListed").Get<List<string>>().Select(e => e).ToArray())
-                .AllowCredentials();
-            });
+                options.AddDefaultPolicy(po =>
+                {
+                    po.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins(whiteListedSection.Get<List<string>>()!.Select(e => e).ToArray())
+                    .AllowCredentials();
+                });
+            }
         });
         builder.Services.AddAuthorization();
         builder.Services.AddIdentityApiEndpoints<User>(options =>
