@@ -1,5 +1,4 @@
 
-
 using Application.Comment.Command;
 using Application.Comment.Query;
 using Application.ViewModels;
@@ -30,9 +29,9 @@ namespace Api.SignalR
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, activityid!);
 
-                var comments = await mediator.Send(new CommentQueryRequest { ActivityId = activityid! });
+                var result = await mediator.Send(new CommentQueryRequest { ActivityId = activityid! });
 
-                await Clients.Caller.SendAsync(AllActivityComments, comments.Value);
+                await Clients.Caller.SendAsync(AllActivityComments, result);
             }
         }
 
@@ -44,7 +43,7 @@ namespace Api.SignalR
             });
 
             await Clients.Group(commentCommandViewModel.ActivityId.ToString())
-            .SendAsync(CommentAdded, result.Value);
+            .SendAsync(CommentAdded, result);
         }
     }
 }
