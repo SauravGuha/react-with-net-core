@@ -4,6 +4,7 @@ using Domain.Models;
 using Domain.Repositories.ActivityRepository;
 using Domain.Repositories.AttendeeRespository;
 using Domain.Repositories.PhotoRepository;
+using Domain.Repositories.UserRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using Persistence.Repository.ActivityRepository;
 using Persistence.Repository.AttendeesRepo;
 using Persistence.Repository.CommentRepository;
 using Persistence.Repository.PhotoRepository;
+using Persistence.Repository.UserFollowingRepository;
 
 namespace Persistence
 {
@@ -28,6 +30,8 @@ namespace Persistence
             sc.AddScoped<IPhotoQueryRepository, PhotoQueryRepository>();
             sc.AddScoped<ICommentCommandRepository, CommentCommandRepository>();
             sc.AddScoped<ICommentQueryRepository, CommentQueryRepository>();
+            sc.AddScoped<IUserFollowingCommandRepository, UserFollowingCommandRepository>();
+            sc.AddScoped<IUserFollowingQueryRepository, UserFollowingQueryRepository>();
             return sc;
         }
 
@@ -108,6 +112,24 @@ namespace Persistence
                     await db.SaveChangesAsync(); ;
                 }
 
+                if (!db.UserFollowings.Any())
+                {
+                    db.UserFollowings.Add(new UserFollowing
+                    {
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        TargetId = "8e11ae52-8518-40ec-b70b-6011ca6edd56",
+                        ObserverId = "8e11ae52-8518-40ec-b70b-6011ca6edd63"
+                    });
+                    db.UserFollowings.Add(new UserFollowing
+                    {
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        TargetId = "8e11ae52-8518-40ec-b70b-6011ca6edd63",
+                        ObserverId = "8e11ae52-8518-40ec-b70b-6011ca6edd56"
+                    });
+                    await db.SaveChangesAsync();
+                }
             }
         }
     }

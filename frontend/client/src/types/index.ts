@@ -40,6 +40,8 @@ export type PhotoSchema = z.infer<typeof photoObject>;
 
 export const profileObject = z.object({
   ...userObject.shape,
+  followersCount: z.number(),
+  followingsCount: z.number(),
   photos: z.array(photoObject)
 });
 export type ProfileSchema = z.infer<typeof profileObject>;

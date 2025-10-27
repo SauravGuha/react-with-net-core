@@ -118,21 +118,21 @@ const activityAttendence = async function (data: AttendenceSchema) {
 }
 
 const profileDetails = async function (id: string) {
-    const result = await instance.get<ActivityResponse>(`activityaccount/ProfileDetails/${id}`);
+    const result = await instance.get<ActivityResponse>(`profile/Details/${id}`);
     return Array.isArray(result.data)
         ? result.data.value[0] as ProfileSchema
         : result.data.value
 }
 
 const userPhotos = async function (userId: string) {
-    const result = await instance.get<ActivityResponse>(`activityaccount/UserImages/${userId}`);
+    const result = await instance.get<ActivityResponse>(`profile/UserImages/${userId}`);
     return result.data.value as PhotoSchema[];
 }
 
 const uploadPhoto = async function (data: Blob) {
     const formdata = new FormData();
     formdata.append("userPhoto", data);
-    const result = await instance.post<ActivityResponse>(`activityaccount/UploadPhoto`, formdata, {
+    const result = await instance.post<ActivityResponse>(`profile/UploadPhoto`, formdata, {
         headers: {
             "Content-Type": "multipart/form-data"
         }
@@ -141,7 +141,21 @@ const uploadPhoto = async function (data: Blob) {
 }
 
 const deletePhoto = async function (id: string) {
-    await instance.delete(`activityaccount/DeleteImage?imageId=${id}`);
+    await instance.delete(`profile/DeleteImage?imageId=${id}`);
+}
+
+const updateFollowing = async function (targetId: string, isFollowing: boolean) {
+    await instance.post(`profile/FollowersUpdate?targetId=${targetId}&isFollowing=${isFollowing}`);
+}
+
+const currentUserFollowers = async function (userid: string) {
+    const result = await instance.get<ActivityResponse>(`profile/GetFollowers?userId=${userid}`);
+    return result.data.value as UserSchema[];
+}
+
+const currentUserFollowing = async function (userid: string) {
+    const result = await instance.get<ActivityResponse>(`profile/GetFollowers?userId=${userid}`);
+    return result.data.value as UserSchema[];
 }
 
 export {
@@ -150,5 +164,6 @@ export {
     userLogout, userDetails, userRegistration,
     activityAttendence, profileDetails,
     userPhotos, uploadPhoto,
-    deletePhoto
+    deletePhoto, updateFollowing,
+    currentUserFollowers, currentUserFollowing
 };

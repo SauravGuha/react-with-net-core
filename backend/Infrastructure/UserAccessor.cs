@@ -22,6 +22,10 @@ public class UserAccessor : IUserAccessor
         return user!;
     }
 
+    /// <summary>
+    /// Gets the login user details
+    /// </summary>
+    /// <returns></returns>
     public string GetUserId()
     {
         return this.userManager.GetUserId(this.httpAccessor.HttpContext.User)!;
