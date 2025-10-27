@@ -8,8 +8,7 @@ export default function ProfileHeader({ profileData }: { profileData: ProfileSch
 
     const { userData } = useAccountReactQuery();
     const { isUpdatingFollowing, followingUpdate, followers } = useProfileReactQuery(profileData.id);
-    const isFollowing = followers?.find(e => e.id == userData?.id);
-
+    const isFollowing = followers?.find(e => e.id == userData?.id) ?? false;
     return (
         <Paper elevation={3} sx={{ p: 3 }}>
             <Grid container>

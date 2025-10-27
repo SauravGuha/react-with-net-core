@@ -5,8 +5,11 @@ import type { UserSchema } from '../../types';
 import { Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ProfileCard from '../../features/profile/ProfileCard';
+import useProfileReactQuery from '../../hooks/useProfileReactQuery';
 
 export default function AvatarPopover({ userData }: { userData: UserSchema }) {
+    const { profileData } = useProfileReactQuery(userData.id);
+    console.log(profileData);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -45,7 +48,7 @@ export default function AvatarPopover({ userData }: { userData: UserSchema }) {
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <ProfileCard userData={userData} />
+                <ProfileCard userData={userData} followersCount={profileData?.followersCount} />
             </Popover>
         </div>
     );

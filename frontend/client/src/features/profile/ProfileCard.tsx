@@ -4,7 +4,7 @@ import { Box, Card, CardContent, CardMedia, Chip, Divider, Typography } from "@m
 import { Person } from "@mui/icons-material";
 
 
-export default function ProfileCard({ userData }: { userData: UserSchema }) {
+export default function ProfileCard({ userData, followersCount = 0 }: { userData: UserSchema, followersCount: number | undefined }) {
     const following = false;
 
     return (
@@ -24,7 +24,7 @@ export default function ProfileCard({ userData }: { userData: UserSchema }) {
                 <Divider sx={{ mb: 2 }} />
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
                     <Person />
-                    <Typography sx={{ ml: 1 }}>20 Followers</Typography>
+                    <Typography sx={{ ml: 1 }}>{followersCount} Followers</Typography>
                 </Box>
             </Card>
         </Link>

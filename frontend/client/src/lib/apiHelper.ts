@@ -121,7 +121,7 @@ const profileDetails = async function (id: string) {
     const result = await instance.get<ActivityResponse>(`profile/Details/${id}`);
     return Array.isArray(result.data)
         ? result.data.value[0] as ProfileSchema
-        : result.data.value
+        : null;
 }
 
 const userPhotos = async function (userId: string) {
