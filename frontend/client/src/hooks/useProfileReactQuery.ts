@@ -71,6 +71,11 @@ export default function useProfileReactQuery(id?: string) {
             await updateFollowing(data.targetId, data.isFollowing);
         }, onError: (err) => {
             console.error(err);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile", id] });
+            queryClient.invalidateQueries({ queryKey: ["user"] });
+            queryClient.invalidateQueries({ queryKey: ["followers", id] });
         }
     });
 
