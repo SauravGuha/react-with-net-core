@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Repository.ActivityRepository;
 using Persistence.Repository.AttendeesRepo;
+using Persistence.Repository.CommentRepository;
 using Persistence.Repository.PhotoRepository;
 
 namespace Persistence
@@ -25,6 +26,8 @@ namespace Persistence
             sc.AddScoped<IAttendeeQueryRepository, AttendeeQueryRepository>();
             sc.AddScoped<IPhotoCommandRepository, PhotoCommandRepository>();
             sc.AddScoped<IPhotoQueryRepository, PhotoQueryRepository>();
+            sc.AddScoped<ICommentCommandRepository, CommentCommandRepository>();
+            sc.AddScoped<ICommentQueryRepository, CommentQueryRepository>();
             return sc;
         }
 

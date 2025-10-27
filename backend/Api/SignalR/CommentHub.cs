@@ -27,7 +27,7 @@ namespace Api.SignalR
                 throw new HubException("Activity id not found");
             else
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, activityid!);
+                await Groups.AddToGroupAsync(Context.ConnectionId, activityid.ToString()!.ToLower());
 
                 var result = await mediator.Send(new CommentQueryRequest { ActivityId = activityid! });
 
@@ -42,7 +42,7 @@ namespace Api.SignalR
                 Comment = commentCommandViewModel
             });
 
-            await Clients.Group(commentCommandViewModel.ActivityId.ToString())
+            await Clients.Group(commentCommandViewModel.ActivityId.ToString().ToLower())
             .SendAsync(CommentAdded, result);
         }
     }

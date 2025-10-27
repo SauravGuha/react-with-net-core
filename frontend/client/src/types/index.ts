@@ -44,15 +44,6 @@ export const profileObject = z.object({
 });
 export type ProfileSchema = z.infer<typeof profileObject>;
 
-export const activityResponseObject = z.object({
-  "errorMessage": z.string().nullable(),
-  "value": z.union([z.array(activityObject), attendee, profileObject, photoObject])
-    .transform(val => Array.isArray(val) ? val : [val]),
-  "status": z.boolean(),
-  "errorCode": z.number().nullable()
-});
-export type ActivityResponse = z.infer<typeof activityResponseObject>;
-
 export type LocationIQ = {
   place_id: string
   osm_id: string
@@ -111,4 +102,24 @@ export const attendenceObject = z.object({
   "activityId": z.string()
 });
 export type AttendenceSchema = z.infer<typeof attendenceObject>
+
+export const chatComment = z.object({
+  id: z.string(),
+  createdAt: z.string(),
+  body: z.string(),
+  activityId: z.string(),
+  userId: z.string(),
+  displayName: z.string().optional(),
+  imageUrl: z.string().optional(),
+});
+export type ChatCommentSchema = z.infer<typeof chatComment>
+
+export const activityResponseObject = z.object({
+  "errorMessage": z.string().nullable(),
+  "value": z.union([z.array(activityObject), attendee, profileObject, photoObject, chatComment])
+    .transform(val => Array.isArray(val) ? val : [val]),
+  "status": z.boolean(),
+  "errorCode": z.number().nullable()
+});
+export type ActivityResponse = z.infer<typeof activityResponseObject>;
 
