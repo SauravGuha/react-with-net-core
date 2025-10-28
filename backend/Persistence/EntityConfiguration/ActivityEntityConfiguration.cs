@@ -13,6 +13,7 @@ namespace Persistence.EntityConfiguration
             builder.ToTable(nameof(Activity));
 
             builder.HasKey(e => e.Id);
+            builder.HasIndex(e => e.EventDate);
 
             builder.Property(e => e.CreatedAt)
             .HasColumnType("DATETIME")

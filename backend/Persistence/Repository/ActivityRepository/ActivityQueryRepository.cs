@@ -50,5 +50,20 @@ namespace Persistence.Repository.ActivityRepository
             return Task.FromResult(this.activityDbContext.Activities.Where(condition));
         }
 
+        public Task<IQueryable<Activity>> GetAllAsync(Expression<Func<Activity, bool>> condition,
+        Func<IQueryable<Activity>, IOrderedQueryable<Activity>>? orderBy, CancellationToken token)
+        {
+            var activityQuerable = this.activityDbContext.Activities.AsQueryable();
+            if (condition != null)
+            {
+                activityQuerable = activityQuerable.Where(condition);
+            }
+            if (orderBy != null)
+            {
+                activityQuerable = orderBy(activityQuerable);
+            }
+            return Task.FromResult(activityQuerable);
+        }
+
     }
 }

@@ -15,7 +15,6 @@ namespace Application.Activities.Query
 {
     public class ActivityQueryRequest : IRequest<Result<IEnumerable<ActivityViewModel>>>
     {
-        public string? Title { get; set; }
     }
 
     public class ActivityQueryRequestHandler : IRequestHandler<ActivityQueryRequest, Result<IEnumerable<ActivityViewModel>>>
@@ -52,11 +51,8 @@ namespace Application.Activities.Query
                 }
             }
 
-            // IEnumerable<Activity> result = await this.activityQueryRepository
-            //     .GetAllAsync(defaultFilter, cancellationToken);
-            // return Result<IEnumerable<ActivityViewModel>>.SetSuccess(mapper.Map<IEnumerable<ActivityViewModel>>(result)!);
-
-            var result = await this.activityQueryRepository.GetAllAsync(defaultFilter, cancellationToken);
+            Func<IQueryable<Activity>, IOrderedQueryable<Activity>> orderby = (q) => q.OrderByDescending(e => e.EventDate);
+            var result = await this.activityQueryRepository.GetAllAsync(defaultFilter, orderby, cancellationToken);
             var activities = await result.ProjectTo<ActivityViewModel>(mapper.ConfigurationProvider)
             .ToListAsync();
             return Result<IEnumerable<ActivityViewModel>>.SetSuccess(activities);

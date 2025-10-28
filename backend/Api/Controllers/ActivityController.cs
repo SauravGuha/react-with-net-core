@@ -11,9 +11,9 @@ namespace Api.Controllers
     public class ActivityController : BaseController
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllActivities([FromQuery] string? title, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllActivities(CancellationToken cancellationToken)
         {
-            var result = await this.Mediator.Send(new ActivityQueryRequest() { Title = title }, cancellationToken);
+            var result = await this.Mediator.Send(new ActivityQueryRequest() { }, cancellationToken);
             return this.ReturnResult(result);
         }
 
