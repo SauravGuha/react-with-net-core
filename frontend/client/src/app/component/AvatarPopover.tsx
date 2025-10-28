@@ -9,7 +9,6 @@ import useProfileReactQuery from '../../hooks/useProfileReactQuery';
 
 export default function AvatarPopover({ userData }: { userData: UserSchema }) {
     const { profileData } = useProfileReactQuery(userData.id);
-    console.log(profileData);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {

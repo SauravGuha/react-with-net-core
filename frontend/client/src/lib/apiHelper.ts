@@ -121,7 +121,7 @@ const profileDetails = async function (id: string) {
     const result = await instance.get<ActivityResponse>(`profile/Details/${id}`);
     return Array.isArray(result.data)
         ? result.data.value[0] as ProfileSchema
-        : null;
+        : result.data.value;
 }
 
 const userPhotos = async function (userId: string) {
@@ -154,7 +154,7 @@ const currentUserFollowers = async function (userid: string) {
 }
 
 const currentUserFollowing = async function (userid: string) {
-    const result = await instance.get<ActivityResponse>(`profile/GetFollowers?userId=${userid}`);
+    const result = await instance.get<ActivityResponse>(`profile/GetFollowing?userId=${userid}`);
     return result.data.value as UserSchema[];
 }
 

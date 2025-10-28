@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoading } from "./appDataContext";
-import { currentUserFollowers, deletePhoto, profileDetails, updateFollowing, uploadPhoto, userPhotos } from "../lib/apiHelper";
+import { currentUserFollowers, currentUserFollowing, deletePhoto, profileDetails, updateFollowing, uploadPhoto, userPhotos } from "../lib/apiHelper";
 import type { UserSchema } from "../types";
 import { useMemo } from "react";
 
@@ -95,6 +95,22 @@ export default function useProfileReactQuery(id?: string) {
         retry: false
     });
 
+    const { isPending: isGettingFollowings, data: followings } = useQuery({
+        queryKey: ["followings", id],
+        queryFn: async () => {
+            loading(true);
+            try {
+                return await currentUserFollowing(id!);
+            }
+            finally {
+                loading(false);
+            }
+        },
+        enabled: !(typeof (id) == "undefined"),
+        staleTime: 60 * 1000 * 1,
+        retry: false
+    });
+
     const isLoggedInUser = useMemo(() => {
         return id === queryClient.getQueryData<UserSchema>(["user"])?.id;
     }, [id, queryClient]);
@@ -105,6 +121,7 @@ export default function useProfileReactQuery(id?: string) {
         isUploading, profilePhotoUpload,
         isDeleting, profilePhotoDelete,
         isUpdatingFollowing, followingUpdate,
-        isGettingFollowers, followers
+        isGettingFollowers, followers,
+        isGettingFollowings, followings
     }
 }

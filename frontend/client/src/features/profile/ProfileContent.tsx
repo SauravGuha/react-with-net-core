@@ -1,20 +1,26 @@
 import { Box, Paper, Tab, Tabs } from "@mui/material";
 import { useState, type SyntheticEvent } from "react";
-import type { ProfileSchema } from "../../types";
+import type { ProfileSchema, UserSchema } from "../../types";
 import ProfilePhotos from "./ProfilePhotos";
+import ProfileFollowings from "./ProfileFollowings";
 
+type ProfileContentProps = {
+    profileData: ProfileSchema
+    followers: UserSchema[],
+    followings: UserSchema[]
+}
 
-export default function ProfileContent({ profileData }: { profileData: ProfileSchema }) {
+export default function ProfileContent({ profileData, followers, followings }: ProfileContentProps) {
     const [value, setValue] = useState(0);
     const tabContent = [
         { label: 'About', content: <div>About</div> },
         { label: 'Photos', content: <ProfilePhotos profileData={profileData} /> },
         { label: 'Events', content: <div>Events</div> },
-        { label: 'Followers', content: <div>Followers</div> },
-        { label: 'Following', content: <div>Following</div> }
+        { label: 'Followers', content: <ProfileFollowings profileData={profileData} followerfollowings={followers} tabIndex={3} /> },
+        { label: 'Following', content: <ProfileFollowings profileData={profileData} followerfollowings={followings} tabIndex={4} /> }
     ];
 
-    const handleChange = (event: SyntheticEvent, newValue: number) => {
+    const handleChange = (_: SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 

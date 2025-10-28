@@ -15,9 +15,11 @@ namespace Persistence.Repository.AttendeesRepo
 
         }
 
-        public Task<Domain.Models.Attendees> CreateAsync(Domain.Models.Attendees entity, CancellationToken token)
+        public async Task<Domain.Models.Attendees> CreateAsync(Domain.Models.Attendees entity, CancellationToken token)
         {
-            throw new NotImplementedException();
+            this.activityDbContext.Attendees.Add(entity);
+            await this.activityDbContext.SaveChangesAsync(token);
+            return entity;
         }
 
         public Task<int> DeleteAsync(Domain.Models.Attendees entity, CancellationToken token)

@@ -1,13 +1,19 @@
 import { Avatar, Box, Button, Chip, Divider, Grid, Paper, Stack, Typography } from "@mui/material";
-import type { ProfileSchema } from "../../types";
-import useProfileReactQuery from "../../hooks/useProfileReactQuery";
+import type { ProfileSchema, UserSchema } from "../../types";
 import useAccountReactQuery from "../../hooks/useAccountReactQuery";
 
+type ProfileHeaderProps = {
+    isUpdatingFollowing: boolean,
+    profileData: ProfileSchema,
+    followingUpdate: (data: { targetId: string, isFollowing: boolean }) => void,
+    followers: UserSchema[]
+}
 
-export default function ProfileHeader({ profileData }: { profileData: ProfileSchema }) {
+
+export default function ProfileHeader({ profileData,
+    isUpdatingFollowing, followingUpdate, followers }: ProfileHeaderProps) {
 
     const { userData } = useAccountReactQuery();
-    const { isUpdatingFollowing, followingUpdate, followers } = useProfileReactQuery(profileData.id);
     const isFollowing = followers?.find(e => e.id == userData?.id) ?? false;
     return (
         <Paper elevation={3} sx={{ p: 3 }}>
@@ -36,9 +42,11 @@ export default function ProfileHeader({ profileData }: { profileData: ProfileSch
                             </Box>
                         </Box>
                         <Divider sx={{ width: '100%' }} />
-                        <Button loading={isUpdatingFollowing} onClick={() => followingUpdate({ targetId: profileData.id, isFollowing: !isFollowing })} fullWidth variant="outlined" color={isFollowing ? 'error' : 'success'}>
+                        {userData?.id != profileData?.id ? <Button loading={isUpdatingFollowing}
+                            onClick={() => followingUpdate({ targetId: profileData.id, isFollowing: !isFollowing })}
+                            fullWidth variant="outlined" color={isFollowing ? 'error' : 'success'}>
                             {isFollowing ? 'Unfollow' : 'Follow'}
-                        </Button>
+                        </Button> : <></>}
                     </Stack>
                 </Grid>
             </Grid>

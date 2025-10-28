@@ -3,13 +3,12 @@ import type { UserSchema } from "../../types";
 import { Box, Card, CardContent, CardMedia, Chip, Divider, Typography } from "@mui/material";
 import { Person } from "@mui/icons-material";
 
-
 export default function ProfileCard({ userData, followersCount = 0 }: { userData: UserSchema, followersCount: number | undefined }) {
     const following = false;
 
     return (
         <Link to={`/profile/${userData.id}`} style={{ textDecoration: 'none' }}>
-            <Card sx={{ p: 3, maxWidth: 300, textDecoration: 'none' }} elevation={4}>
+            <Card sx={{ p: 3, maxWidth: 250, textDecoration: 'none' }} elevation={4}>
                 <CardMedia component='img'
                     src={userData.imageUrl || '/images/user.png'}
                     sx={{ width: 200, zIndex: 50 }}
