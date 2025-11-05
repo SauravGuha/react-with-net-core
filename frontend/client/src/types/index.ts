@@ -1,6 +1,11 @@
 
 import z from "zod";
 
+export type pagedList<TResult, TCursor> = {
+  result: TResult,
+  cursor: TCursor
+}
+
 export const userObject = z.object({
   "bio": z.string().optional(),
   "displayName": z.string(),
@@ -124,4 +129,11 @@ export const activityResponseObject = z.object({
   "errorCode": z.number().nullable()
 });
 export type ActivityResponse = z.infer<typeof activityResponseObject>;
+
+export type NewActivityResponse = {
+  "errorMessage": string | null,
+  "value": pagedList<Activity[], string | null>,
+  "status": boolean,
+  "errorCode": number | undefined
+}
 

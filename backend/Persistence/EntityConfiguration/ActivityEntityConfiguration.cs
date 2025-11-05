@@ -16,15 +16,15 @@ namespace Persistence.EntityConfiguration
             builder.HasIndex(e => e.EventDate);
 
             builder.Property(e => e.CreatedAt)
-            .HasColumnType("DATETIME")
+            .HasColumnType("DATETIME2")
             .IsRequired();
 
             builder.Property(e => e.UpdatedAt)
-            .HasColumnType("DATETIME")
+            .HasColumnType("DATETIME2")
             .IsRequired();
 
             builder.Property(e => e.EventDate)
-            .HasColumnType("DATETIME")
+            .HasColumnType("DATETIME2")
             .IsRequired();
 
             builder.Property(e => e.Title)

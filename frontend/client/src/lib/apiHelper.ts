@@ -1,5 +1,8 @@
 import axios from "axios";
-import type { Activity, ActivityResponse, attendeeSchema, AttendenceSchema, LoginSchema, PhotoSchema, ProfileSchema, RegistrationSchema, UserSchema } from "../types";
+import type {
+    Activity, ActivityResponse, attendeeSchema, AttendenceSchema,
+    LoginSchema, NewActivityResponse, pagedList, PhotoSchema, ProfileSchema, RegistrationSchema, UserSchema
+} from "../types";
 import { toast } from "react-toastify";
 import { router } from "../app/routes/router";
 
@@ -66,6 +69,16 @@ instance.interceptors.response.use(async (response) => {
     }
     return Promise.reject(error);
 });
+
+const getAllActivitiesByParam = async function (cursor?: string, limit?: string) {
+    const result = await instance.get<NewActivityResponse>("activity/getallactivities", {
+        params: {
+            "eventDate": cursor,
+            "limit": limit
+        }
+    })
+    return result.data.value as pagedList<Activity[], string | null>;
+}
 
 const getallactivities = async function <T>() {
     const result = await instance.get<ActivityResponse>("activity/getallactivities");
@@ -165,5 +178,6 @@ export {
     activityAttendence, profileDetails,
     userPhotos, uploadPhoto,
     deletePhoto, updateFollowing,
-    currentUserFollowers, currentUserFollowing
+    currentUserFollowers, currentUserFollowing,
+    getAllActivitiesByParam
 };

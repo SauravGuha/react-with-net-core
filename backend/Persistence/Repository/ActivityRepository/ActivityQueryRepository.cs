@@ -51,16 +51,21 @@ namespace Persistence.Repository.ActivityRepository
         }
 
         public Task<IQueryable<Activity>> GetAllAsync(Expression<Func<Activity, bool>> condition,
-        Func<IQueryable<Activity>, IOrderedQueryable<Activity>>? orderBy, CancellationToken token)
+        Func<IQueryable<Activity>, IOrderedQueryable<Activity>>? orderBy, int? take, CancellationToken token)
         {
             var activityQuerable = this.activityDbContext.Activities.AsQueryable();
             if (condition != null)
             {
                 activityQuerable = activityQuerable.Where(condition);
+                //activityQuerable = activityQuerable.Where(e => e.EventDate < DateTime.Parse("2025-11-28T15:14:00", System.Globalization.CultureInfo.InvariantCulture));
             }
             if (orderBy != null)
             {
                 activityQuerable = orderBy(activityQuerable);
+            }
+            if (take != null)
+            {
+                activityQuerable = activityQuerable.Take(take.Value);
             }
             return Task.FromResult(activityQuerable);
         }

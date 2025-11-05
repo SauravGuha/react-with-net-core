@@ -14,11 +14,11 @@ namespace Persistence.EntityConfiguration
 
             builder.HasKey(e => e.Id);
             builder.Property(e => e.CreatedAt)
-            .HasColumnType("DATETIME")
+            .HasColumnType("DATETIME2")
             .IsRequired();
 
             builder.Property(e => e.CreatedAt)
-            .HasColumnType("DATETIME")
+            .HasColumnType("DATETIME2")
             .IsRequired();
 
             builder.Property(e => e.Body)

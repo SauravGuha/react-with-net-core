@@ -11,6 +11,7 @@ namespace Domain.Repositories.ActivityRepository
 
         Task<IQueryable<Activity>> GetAllAsync(Expression<Func<Activity, bool>> condition,
         Func<IQueryable<Activity>, IOrderedQueryable<Activity>>? orderBy,
+        int? take,
         CancellationToken token);
     }
 }

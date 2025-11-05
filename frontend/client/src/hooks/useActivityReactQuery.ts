@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { activityAttendence, createActivity, deleteActivity, getActivityByid, getallactivities, updateActivity } from "../lib/apiHelper";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { activityAttendence, createActivity, deleteActivity, getActivityByid, getAllActivitiesByParam, updateActivity } from "../lib/apiHelper";
 import { useLoading } from "./appDataContext";
 import useAccountReactQuery from "./useAccountReactQuery";
 import { useLocation } from "react-router-dom";
@@ -13,22 +13,41 @@ export default function useActivityReactQuery(id?: string) {
     const { userData } = useAccountReactQuery();
     const location = useLocation();
 
-    const { isPending, isError, data: activities, error } = useQuery({
+    const { isPending, isError, data: activitiesGroup, error, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery({
         queryKey: ["activities"],
-        queryFn: async () => {
+        queryFn: async ({ pageParam }: { pageParam?: string }) => {
             loading(true);
             try {
-                const result = await getallactivities<Activity[]>();
+                const result = await getAllActivitiesByParam(pageParam);
                 return result;
             }
             finally {
                 loading(false);
             }
         },
+        initialPageParam: undefined,
+        getNextPageParam: (result) => result.cursor,
         enabled: () => (typeof (id) == "undefined") && location.pathname == "/activities" && !!userData,
         staleTime: 1 * 1000 * 60,
         retry: false
     });
+
+    // const { isPending, isError, data: activities, error } = useQuery({
+    //     queryKey: ["activities"],
+    //     queryFn: async () => {
+    //         loading(true);
+    //         try {
+    //             const result = await getallactivities<{ result: Activity[] }>();
+    //             return result;
+    //         }
+    //         finally {
+    //             loading(false);
+    //         }
+    //     },
+    //     enabled: () => (typeof (id) == "undefined") && location.pathname == "/activities" && !!userData,
+    //     staleTime: 1 * 1000 * 60,
+    //     retry: false
+    // });
 
     const { isPending: isGettingActivity, data: activity } = useQuery({
         queryKey: ["activity", id],
@@ -98,7 +117,7 @@ export default function useActivityReactQuery(id?: string) {
     });
 
     return {
-        isPending, isError, activities, error,
+        isPending, isError, activitiesGroup, error, isFetchingNextPage, fetchNextPage, hasNextPage,
         isUpdating, activityUpdate,
         isCreating, activityCreate,
         isDeleting, activityDelete,
