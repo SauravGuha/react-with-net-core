@@ -1,16 +1,18 @@
 import { Group } from "@mui/icons-material";
-import { AppBar, Box, Container, MenuItem, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, CircularProgress, Container, MenuItem, Toolbar, Typography } from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
 import useAccountReactQuery from "../../hooks/useAccountReactQuery";
 import UserMenu from "./UserMenu";
+import { useLoading } from "../../hooks/appDataContext";
 
 
 export default function NavBar() {
     const { userData } = useAccountReactQuery();
+    const { isLoading } = useLoading();
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="fixed">
                 <Container maxWidth='xl'>
                     <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
                         <Box sx={{ display: "flex" }}>
@@ -18,6 +20,7 @@ export default function NavBar() {
                                 <Group fontSize="large" />
                                 <Typography variant="h4" fontWeight='bold'>Reactivities</Typography>
                             </MenuItem>
+                            {isLoading ? <CircularProgress size={20} thickness={7} sx={{ color: 'white', alignItems:'center' }} /> : <></>}
                         </Box>
                         <Box sx={{ display: "flex" }}>
                             <MenuItem component={NavLink} to="/activities"
