@@ -18,7 +18,7 @@ export default function useActivityReactQuery(id?: string) {
         queryFn: async ({ pageParam }: { pageParam?: string }) => {
             loading(true);
             try {
-                const result = await getAllActivitiesByParam(pageParam, "3");
+                const result = await getAllActivitiesByParam(pageParam, "4");
                 return result;
             }
             finally {

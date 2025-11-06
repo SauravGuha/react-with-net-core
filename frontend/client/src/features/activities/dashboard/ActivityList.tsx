@@ -2,12 +2,22 @@ import { Box, Typography } from "@mui/material"
 import ActivityCard from "./ActivityCard"
 import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import useAccountReactQuery from "../../../hooks/useAccountReactQuery";
-import { Fragment } from "react/jsx-runtime";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 
 export default function ActivityList() {
-    const { activitiesGroup, isPending } = useActivityReactQuery();
+    const { activitiesGroup, isPending, fetchNextPage, hasNextPage } = useActivityReactQuery();
     const { userData } = useAccountReactQuery();
+    const { ref, inView } = useInView({
+        threshold: 0.5
+    });
+
+    useEffect(() => {
+        if (inView && hasNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, fetchNextPage]);
 
     if (isPending && !activitiesGroup) return <></>
 
@@ -19,9 +29,20 @@ export default function ActivityList() {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {
                 activitiesGroup!.pages.map((item, index) => {
-                    return (<Fragment key={index}>
-                        {item.result.map(act => <ActivityCard key={act.id} activity={act} userData={userData} />)}
-                    </Fragment>)
+                    return (
+                        <Box
+                            display='flex'
+                            flexDirection='column'
+                            gap={2}
+                            key={index}>
+                            {item.result.map((act, index) =>
+                                <Box ref={index == item.result.length - 1 ? ref : null}>
+                                    <ActivityCard key={act.id} activity={act} userData={userData} />
+                                </Box>
+                            )
+                            }
+                        </Box>
+                    )
                 })
             }
         </Box>
