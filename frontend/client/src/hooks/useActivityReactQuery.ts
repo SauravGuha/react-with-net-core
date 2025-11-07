@@ -18,7 +18,7 @@ export default function useActivityReactQuery(id?: string) {
         queryFn: async ({ pageParam }: { pageParam?: string }) => {
             loading(true);
             try {
-                const result = await getAllActivitiesByParam(pageParam, "4");
+                const result = await getAllActivitiesByParam(pageParam);
                 return result;
             }
             finally {
@@ -27,7 +27,7 @@ export default function useActivityReactQuery(id?: string) {
         },
         initialPageParam: undefined,
         getNextPageParam: (result) => result.cursor,
-        enabled: () => (typeof (id) == "undefined") && location.pathname == "/activities" && !!userData,
+        enabled: (typeof id == "undefined") && location.pathname == "/activities" && !!userData,
         staleTime: 1 * 1000 * 60,
         retry: false
     });
@@ -61,7 +61,7 @@ export default function useActivityReactQuery(id?: string) {
                 loading(false);
             }
         },
-        enabled: () => !(typeof (id) == "undefined") && !!userData,
+        enabled: !(typeof (id) == "undefined") && !!userData,
         staleTime: 1 * 1000 * 60,
         retry: false
     });

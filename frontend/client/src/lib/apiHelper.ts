@@ -73,7 +73,7 @@ instance.interceptors.response.use(async (response) => {
 const getAllActivitiesByParam = async function (cursor?: string, limit?: string) {
     const result = await instance.get<NewActivityResponse>("activity/getallactivities", {
         params: {
-            "eventDate": cursor,
+            "cursor": cursor,
             "limit": limit
         }
     })

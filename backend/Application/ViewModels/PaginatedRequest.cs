@@ -6,7 +6,7 @@ namespace Application.ViewModels
     {
         public T? Cursor { get; set; }
 
-        private int limit = 10;
+        private int limit = 5;
         public int? Limit
         {
             get { return limit; }

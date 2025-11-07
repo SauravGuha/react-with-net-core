@@ -1,11 +1,11 @@
 
-using System.Collections;
 using System.Globalization;
 using System.Linq.Expressions;
 using Application.Core;
 using Application.ViewModels;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain.Infrastructure;
 using Domain.Models;
 using Domain.Repositories.ActivityRepository;
 using MediatR;
@@ -25,10 +25,12 @@ namespace Application.Activities.Query
         private readonly IActivityQueryRepository activityQueryRepository;
         private readonly IMapper mapper;
         private readonly ILogger<ActivityQueryRequestHandler> logger;
+        private readonly IUserAccessor userAccessor;
 
         public ActivityQueryRequestHandler(IActivityQueryRepository activityQueryRepository,
-        IMapper mapper, ILogger<ActivityQueryRequestHandler> logger)
+        IMapper mapper, ILogger<ActivityQueryRequestHandler> logger, IUserAccessor userAccessor)
         {
+            this.userAccessor = userAccessor;
             this.logger = logger;
             this.mapper = mapper;
             this.activityQueryRepository = activityQueryRepository;
@@ -58,14 +60,18 @@ namespace Application.Activities.Query
 
             if (requestObject.FilterBy != null)
             {
+                var user = await userAccessor.GetUserAsync();
                 if (requestObject.FilterBy.Contains("going", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    //activityQuerable.Where(e => e.EventDate < DateTime.UtcNow && e.Attendees.Any(a => a.IsHost == true));
+                    //activityQuerable.Where(e => e.EventDate < DateTime.UtcNow && e.Attendees.Any(a => a.IsHost == true && a.UserId == "user guid"));
                     var attendeePropExp = Expression.PropertyOrField(parameter, nameof(Activity.Attendees));
                     var attendeeParameter = Expression.Parameter(typeof(Domain.Models.Attendees), "at");
-                    var attendeeLeftPart = Expression.PropertyOrField(attendeeParameter, nameof(Domain.Models.Attendees.IsHost));
+                    var attendeeLeftPart = Expression.PropertyOrField(attendeeParameter, nameof(Domain.Models.Attendees.IsAttending));
                     var attendeeRightPart = Expression.Constant(true);
                     var attendeeCondition = Expression.Equal(attendeeLeftPart, attendeeRightPart);
+                    var userProp = Expression.PropertyOrField(attendeeParameter, nameof(Domain.Models.Attendees.UserId));
+                    var userValueConstant = Expression.Constant(user.Id, typeof(string));
+                    attendeeCondition = Expression.AndAlso(attendeeCondition, Expression.Equal(userProp, userValueConstant));
                     var innerLambda = Expression.Lambda(attendeeCondition, attendeeParameter);
 
                     var anyMethod = typeof(Enumerable)

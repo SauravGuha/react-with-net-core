@@ -28,20 +28,20 @@ export default function ActivityList() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {
-                activitiesGroup!.pages.map((item, index) => {
+                activitiesGroup!.pages.map((item) => {
                     return (
-                        <Box
-                            display='flex'
-                            flexDirection='column'
-                            gap={2}
-                            key={index}>
+                        <>
                             {item.result.map((act, index) =>
-                                <Box ref={index == item.result.length - 1 ? ref : null}>
-                                    <ActivityCard key={act.id} activity={act} userData={userData} />
+                                <Box display='flex'
+                                    flexDirection='column'
+                                    gap={2}
+                                    key={act.id}
+                                    ref={index == item.result.length - 1 ? ref : null}>
+                                    <ActivityCard activity={act} userData={userData} />
                                 </Box>
                             )
                             }
-                        </Box>
+                        </>
                     )
                 })
             }
