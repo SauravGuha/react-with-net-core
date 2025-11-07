@@ -11,12 +11,19 @@ namespace Api.Controllers
     public class ActivityController : BaseController
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllActivities([FromQuery] string? eventDate, [FromQuery] int? limit, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllActivities([FromQuery] string? eventDate,
+        [FromQuery] int? limit,
+        [FromQuery] string? filterBy,
+        CancellationToken cancellationToken)
         {
-            var result = await this.Mediator.Send(new ActivityQueryRequest()
+            var result = await this.Mediator.Send(new ActivityQueryRequest
             {
-                EventDate = eventDate,
-                Limit = limit
+                ActivityPaginatedRequest = new ActivityPaginatedRequest
+                {
+                    Cursor = eventDate,
+                    Limit = limit,
+                    FilterBy = filterBy
+                }
             }, cancellationToken);
             return this.ReturnResult(result);
         }

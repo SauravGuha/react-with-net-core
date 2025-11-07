@@ -58,6 +58,7 @@ namespace Persistence.Repository.ActivityRepository
             {
                 activityQuerable = activityQuerable.Where(condition);
                 //activityQuerable = activityQuerable.Where(e => e.EventDate < DateTime.Parse("2025-11-28T15:14:00", System.Globalization.CultureInfo.InvariantCulture));
+                //activityQuerable.Where(e => e.EventDate < DateTime.UtcNow && e.Attendees.Any(a => a.IsHost == true));
             }
             if (orderBy != null)
             {
