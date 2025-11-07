@@ -1,4 +1,5 @@
 
+using System.Collections;
 using System.Globalization;
 using System.Linq.Expressions;
 using Application.Core;
@@ -57,7 +58,25 @@ namespace Application.Activities.Query
 
             if (requestObject.FilterBy != null)
             {
-                
+                if (requestObject.FilterBy.Contains("going", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    //activityQuerable.Where(e => e.EventDate < DateTime.UtcNow && e.Attendees.Any(a => a.IsHost == true));
+                    var attendeePropExp = Expression.PropertyOrField(parameter, nameof(Activity.Attendees));
+                    var attendeeParameter = Expression.Parameter(typeof(Domain.Models.Attendees), "at");
+                    var attendeeLeftPart = Expression.PropertyOrField(attendeeParameter, nameof(Domain.Models.Attendees.IsHost));
+                    var attendeeRightPart = Expression.Constant(true);
+                    var attendeeCondition = Expression.Equal(attendeeLeftPart, attendeeRightPart);
+                    var innerLambda = Expression.Lambda(attendeeCondition, attendeeParameter);
+
+                    var anyMethod = typeof(Enumerable)
+    .GetMethods()
+    .Single(m => m.Name == nameof(Enumerable.Any)
+                 && m.GetParameters().Length == 2
+                 && m.GetParameters()[1].ParameterType.GetGenericTypeDefinition() == typeof(Func<,>))
+                    .MakeGenericMethod(typeof(Domain.Models.Attendees));
+                    var anyCall = Expression.Call(anyMethod, attendeePropExp, innerLambda);
+                    defaultCondition = Expression.AndAlso(defaultCondition, anyCall);
+                }
             }
 
             // foreach (var prop in requestType.GetProperties())

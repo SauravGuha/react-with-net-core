@@ -6,6 +6,6 @@ namespace Application.ViewModels
     {
         public string? FilterBy { get; set; }
 
-        public string? FilterDate { get; set; } = DateTime.UtcNow.ToString("o");
+        public string? FilterDate { get; set; }
     }
 }
