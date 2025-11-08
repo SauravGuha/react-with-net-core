@@ -4,13 +4,11 @@ import useActivityReactQuery from "../../../hooks/useActivityReactQuery";
 import useAccountReactQuery from "../../../hooks/useAccountReactQuery";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import { useFilterContext } from "../../../hooks/appDataContext";
 
-type ActivityListProps = {
-    filterBy: string | undefined;
-    filterDate: string | undefined;
-}
 
-export default function ActivityList({ filterBy, filterDate }: ActivityListProps) {
+export default function ActivityList() {
+    const { filterBy, filterDate } = useFilterContext();
     const { activitiesGroup, isPending, fetchNextPage, hasNextPage } = useActivityReactQuery(undefined, filterBy, filterDate);
     const { userData } = useAccountReactQuery();
     const { ref, inView } = useInView({

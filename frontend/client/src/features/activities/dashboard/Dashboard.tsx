@@ -4,6 +4,7 @@ import ActivityList from "./ActivityList"
 import ActivityFilters from "./ActivityFilters"
 import { useState } from "react"
 import { eventDateInUtcFormat } from "../../../lib/common";
+import { FilterContext } from "../../../hooks/appDataContext";
 
 
 export default function Dashboard() {
@@ -20,27 +21,33 @@ export default function Dashboard() {
         }
     }
 
-    function onFilterDateChanged(value: any) {
-        const selectedFilterDate = eventDateInUtcFormat(value);
+    function onFilterDateChanged(value: unknown) {
+        const selectedFilterDate = eventDateInUtcFormat(value as string);
         setFilterDate(selectedFilterDate);
     }
 
     return (
         <>
-            <Grid container spacing={2}>
-                <Grid size={8}>
-                    <ActivityList filterBy={filterBy} filterDate={filterDate} />
+            <FilterContext.Provider
+                value={{
+                    filterBy, changeFilterBy: onFilterChanged,
+                    filterDate, changeFilterDate: onFilterDateChanged
+                }}>
+                <Grid container spacing={2}>
+                    <Grid size={8}>
+                        <ActivityList />
+                    </Grid>
+                    <Grid
+                        size={4}
+                        sx={{
+                            position: 'sticky',
+                            alignSelf: 'flex-start',
+                            top: 75
+                        }}>
+                        <ActivityFilters />
+                    </Grid>
                 </Grid>
-                <Grid
-                    size={4}
-                    sx={{
-                        position: 'sticky',
-                        alignSelf: 'flex-start',
-                        top: 75
-                    }}>
-                    <ActivityFilters filterChanged={onFilterChanged} filterDateChanged={onFilterDateChanged} />
-                </Grid>
-            </Grid>
+            </FilterContext.Provider>
         </>
     )
 }

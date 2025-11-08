@@ -25,4 +25,21 @@ const useLoading = function () {
     }
 }
 
-export { useActivityContext, ActivityContext, useLoading, LoadingContext };
+const FilterContext = createContext<{
+    filterDate: string | undefined,
+    changeFilterDate: (value: unknown) => void,
+    filterBy: string | undefined,
+    changeFilterBy: (value: string) => void
+} | undefined>(undefined);
+
+const useFilterContext = () => {
+    const context = useContext(FilterContext);
+    if (context) {
+        return context;
+    }
+    else {
+        throw new Error("filterContext doesn't have data");
+    }
+}
+
+export { useActivityContext, ActivityContext, useLoading, LoadingContext, useFilterContext, FilterContext };

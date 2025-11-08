@@ -3,13 +3,10 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { useFilterContext } from "../../../hooks/appDataContext";
 
-type ActivityFiltersProps = {
-    filterChanged: (value: string) => void
-    filterDateChanged: (value: any) => void
-}
-
-export default function ActivityFilters({ filterChanged, filterDateChanged }: ActivityFiltersProps) {
+export default function ActivityFilters() {
+    const { changeFilterBy, changeFilterDate } = useFilterContext();
     return (
         <Box sx={{ display: "flex", flexDirection: 'column', gap: 3 }}>
             <Paper sx={{ p: 3 }}>
@@ -20,13 +17,13 @@ export default function ActivityFilters({ filterChanged, filterDateChanged }: Ac
                     </Typography>
                     <MenuList>
                         <MenuItem>
-                            <ListItemText onClick={() => filterChanged("All events")} primary="All events" />
+                            <ListItemText onClick={() => changeFilterBy("All events")} primary="All events" />
                         </MenuItem>
                         <MenuItem>
-                            <ListItemText onClick={() => filterChanged("I am going")} primary="I am going" />
+                            <ListItemText onClick={() => changeFilterBy("I am going")} primary="I am going" />
                         </MenuItem>
                         <MenuItem>
-                            <ListItemText onClick={() => filterChanged("I am hosting")} primary="I am hosting" />
+                            <ListItemText onClick={() => changeFilterBy("I am hosting")} primary="I am hosting" />
                         </MenuItem>
                     </MenuList>
                 </Box>
@@ -36,7 +33,7 @@ export default function ActivityFilters({ filterChanged, filterDateChanged }: Ac
                     <CalendarTodayIcon sx={{ mr: 1 }} />
                     Select Date
                 </Typography>
-                <Calendar onChange={(value) => filterDateChanged(value)} />
+                <Calendar onChange={(value) => changeFilterDate(value!)} />
             </Box>
         </Box>
     )
