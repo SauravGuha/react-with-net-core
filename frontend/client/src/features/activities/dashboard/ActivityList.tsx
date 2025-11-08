@@ -28,15 +28,15 @@ export default function ActivityList() {
     if (!isPending && activitiesGroup && activitiesGroup.pages.length == 0) return <Typography variant="h3">No activity found</Typography>
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        <>
             {
                 activitiesGroup!.pages.map((item, index) => {
                     return (
-                        <Box key={index}>
+                        <Box key={index} display='flex'
+                            flexDirection='column'
+                            gap={2}>
                             {item.result.map((act, index) =>
-                                <Box display='flex'
-                                    flexDirection='column'
-                                    gap={2}
+                                <Box
                                     key={act.id}
                                     ref={index == item.result.length - 1 ? ref : null}>
                                     <ActivityCard activity={act} userData={userData} />
@@ -47,6 +47,6 @@ export default function ActivityList() {
                     )
                 })
             }
-        </Box>
+        </>
     )
 }
