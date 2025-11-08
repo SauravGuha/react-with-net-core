@@ -3,6 +3,7 @@ import { useState, type SyntheticEvent } from "react";
 import type { ProfileSchema, UserSchema } from "../../types";
 import ProfilePhotos from "./ProfilePhotos";
 import ProfileFollowings from "./ProfileFollowings";
+import ProfileEvent from "./ProfileEvent";
 
 type ProfileContentProps = {
     profileData: ProfileSchema
@@ -15,7 +16,7 @@ export default function ProfileContent({ profileData, followers, followings }: P
     const tabContent = [
         { label: 'About', content: <div>About</div> },
         { label: 'Photos', content: <ProfilePhotos profileData={profileData} /> },
-        { label: 'Events', content: <div>Events</div> },
+        { label: 'Events', content: <ProfileEvent userId={profileData.id} /> },
         { label: 'Followers', content: <ProfileFollowings profileData={profileData} followerfollowings={followers} tabIndex={3} /> },
         { label: 'Following', content: <ProfileFollowings profileData={profileData} followerfollowings={followings} tabIndex={4} /> }
     ];

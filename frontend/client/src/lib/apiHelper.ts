@@ -1,6 +1,7 @@
 import axios from "axios";
 import type {
     Activity, ActivityResponse, attendeeSchema, AttendenceSchema,
+    EventType,
     LoginSchema, NewActivityResponse, pagedList, PhotoSchema, ProfileSchema, RegistrationSchema, UserSchema
 } from "../types";
 import { toast } from "react-toastify";
@@ -173,6 +174,11 @@ const currentUserFollowing = async function (userid: string) {
     return result.data.value as UserSchema[];
 }
 
+const getUserEvents = async function (userId: string, filter: string) {
+    const result = await instance.get<ActivityResponse>(`activity/GetEvents?userid=${userId}&filter=${filter}`);
+    return result.data.value as EventType[];
+}
+
 export {
     getallactivities, updateActivity, createActivity,
     deleteActivity, getActivityByid, userLogin,
@@ -181,5 +187,5 @@ export {
     userPhotos, uploadPhoto,
     deletePhoto, updateFollowing,
     currentUserFollowers, currentUserFollowing,
-    getAllActivitiesByParam
+    getAllActivitiesByParam, getUserEvents
 };

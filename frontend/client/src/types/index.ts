@@ -137,3 +137,10 @@ export type NewActivityResponse = {
   "errorCode": number | undefined
 }
 
+export type EventType = {
+  "title": string,
+  "description": string,
+  "eventDate": string,
+  "category": string
+}
+
