@@ -1,0 +1,34 @@
+
+
+using Domain.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Persistence.EntityConfiguration;
+
+namespace Persistence
+{
+    public class ActivityDbContext : IdentityDbContext<User>
+    {
+        public ActivityDbContext(DbContextOptions<ActivityDbContext> options) : base(options)
+        {
+        }
+
+        public DbSet<Activity> Activities { get; set; }
+
+        public DbSet<User> ActivityUser { get; set; }
+
+        public DbSet<Attendees> Attendees { get; set; }
+
+        public DbSet<Photo> Photos { get; set; }
+
+        public DbSet<Comment> Comments { get; set; }
+
+        public DbSet<UserFollowing> UserFollowings { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ActivityEntityConfiguration).Assembly);
+            base.OnModelCreating(modelBuilder);
+        }
+    }
+}

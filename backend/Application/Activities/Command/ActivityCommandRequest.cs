@@ -1,0 +1,81 @@
+
+
+using System.Net;
+using Application.Core;
+using Application.ViewModels;
+using AutoMapper;
+using Domain.Infrastructure;
+using Domain.Models;
+using Domain.Repositories.ActivityRepository;
+using MediatR;
+
+namespace Application.Activities.Command
+{
+    public class ActivityCommandRequest : IRequest<Result<IEnumerable<ActivityViewModel>>>
+    {
+        public Guid? Id { get; set; }
+        public required ActivityCommandViewModel Activity { get; set; }
+    }
+
+    public class ActivityCommandRequestHandler : IRequestHandler<ActivityCommandRequest, Result<IEnumerable<ActivityViewModel>>>
+    {
+        private readonly IActivityCommandRepository activityCommand;
+        private readonly IActivityQueryRepository activityQueryRepository;
+        private readonly IUserAccessor userAccessor;
+        private readonly IMapper mapper;
+        public ActivityCommandRequestHandler(IActivityCommandRepository activityCommand, IMapper mapper,
+        IActivityQueryRepository activityQueryRepository, IUserAccessor userAccessor)
+        {
+            this.mapper = mapper;
+            this.activityCommand = activityCommand;
+            this.activityQueryRepository = activityQueryRepository;
+            this.userAccessor = userAccessor;
+        }
+        public async Task<Result<IEnumerable<ActivityViewModel>>> Handle(ActivityCommandRequest request, CancellationToken cancellationToken)
+        {
+            var user = await userAccessor.GetUserAsync();
+            var result = new List<ActivityViewModel>();
+            //add
+            if (request.Id == null)
+            {
+                var entity = mapper.Map<Activity>(request.Activity);
+                var activities = await this.activityQueryRepository.GetAllAsync(e => e.EventDate.DayOfYear == entity!.EventDate.DayOfYear
+                && e.Category.ToLower() == entity.Category.ToLower() && e.Venue.ToLower() == entity.Venue.ToString()
+                && e.City.ToLower() == entity.City.ToLower(),
+                 cancellationToken);
+                if (activities.Any())
+                    return Result<IEnumerable<ActivityViewModel>>.SetError("Cannot create event on the same date, same venue",
+                    (int)HttpStatusCode.Conflict);
+                else
+                {
+                    entity!.Attendees.Add(new Domain.Models.Attendees
+                    {
+                        IsHost = true,
+                        IsAttending = true,
+                        UserId = user!.Id,
+                        ActivityId = entity.Id,
+                        CreatedBy = user!.Email,
+                        UpdatedBy = user!.Email
+                    });
+                    var newActivity = await activityCommand.CreateAsync(entity!, cancellationToken);
+                    result.Add(mapper.Map<ActivityViewModel>(newActivity!)!);
+                }
+            }
+            //update
+            else
+            {
+                var activity = await this.activityQueryRepository.GetById(request.Id.GetValueOrDefault(), cancellationToken);
+                if (activity == null)
+                    return Result<IEnumerable<ActivityViewModel>>.SetError($"{request.Id} not found", (int)HttpStatusCode.NotFound);
+                else
+                {
+                    mapper.Map(request.Activity, activity);
+                    await activityCommand.UpdateAsync(activity!, cancellationToken);
+                    result.Add(mapper.Map<ActivityViewModel>(activity!)!);
+                }
+            }
+
+            return Result<IEnumerable<ActivityViewModel>>.SetSuccess(result);
+        }
+    }
+}

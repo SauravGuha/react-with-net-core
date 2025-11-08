@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
-    public class HomeController : ControllerBase
+    [AllowAnonymous]
+    public class HomeController : BaseController
     {
         [HttpGet]
         public IActionResult Index()
