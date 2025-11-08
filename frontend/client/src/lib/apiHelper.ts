@@ -70,11 +70,13 @@ instance.interceptors.response.use(async (response) => {
     return Promise.reject(error);
 });
 
-const getAllActivitiesByParam = async function (cursor?: string, limit?: string) {
+const getAllActivitiesByParam = async function (cursor?: string, limit?: string, filterBy?: string, filterDate?: string) {
     const result = await instance.get<NewActivityResponse>("activity/getallactivities", {
         params: {
             "cursor": cursor,
-            "limit": limit
+            "limit": limit,
+            "filterBy": filterBy,
+            "filterDate": filterDate
         }
     })
     return result.data.value as pagedList<Activity[], string | null>;

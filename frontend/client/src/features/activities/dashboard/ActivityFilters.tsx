@@ -4,7 +4,12 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-export default function ActivityFilters() {
+type ActivityFiltersProps = {
+    filterChanged: (value: string) => void
+    filterDateChanged: (value: any) => void
+}
+
+export default function ActivityFilters({ filterChanged, filterDateChanged }: ActivityFiltersProps) {
     return (
         <Box sx={{ display: "flex", flexDirection: 'column', gap: 3 }}>
             <Paper sx={{ p: 3 }}>
@@ -15,13 +20,13 @@ export default function ActivityFilters() {
                     </Typography>
                     <MenuList>
                         <MenuItem>
-                            <ListItemText primary="All events" />
+                            <ListItemText onClick={() => filterChanged("All events")} primary="All events" />
                         </MenuItem>
                         <MenuItem>
-                            <ListItemText primary="I am going" />
+                            <ListItemText onClick={() => filterChanged("I am going")} primary="I am going" />
                         </MenuItem>
                         <MenuItem>
-                            <ListItemText primary="I am hosting" />
+                            <ListItemText onClick={() => filterChanged("I am hosting")} primary="I am hosting" />
                         </MenuItem>
                     </MenuList>
                 </Box>
@@ -31,7 +36,7 @@ export default function ActivityFilters() {
                     <CalendarTodayIcon sx={{ mr: 1 }} />
                     Select Date
                 </Typography>
-                <Calendar />
+                <Calendar onChange={(value) => filterDateChanged(value)} />
             </Box>
         </Box>
     )

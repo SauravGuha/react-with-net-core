@@ -61,28 +61,28 @@ namespace Application.Activities.Query
             if (requestObject.FilterBy != null)
             {
                 var user = await userAccessor.GetUserAsync();
-                if (requestObject.FilterBy.Contains("going", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    //activityQuerable.Where(e => e.EventDate < DateTime.UtcNow && e.Attendees.Any(a => a.IsHost == true && a.UserId == "user guid"));
-                    var attendeePropExp = Expression.PropertyOrField(parameter, nameof(Activity.Attendees));
-                    var attendeeParameter = Expression.Parameter(typeof(Domain.Models.Attendees), "at");
-                    var attendeeLeftPart = Expression.PropertyOrField(attendeeParameter, nameof(Domain.Models.Attendees.IsAttending));
-                    var attendeeRightPart = Expression.Constant(true);
-                    var attendeeCondition = Expression.Equal(attendeeLeftPart, attendeeRightPart);
-                    var userProp = Expression.PropertyOrField(attendeeParameter, nameof(Domain.Models.Attendees.UserId));
-                    var userValueConstant = Expression.Constant(user.Id, typeof(string));
-                    attendeeCondition = Expression.AndAlso(attendeeCondition, Expression.Equal(userProp, userValueConstant));
-                    var innerLambda = Expression.Lambda(attendeeCondition, attendeeParameter);
+                //activityQuerable.Where(e => e.EventDate < DateTime.UtcNow && e.Attendees.Any(a => a.IsAttending == true && a.UserId == "user guid"));
+                var attendeePropExp = Expression.PropertyOrField(parameter, nameof(Activity.Attendees));
+                var attendeeParameter = Expression.Parameter(typeof(Domain.Models.Attendees), "at");
+                var attendeeLeftPart = Expression.PropertyOrField(attendeeParameter, nameof(Domain.Models.Attendees.IsAttending));
+                if (requestObject.FilterBy.Contains("hosting", StringComparison.InvariantCultureIgnoreCase))
+                    attendeeLeftPart = Expression.PropertyOrField(attendeeParameter, nameof(Domain.Models.Attendees.IsHost));
 
-                    var anyMethod = typeof(Enumerable)
-    .GetMethods()
-    .Single(m => m.Name == nameof(Enumerable.Any)
-                 && m.GetParameters().Length == 2
-                 && m.GetParameters()[1].ParameterType.GetGenericTypeDefinition() == typeof(Func<,>))
-                    .MakeGenericMethod(typeof(Domain.Models.Attendees));
-                    var anyCall = Expression.Call(anyMethod, attendeePropExp, innerLambda);
-                    defaultCondition = Expression.AndAlso(defaultCondition, anyCall);
-                }
+                var attendeeRightPart = Expression.Constant(true);
+                var attendeeCondition = Expression.Equal(attendeeLeftPart, attendeeRightPart);
+                var userProp = Expression.PropertyOrField(attendeeParameter, nameof(Domain.Models.Attendees.UserId));
+                var userValueConstant = Expression.Constant(user.Id, typeof(string));
+                attendeeCondition = Expression.AndAlso(attendeeCondition, Expression.Equal(userProp, userValueConstant));
+                var innerLambda = Expression.Lambda(attendeeCondition, attendeeParameter);
+
+                var anyMethod = typeof(Enumerable)
+                                .GetMethods()
+                                .Single(m => m.Name == nameof(Enumerable.Any)
+                                            && m.GetParameters().Length == 2
+                                            && m.GetParameters()[1].ParameterType.GetGenericTypeDefinition() == typeof(Func<,>))
+                                                .MakeGenericMethod(typeof(Domain.Models.Attendees));
+                var anyCall = Expression.Call(anyMethod, attendeePropExp, innerLambda);
+                defaultCondition = Expression.AndAlso(defaultCondition, anyCall);
             }
 
             // foreach (var prop in requestType.GetProperties())

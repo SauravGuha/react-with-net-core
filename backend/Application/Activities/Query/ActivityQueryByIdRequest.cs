@@ -5,7 +5,6 @@ using Application.Core;
 using Application.ViewModels;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain.Models;
 using Domain.Repositories.ActivityRepository;
 using MediatR;
 

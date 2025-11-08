@@ -5,9 +5,13 @@ import useAccountReactQuery from "../../../hooks/useAccountReactQuery";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 
+type ActivityListProps = {
+    filterBy: string | undefined;
+    filterDate: string | undefined;
+}
 
-export default function ActivityList() {
-    const { activitiesGroup, isPending, fetchNextPage, hasNextPage } = useActivityReactQuery();
+export default function ActivityList({ filterBy, filterDate }: ActivityListProps) {
+    const { activitiesGroup, isPending, fetchNextPage, hasNextPage } = useActivityReactQuery(undefined, filterBy, filterDate);
     const { userData } = useAccountReactQuery();
     const { ref, inView } = useInView({
         threshold: 0.5
@@ -28,9 +32,9 @@ export default function ActivityList() {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {
-                activitiesGroup!.pages.map((item) => {
+                activitiesGroup!.pages.map((item, index) => {
                     return (
-                        <>
+                        <Box key={index}>
                             {item.result.map((act, index) =>
                                 <Box display='flex'
                                     flexDirection='column'
@@ -41,7 +45,7 @@ export default function ActivityList() {
                                 </Box>
                             )
                             }
-                        </>
+                        </Box>
                     )
                 })
             }

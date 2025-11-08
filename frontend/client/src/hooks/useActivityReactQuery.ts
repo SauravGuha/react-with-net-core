@@ -7,18 +7,18 @@ import type { Activity } from "../types";
 
 
 
-export default function useActivityReactQuery(id?: string) {
+export default function useActivityReactQuery(id?: string, filterBy?: string, filterDate?: string) {
     const { loading } = useLoading();
     const queryClient = useQueryClient();
     const { userData } = useAccountReactQuery();
     const location = useLocation();
 
     const { isPending, isError, data: activitiesGroup, error, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery({
-        queryKey: ["activities"],
+        queryKey: ["activities", filterBy, filterDate],
         queryFn: async ({ pageParam }: { pageParam?: string }) => {
             loading(true);
             try {
-                const result = await getAllActivitiesByParam(pageParam);
+                const result = await getAllActivitiesByParam(pageParam, undefined, filterBy, filterDate);
                 return result;
             }
             finally {
