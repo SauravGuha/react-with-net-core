@@ -57,8 +57,14 @@ namespace Api.Controllers
         [TypeFilter(typeof(ActivityUpdateFilter))]
         public async Task<IActionResult> DeleteActivity([FromQuery] Guid id, CancellationToken cancellationToken)
         {
-            await Task.Delay(2000, cancellationToken);
             var result = await this.Mediator.Send(new ActivityDeleteCommand { Id = id }, cancellationToken);
+            return this.ReturnResult(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetEvents([FromQuery] string filter, [FromQuery] string userId)
+        {
+            var result = await this.Mediator.Send(new ActivityByFilterForUserRequest { Filter = filter, UserId = userId });
             return this.ReturnResult(result);
         }
     }

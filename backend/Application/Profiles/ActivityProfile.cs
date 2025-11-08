@@ -20,6 +20,10 @@ namespace Application.Profiles
             this.CreateMap<ActivityCommandViewModel, Activity>()
             .ForMember(d => d.EventDate,
             opt => opt.MapFrom(s => DateTime.ParseExact(s.EventDate.Trim('Z'), "yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture)));
+
+            this.CreateMap<Activity, EventViewModel>()
+            .ForMember(d => d.EventDate, opt => opt.MapFrom(s => s.EventDate.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture)));
+
         }
     }
 }
