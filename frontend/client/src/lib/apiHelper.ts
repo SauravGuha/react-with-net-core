@@ -2,6 +2,7 @@ import axios from "axios";
 import type {
     Activity, ActivityResponse, attendeeSchema, AttendenceSchema,
     EventType,
+    LocationIQ,
     LoginSchema, NewActivityResponse, pagedList, PhotoSchema, ProfileSchema, RegistrationSchema, UserSchema
 } from "../types";
 import { toast } from "react-toastify";
@@ -179,6 +180,16 @@ const getUserEvents = async function (userId: string, filter: string) {
     return result.data.value as EventType[];
 }
 
+const locationInfo = async function (address: string) {
+    const result = await instance.get<{ value: LocationIQ[] }>(`LocationIq/GetAutoComplete?address=${address}`);
+    return result.data.value;
+}
+
+const reverseLocationInfo = async function (lat: number, lon: number) {
+    const result = await instance.get<{ value: LocationIQ }>(`LocationIq/GetReverse?latitude=${lat}&longitude=${lon}`);
+    return result.data.value;
+}
+
 export {
     getallactivities, updateActivity, createActivity,
     deleteActivity, getActivityByid, userLogin,
@@ -187,5 +198,6 @@ export {
     userPhotos, uploadPhoto,
     deletePhoto, updateFollowing,
     currentUserFollowers, currentUserFollowing,
-    getAllActivitiesByParam, getUserEvents
+    getAllActivitiesByParam, getUserEvents,
+    locationInfo, reverseLocationInfo
 };

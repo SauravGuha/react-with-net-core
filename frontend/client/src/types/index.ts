@@ -52,8 +52,8 @@ export const profileObject = z.object({
 export type ProfileSchema = z.infer<typeof profileObject>;
 
 export type LocationIQ = {
-  place_id: string
-  osm_id: string
+  place_Id: string
+  osm_Id: string
   osm_type: string
   licence: string
   lat: string
@@ -61,9 +61,9 @@ export type LocationIQ = {
   boundingbox: string[]
   class: string
   type: string
-  display_name: string
-  display_place: string
-  display_address: string
+  display_Name: string
+  display_Place: string
+  display_Address: string
   address: Address
 }
 
@@ -74,7 +74,7 @@ export type Address = {
   county: string
   state: string
   country: string
-  country_code: string
+  country_Code: string
 }
 
 export type LocationSuggestions = {

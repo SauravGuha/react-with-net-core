@@ -98,12 +98,12 @@ export default function ActivityForm() {
                     label="Cancelled" name="isCancelled" id="isCancelled" /> */}
 
                 <Autocomplete options={locationIqs ? locationIqs.map(item => ({
-                    label: item.display_name,
-                    id: item.osm_id,
+                    label: item.display_Name,
+                    id: item.osm_Id,
                     lat: item.lat,
                     lon: item.lon,
                     city: item.address?.city || "",
-                    venue: item.display_place || ""
+                    venue: item.display_Place || ""
                 })) : []}
                     freeSolo sx={{ mb: 1 }}
                     renderInput={(params) => <TextField {...params} label="Location" />}
@@ -115,12 +115,12 @@ export default function ActivityForm() {
                         }
                     }}
                     value={locationIq ? {
-                        label: locationIq.display_name,
-                        id: locationIq.osm_id,
+                        label: locationIq.display_Name,
+                        id: locationIq.osm_Id,
                         lat: locationIq.lat,
                         lon: locationIq.lon,
                         city: locationIq.address?.city || "",
-                        venue: locationIq.display_place || ""
+                        venue: locationIq.display_Place || ""
                     } : null}
                     onChange={(_, value) => {
                         if (value) {

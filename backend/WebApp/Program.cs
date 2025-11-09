@@ -40,7 +40,7 @@ public class Program
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ActivityDbContext>();
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddInfrastructure();
+        builder.Services.AddInfrastructure(builder.Configuration);
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
