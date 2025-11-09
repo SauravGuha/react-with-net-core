@@ -1,10 +1,12 @@
 
 
+using Api.Filters;
 using Application.LocationIq;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
+    [TypeFilter(typeof(LocationIqFilter))]
     public class LocationIqController : BaseController
     {
         [HttpGet]
