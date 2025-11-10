@@ -27,7 +27,9 @@ const delayer = function (timeSpan: number) {
 }
 
 instance.interceptors.response.use(async (response) => {
-    await delayer(1000);
+    if (env != "Production") {
+        await delayer(1000);
+    }
     return response;
 }, (error) => {
     const { status, data } = error.response;

@@ -4,7 +4,12 @@ import react from '@vitejs/plugin-react-swc'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server:{
-    port:5000
+  build: {
+    outDir: '../../backend/webapp/wwwroot',
+    chunkSizeWarningLimit: 1500,
+    
+  },
+  server: {
+    port: 5000
   }
 })

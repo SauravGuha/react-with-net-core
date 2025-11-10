@@ -59,6 +59,9 @@ public class Program
 
         app.UseCors();
 
+        app.UseDefaultFiles();
+        app.UseStaticFiles();
+
         app.UseAuthentication();
         app.UseAuthorization();
 
