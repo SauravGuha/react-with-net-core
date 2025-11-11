@@ -23,11 +23,12 @@ public class Program
             var whiteListedSection = builder.Configuration.GetSection("WhiteListed");
             if (whiteListedSection != null)
             {
+                var whiteListedUrls = whiteListedSection.Get<List<string>>()?.Select(e => e) ?? new List<string>();
                 options.AddDefaultPolicy(po =>
                 {
                     po.AllowAnyHeader()
                     .AllowAnyMethod()
-                    .WithOrigins(whiteListedSection.Get<List<string>>()!.Select(e => e).ToArray())
+                    .WithOrigins(whiteListedUrls.ToArray())
                     .AllowCredentials();
                 });
             }
