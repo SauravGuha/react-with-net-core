@@ -5,7 +5,9 @@ namespace Infrastructure
 {
     public class InfrastructureConstants
     {
-        public const string LocationIqHttpClientName = "LocationIqHttpClientName";
+        public const string LocationIqBaseurl = "LocationIqBaseurl";
+
+        public const string LocationIqHttpClientName = "LocationIqHttpClient";
 
         public const string LocationIqKey = "LocationIqKey";
     }

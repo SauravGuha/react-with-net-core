@@ -10,9 +10,9 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection sc, IConfiguration configuration)
         {
-            if (string.IsNullOrWhiteSpace(configuration.GetConnectionString(InfrastructureConstants.LocationIqHttpClientName)))
+            if (string.IsNullOrWhiteSpace(configuration.GetConnectionString(InfrastructureConstants.LocationIqBaseurl)))
             {
-                throw new ArgumentNullException($"{InfrastructureConstants.LocationIqHttpClientName} is empty");
+                throw new ArgumentNullException($"{InfrastructureConstants.LocationIqBaseurl} is empty");
             }
 
             if (string.IsNullOrWhiteSpace(configuration.GetConnectionString(InfrastructureConstants.LocationIqKey)))
