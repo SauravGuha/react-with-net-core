@@ -98,12 +98,12 @@ export default function ActivityForm() {
                     label="Cancelled" name="isCancelled" id="isCancelled" /> */}
 
                 <Autocomplete options={locationIqs ? locationIqs.map(item => ({
-                    label: item.display_name,
-                    id: item.osm_id,
+                    label: item.display_Name,
+                    id: item.osm_Id,
                     lat: item.lat,
                     lon: item.lon,
                     city: item.address?.city || "",
-                    venue: item.display_place || ""
+                    venue: item.display_Place || ""
                 })) : []}
                     freeSolo sx={{ mb: 1 }}
                     renderInput={(params) => <TextField {...params} label="Location" />}
@@ -115,19 +115,20 @@ export default function ActivityForm() {
                         }
                     }}
                     value={locationIq ? {
-                        label: locationIq.display_name,
-                        id: locationIq.osm_id,
+                        label: locationIq.display_Name,
+                        id: locationIq.osm_Id,
                         lat: locationIq.lat,
                         lon: locationIq.lon,
                         city: locationIq.address?.city || "",
-                        venue: locationIq.display_place || ""
+                        venue: locationIq.display_Place || ""
                     } : null}
-                    onChange={(_, value) => {
+                    onChange={(_, value) => {                        
                         if (value) {
-                            if (cityRef.current) { cityRef.current.value = value.city; }
-                            if (venueRef.current) { venueRef.current.value = value.venue; }
-                            if (latitudeRef.current) { latitudeRef.current.value = value.lat; }
-                            if (longitudeRef.current) { longitudeRef.current.value = value.lon; }
+                            const valueData = value as {city:string, venue:string, lat:string, lon:string};
+                            if (cityRef.current) { cityRef.current.value = valueData.city; }
+                            if (venueRef.current) { venueRef.current.value = valueData.venue; }
+                            if (latitudeRef.current) { latitudeRef.current.value = valueData.lat; }
+                            if (longitudeRef.current) { longitudeRef.current.value = valueData.lon; }
                         }
                     }}
                     loading={isReverseGeoCoding || isAutoCompleting}

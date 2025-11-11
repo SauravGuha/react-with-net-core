@@ -23,11 +23,12 @@ public class Program
             var whiteListedSection = builder.Configuration.GetSection("WhiteListed");
             if (whiteListedSection != null)
             {
+                var whiteListedUrls = whiteListedSection.Get<List<string>>()?.Select(e => e) ?? new List<string>();
                 options.AddDefaultPolicy(po =>
                 {
                     po.AllowAnyHeader()
                     .AllowAnyMethod()
-                    .WithOrigins(whiteListedSection.Get<List<string>>()!.Select(e => e).ToArray())
+                    .WithOrigins(whiteListedUrls.ToArray())
                     .AllowCredentials();
                 });
             }
@@ -40,7 +41,7 @@ public class Program
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ActivityDbContext>();
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddInfrastructure();
+        builder.Services.AddInfrastructure(builder.Configuration);
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
@@ -59,6 +60,9 @@ public class Program
 
         app.UseCors();
 
+        app.UseDefaultFiles();
+        app.UseStaticFiles();
+
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -66,6 +70,8 @@ public class Program
         app.MapGroup("api")
         .MapIdentityApi<User>();
         app.MapApiRoutes();
+        app.MapFallbackToController("index", "FallBack");
+
         app.Services.InitialiseDb().GetAwaiter().GetResult();
 
         app.Run();

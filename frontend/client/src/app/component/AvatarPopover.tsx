@@ -1,7 +1,7 @@
 
 import Popover from '@mui/material/Popover';
 import { useState } from 'react';
-import type { UserSchema } from '../../types';
+import type { ProfileSchema, UserSchema } from '../../types';
 import { Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ProfileCard from '../../features/profile/ProfileCard';
@@ -21,6 +21,7 @@ export default function AvatarPopover({ userData }: { userData: UserSchema }) {
 
     const open = Boolean(anchorEl);
 
+    const data = profileData as ProfileSchema;
     return (
         <div>
             <Avatar
@@ -47,7 +48,7 @@ export default function AvatarPopover({ userData }: { userData: UserSchema }) {
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <ProfileCard userData={userData} followersCount={profileData?.followersCount} />
+                <ProfileCard userData={userData} followersCount={data?.followersCount} />
             </Popover>
         </div>
     );

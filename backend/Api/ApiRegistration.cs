@@ -23,6 +23,7 @@ namespace Api
             })
             .AddApplicationPart(typeof(HomeController).Assembly);
             collection.AddSignalR();
+            collection.AddMemoryCache();
             return collection;
         }
 
