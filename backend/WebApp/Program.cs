@@ -69,6 +69,8 @@ public class Program
         app.MapGroup("api")
         .MapIdentityApi<User>();
         app.MapApiRoutes();
+        app.MapFallbackToController("index", "FallBack");
+
         app.Services.InitialiseDb().GetAwaiter().GetResult();
 
         app.Run();
