@@ -1,0 +1,54 @@
+name: Deploy reactivities to azure app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+env:
+  AZURE_CONTAINER_REGISTRY: reactivityappregistry
+  CONTAINER_APP_NAME: reactivityapp
+  RESOURCE_GROUP: reactivities
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+      
+      - name: build
+        run: dotnet build --configuration Release
+      
+      - name: set up docker buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          registry: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
+          username: ${{ env.AZURE_REGISTRY_USERNAME }}
+          password: ${{ env.AZURE_REGISTRY_PASSWORD }}
+
+      - name: build and push container image to azureacr
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ guthub.sha }}
+          file: ../../backend/WebApp/Dockerfile
+      
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to azure container apps
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          imageToDeploy: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ guthub.sha }}
+          resourceGroup: ${{ env.RESOURCE_GROUP }}
+          containerAppName: ${{ env.CONTAINER_APP_NAME }}
+          
+

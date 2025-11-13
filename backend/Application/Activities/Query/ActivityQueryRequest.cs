@@ -50,12 +50,15 @@ namespace Application.Activities.Query
 
             if (requestObject.Cursor != null || requestObject.FilterDate != null)
             {
-                var leftPart = Expression.PropertyOrField(parameter, nameof(Activity.EventDate));
                 var rightValue = requestObject.Cursor ?? requestObject.FilterDate;
-                var value = DateTime.Parse(rightValue.ToString(), null, DateTimeStyles.RoundtripKind);
-                var valueConstant = Expression.Constant(value, typeof(DateTime));
-                var condition = Expression.LessThan(leftPart, valueConstant);
-                defaultCondition = Expression.AndAlso(defaultCondition, condition);
+                if (rightValue != null)
+                {
+                    var leftPart = Expression.PropertyOrField(parameter, nameof(Activity.EventDate));
+                    var value = DateTime.Parse(rightValue.ToString(), null, DateTimeStyles.RoundtripKind);
+                    var valueConstant = Expression.Constant(value, typeof(DateTime));
+                    var condition = Expression.LessThan(leftPart, valueConstant);
+                    defaultCondition = Expression.AndAlso(defaultCondition, condition);
+                }
             }
 
             if (requestObject.FilterBy != null)
