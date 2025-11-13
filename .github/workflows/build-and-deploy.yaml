@@ -23,7 +23,7 @@ jobs:
           dotnet-version: "9.0.x"
       
       - name: build
-        run: dotnet build ../../backend/WebApp/WebApp.csproj --configuration Release
+        run: dotnet build backend/webapp/WebApp.csproj --configuration Release
       
       - name: set up docker buildx
         uses: docker/setup-buildx-action@v3
@@ -37,7 +37,7 @@ jobs:
         with:
           push: true
           tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
-          file: ../../backend/WebApp/Dockerfile
+          file: backend/WebApp/Dockerfile
       
       - name: Azure login
         uses: azure/login@v2
