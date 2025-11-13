@@ -1,9 +1,9 @@
-name: Deploy reactivities to azure app
+name: Deploy reactivities to Azure Container App
 
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [ main ]
 
 env:
   AZURE_CONTAINER_REGISTRY: reactivityappregistry
@@ -15,36 +15,64 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # -------------------------------
+      # Step 1: Checkout repo
+      # -------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: setup dotnet
+      # -------------------------------
+      # Step 2: Setup .NET SDK
+      # -------------------------------
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.0.x"
-      
-      - name: build
-        run: dotnet build ./backend/WebApp/WebApp.csproj --configuration Release
-      
-      - name: set up docker buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          registry: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io
-          username: ${{ env.AZURE_REGISTRY_USERNAME }}
-          password: ${{ env.AZURE_REGISTRY_PASSWORD }}
 
-      - name: build and push container image to azureacr
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
-          file: ./backend/WebApp/Dockerfile
-      
+      # -------------------------------
+      # Step 3: Build .NET backend
+      # (use working-directory instead of long path)
+      # -------------------------------
+      - name: Build backend project
+        run: dotnet build WebApp.csproj --configuration Release
+        working-directory: ./backend/WebApp
+
+      # -------------------------------
+      # Step 4: Azure login (for both ACR + deploy)
+      # Must happen BEFORE docker push
+      # -------------------------------
       - name: Azure login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy to azure container apps
+      # -------------------------------
+      # Step 5: Login to Azure Container Registry (ACR)
+      # -------------------------------
+      - name: Log in to ACR
+        run: az acr login --name ${{ env.AZURE_CONTAINER_REGISTRY }}
+
+      # -------------------------------
+      # Step 6: Set up Docker Buildx
+      # -------------------------------
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # -------------------------------
+      # Step 7: Build and Push image to ACR
+      # -------------------------------
+      - name: Build and push container image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: .
+          file: ./backend/WebApp/Dockerfile
+          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
+
+      # -------------------------------
+      # Step 8: Deploy to Azure Container App
+      # -------------------------------
+      - name: Deploy to Azure Container App
         uses: azure/container-apps-deploy-action@v1
         with:
           imageToDeploy: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
