@@ -14,7 +14,7 @@ namespace Persistence.Repository.AttendeesRepo
             this.activityDbContext = activityDbContext;
 
         }
-        public async Task<IEnumerable<Domain.Models.Attendees>> GetAllAsync(Expression<Func<Domain.Models.Attendees, bool>> condition,
+        public async Task<IEnumerable<Domain.Models.Attendees>> GetAllAsync(Expression<Func<Domain.Models.Attendees, bool>>? condition,
         CancellationToken token, params string[] includeProperties)
         {
             var query = activityDbContext.Attendees.AsQueryable();
@@ -23,9 +23,10 @@ namespace Persistence.Repository.AttendeesRepo
             {
                 query = query.Include(property);
             }
-            IEnumerable<Domain.Models.Attendees> result = await query.Where(condition).ToListAsync(token);
-
-            return result;
+            if (condition != null)
+                return await query.Where(condition).ToListAsync(token);
+            else
+                return await query.ToListAsync(token);
         }
 
         public Task<Domain.Models.Attendees?> GetById(Guid id, CancellationToken token, params string[] includeProperties)

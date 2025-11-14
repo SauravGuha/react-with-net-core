@@ -24,9 +24,10 @@ namespace Persistence.Repository.UserFollowingRepository
             {
                 query = query.Include(property);
             }
-            IEnumerable<UserFollowing> result = await query.Where(condition).ToListAsync(token);
-
-            return result;
+            if (condition != null)
+                return await query.Where(condition).ToListAsync(token);
+            else
+                return await query.ToListAsync(token); ;
         }
 
         public async Task<UserFollowing?> GetById(Guid id, CancellationToken token, params string[] includeProperties)
