@@ -1,10 +1,12 @@
 
 using Application.ViewModels;
 using AutoMapper;
+using Domain.Infrastructure;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
@@ -13,10 +15,17 @@ namespace Api.Controllers
         private readonly SignInManager<User> signInManager;
         private readonly UserManager<User> userManager;
         private readonly IMapper mapper;
+        private readonly IEmailSenderService emailSenderService;
+        private readonly ILogger<ActivityAccountController> logger;
 
-        public ActivityAccountController(SignInManager<User> signInManager, UserManager<User> userManager, IMapper mapper)
+        public ActivityAccountController(SignInManager<User> signInManager,
+        UserManager<User> userManager,
+        IMapper mapper, IEmailSenderService emailSenderService,
+        ILogger<ActivityAccountController> logger)
         {
             this.mapper = mapper;
+            this.emailSenderService = emailSenderService;
+            this.logger = logger;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
@@ -48,7 +57,7 @@ namespace Api.Controllers
             var userDetails = await this.userManager.FindByEmailAsync(viewModel.Email);
             if (userDetails == null)
             {
-                await userManager.CreateAsync(new User
+                var user = new User
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = viewModel.Email,
@@ -56,13 +65,28 @@ namespace Api.Controllers
                     Bio = viewModel.Bio,
                     DisplayName = viewModel.DisplayName,
                     ImageUrl = viewModel.ImageUrl
-                }, viewModel.Password);
-                return Ok("User created");
+                };
+                var identityResult = await userManager.CreateAsync(user, viewModel.Password);
+                if (identityResult.Succeeded)
+                {
+                    await emailSenderService.SendConfirmationEmail(user.Email, user.DisplayName ?? "");
+                    return Ok("User created");
+                }
+                else
+                    return this.Problem(string.Join("\n", identityResult.Errors));
             }
             else
             {
                 return Conflict("Email already exists");
             }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmailAddress([FromQuery] string userId,
+        [FromQuery] string code, [FromQuery] string emailId)
+        {
+            return Ok();
         }
 
         [AllowAnonymous]

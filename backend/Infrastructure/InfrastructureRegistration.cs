@@ -22,6 +22,7 @@ namespace Infrastructure
             sc.AddScoped<IUserAccessor, UserAccessor>();
             sc.AddSingleton<IImageRepository, BlobRepository>();
             sc.AddSingleton<ILocationService, LocationServices>();
+            sc.AddSingleton<IEmailSenderService, EmailSenderService>();
             sc.AddHttpClient(InfrastructureConstants.LocationIqHttpClientName, client =>
             {
                 client.BaseAddress = new Uri(configuration.GetConnectionString(InfrastructureConstants.LocationIqBaseurl)!);

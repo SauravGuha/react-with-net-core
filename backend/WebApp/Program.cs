@@ -37,6 +37,7 @@ public class Program
         builder.Services.AddIdentityApiEndpoints<User>(options =>
         {
             options.User.RequireUniqueEmail = true;
+            options.SignIn.RequireConfirmedEmail = true; //when true we can use confirmEmail endpoint to confirm the user email
         })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ActivityDbContext>();
