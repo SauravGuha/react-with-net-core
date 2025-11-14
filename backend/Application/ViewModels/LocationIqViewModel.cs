@@ -15,5 +15,7 @@ namespace Application.ViewModels
         public string? Display_Name { get; set; }
         public string? Display_Place { get; set; }
         public string? Display_Address { get; set; }
+
+        public Address? Address { get; set; }
     }
 }
