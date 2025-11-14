@@ -122,9 +122,9 @@ export default function ActivityForm() {
                         city: locationIq.address?.city || "",
                         venue: locationIq.display_Place || ""
                     } : null}
-                    onChange={(_, value) => {                        
+                    onChange={(_, value) => {
                         if (value) {
-                            const valueData = value as {city:string, venue:string, lat:string, lon:string};
+                            const valueData = value as { city: string, venue: string, lat: string, lon: string };
                             if (cityRef.current) { cityRef.current.value = valueData.city; }
                             if (venueRef.current) { venueRef.current.value = valueData.venue; }
                             if (latitudeRef.current) { latitudeRef.current.value = valueData.lat; }
