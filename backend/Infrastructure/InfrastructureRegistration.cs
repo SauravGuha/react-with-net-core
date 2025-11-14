@@ -24,7 +24,7 @@ namespace Infrastructure
             sc.AddSingleton<ILocationService, LocationServices>();
             sc.AddHttpClient(InfrastructureConstants.LocationIqHttpClientName, client =>
             {
-                client.BaseAddress = new Uri(configuration.GetConnectionString(InfrastructureConstants.LocationIqHttpClientName)!);
+                client.BaseAddress = new Uri(configuration.GetConnectionString(InfrastructureConstants.LocationIqBaseurl)!);
             });
             return sc;
         }
