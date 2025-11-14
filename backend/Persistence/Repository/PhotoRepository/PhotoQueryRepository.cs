@@ -15,7 +15,7 @@ namespace Persistence.Repository.ActivityRepository
 
         }
 
-        public async Task<IEnumerable<Photo>> GetAllAsync(Expression<Func<Photo, bool>> condition, CancellationToken token,
+        public async Task<IEnumerable<Photo>> GetAllAsync(Expression<Func<Photo, bool>>? condition, CancellationToken token,
          params string[] includeProperties)
         {
             var query = activityDbContext.Photos.AsQueryable();
@@ -24,9 +24,10 @@ namespace Persistence.Repository.ActivityRepository
             {
                 query = query.Include(property);
             }
-            IEnumerable<Photo> result = await query.Where(condition).ToListAsync(token);
-
-            return result;
+            if (condition != null)
+                return await query.Where(condition).ToListAsync(token);
+            else
+                return await query.ToListAsync(token);
         }
 
         public async Task<Photo?> GetById(Guid id, CancellationToken token, params string[] includeProperties)
