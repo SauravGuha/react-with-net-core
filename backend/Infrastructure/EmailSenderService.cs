@@ -34,6 +34,10 @@ namespace Infrastructure
             var htmlContent = $"Click here to confirm email address <a href=\"${applicationUrl}/activityaccount/confirmemailaddress\"/>";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, "Please click anywhere to confirm", htmlContent);
             var response = await client.SendEmailAsync(msg);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(await response.DeserializeResponseBodyAsync(response.Body));
+            }
         }
     }
 }
