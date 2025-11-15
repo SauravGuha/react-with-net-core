@@ -67,9 +67,9 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        //Add api routes
         app.MapGroup("api")
         .MapIdentityApi<User>();
+        //Add api routes
         app.MapApiRoutes();
         app.MapFallbackToController("index", "FallBack");
 

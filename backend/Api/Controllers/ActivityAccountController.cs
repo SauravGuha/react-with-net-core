@@ -1,4 +1,5 @@
 
+using System.Text;
 using Application.ViewModels;
 using AutoMapper;
 using Domain.Infrastructure;
@@ -6,6 +7,7 @@ using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
@@ -69,7 +71,7 @@ namespace Api.Controllers
                 var identityResult = await userManager.CreateAsync(user, viewModel.Password);
                 if (identityResult.Succeeded)
                 {
-                    await emailSenderService.SendConfirmationEmail(user.Email, user.DisplayName ?? "");
+                    await SendConfirmationEmail(user);
                     return Ok("User created");
                 }
                 else
@@ -78,6 +80,22 @@ namespace Api.Controllers
             else
             {
                 return Conflict("Email already exists");
+            }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResendConfirmationEmail(string email)
+        {
+            var user = await userManager.Users.FirstOrDefaultAsync(e => e.Email == email);
+            if (user == null)
+            {
+                return NotFound($"{email} not found");
+            }
+            else
+            {
+                await SendConfirmationEmail(user);
+                return Ok("Confirmatiion email sent again");
             }
         }
 
@@ -103,6 +121,13 @@ namespace Api.Controllers
             {
                 return NoContent();
             }
+        }
+
+        private async Task SendConfirmationEmail(User user)
+        {
+            var code = await this.signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
+            code = Convert.ToBase64String(Encoding.UTF8.GetBytes(code));
+            await emailSenderService.SendConfirmationEmail(user.Id, user.Email!, user.DisplayName ?? "", code);
         }
     }
 }
