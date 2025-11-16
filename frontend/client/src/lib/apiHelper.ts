@@ -59,8 +59,8 @@ instance.interceptors.response.use(async (response) => {
             //toast.error(data.errorMessage);
             break;
         case 409:
-            toast.error("Data already exists");
-            //toast.error(data.errorMessage);
+            //toast.error("Data already exists");
+            toast.error(data.errorMessage ?? data);
             break;
         default:
             if (env == "Development") {
@@ -192,6 +192,11 @@ const reverseLocationInfo = async function (lat: number, lon: number) {
     return result.data.value;
 }
 
+const resendConfirmation = async function (email: string) {
+    const result = await instance.get<string>(`activityaccount/ResendConfirmationEmail?email=${email}`);
+    return result;
+}
+
 export {
     getallactivities, updateActivity, createActivity,
     deleteActivity, getActivityByid, userLogin,
@@ -201,5 +206,6 @@ export {
     deletePhoto, updateFollowing,
     currentUserFollowers, currentUserFollowing,
     getAllActivitiesByParam, getUserEvents,
-    locationInfo, reverseLocationInfo
+    locationInfo, reverseLocationInfo,
+    resendConfirmation
 };

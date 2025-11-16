@@ -40,7 +40,10 @@ namespace Api.Controllers
                 request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
-                return NotFound("Invalid username or password");
+                if (result.IsNotAllowed)
+                    return Unauthorized("Not allowed");
+                else
+                    return NotFound("Invalid username or password");
 
             return Ok("Logged in successfully");
         }
@@ -77,6 +80,10 @@ namespace Api.Controllers
                 else
                     return this.Problem(string.Join("\n", identityResult.Errors));
             }
+            else if (!userDetails.EmailConfirmed)
+            {
+                return this.Conflict("User registered but not confirmed email");
+            }
             else
             {
                 return Conflict("Email already exists");
@@ -85,7 +92,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ResendConfirmationEmail(string email)
+        public async Task<IActionResult> ResendConfirmationEmail([FromQuery] string email)
         {
             var user = await userManager.Users.FirstOrDefaultAsync(e => e.Email == email);
             if (user == null)
@@ -97,14 +104,6 @@ namespace Api.Controllers
                 await SendConfirmationEmail(user);
                 return Ok("Confirmatiion email sent again");
             }
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmailAddress([FromQuery] string userId,
-        [FromQuery] string code, [FromQuery] string emailId)
-        {
-            return Ok();
         }
 
         [AllowAnonymous]
