@@ -197,10 +197,16 @@ const resendConfirmation = async function (email: string) {
     return result;
 }
 
-const passwordReset = async function (email: string) {
+const forgotPassword = async function (email: string) {
     const result = await instance.get<string>(`activityaccount/ForgotPassword?email=${email}`);
     return result;
 }
+
+const passwordReset = async function (resetBody: Record<string, string>) {
+    const result = await instance.post<string>(`activityaccount/ResetPassword`, resetBody);
+    return result;
+}
+
 
 export {
     getallactivities, updateActivity, createActivity,
@@ -212,5 +218,6 @@ export {
     currentUserFollowers, currentUserFollowing,
     getAllActivitiesByParam, getUserEvents,
     locationInfo, reverseLocationInfo,
-    resendConfirmation, passwordReset
+    resendConfirmation, forgotPassword,
+    passwordReset
 };

@@ -5,6 +5,6 @@ namespace Domain.Infrastructure
     {
         Task SendConfirmationEmail(string userId, string toEmailId, string userName, string confirmationCode);
 
-        Task SendForgotPasswordEmail(string userId, string toEmailId, string userName, string confirmationCode);
+        Task SendForgotPasswordEmail(string toEmailId, string userName, string confirmationCode);
     }
 }

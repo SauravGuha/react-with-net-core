@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { passwordReset, resendConfirmation, userDetails, userLogin, userLogout, userRegistration } from "../lib/apiHelper";
+import { forgotPassword, passwordReset, resendConfirmation, userDetails, userLogin, userLogout, userRegistration } from "../lib/apiHelper";
 import { useLoading } from "./appDataContext";
 
 
@@ -42,8 +42,15 @@ export default function useAccountReactQuery() {
         }
     });
 
-    const { isPending: isSendingPasswordReset, mutateAsync: resetPassword } = useMutation({
-        mutationFn: async (email: string) => await passwordReset(email),
+    const { isPending: isSendingPasswordReset, mutateAsync: forgotPasswordRequest } = useMutation({
+        mutationFn: async (email: string) => await forgotPassword(email),
+        onError: (err) => {
+            console.log(err);
+        }
+    });
+
+    const { isPending: isResettingPassword, mutateAsync: resetPassword } = useMutation({
+        mutationFn: async (resetBody: Record<string,string>) => await passwordReset(resetBody),
         onError: (err) => {
             console.log(err);
         }
@@ -70,6 +77,7 @@ export default function useAccountReactQuery() {
         isLogingOut, logoutUser,
         isRegistering, registerUser,
         isSendingReConfirmation, resendConfirmationEmail,
-        isSendingPasswordReset, resetPassword
+        isSendingPasswordReset, forgotPasswordRequest,
+        isResettingPassword, resetPassword
     };
 }

@@ -155,10 +155,22 @@ namespace Api.Controllers
             return Ok($"Password reset mail sent to {email}.");
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel resetModel)
+        {
+            var user = this.userManager.Users.FirstOrDefault(e => e.Email == resetModel.EmailId);
+            if (user == null)
+                return Redirect("/notfound");
+
+            var actualResetCode = Encoding.UTF8.GetString(Convert.FromBase64String(resetModel.ResetCode));
+            var result = await this.userManager.ResetPasswordAsync(user, actualResetCode, resetModel.NewPassword);
+
+            return Redirect("/");
+        }
+
         private async Task SendConfirmationEmail(User user)
         {
-            //signInManager.UserManager.GeneratePasswordResetTokenAsync
-            //signInManager.UserManager.ResetPasswordAsync()
             var code = await this.signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
             code = Convert.ToBase64String(Encoding.UTF8.GetBytes(code));
             await emailSenderService.SendConfirmationEmail(user.Id, user.Email!, user.DisplayName ?? "", code);
@@ -168,7 +180,7 @@ namespace Api.Controllers
         {
             var forgotPasswordCode = await this.userManager.GeneratePasswordResetTokenAsync(user);
             forgotPasswordCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(forgotPasswordCode));
-            await emailSenderService.SendForgotPasswordEmail(user.Id, user.Email!, user.DisplayName ?? "", forgotPasswordCode);
+            await emailSenderService.SendForgotPasswordEmail(user.Email!, user.DisplayName ?? "", forgotPasswordCode);
         }
     }
 }

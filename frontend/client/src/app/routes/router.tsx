@@ -47,14 +47,14 @@ export const router = createBrowserRouter([
             ]
         },
         {
-            path: '/register',
+            path: 'register',
             element: <RegisterForm />
         },
         {
-            path: "/notfound",
+            path: "notfound",
             element: <NotFound />
         }, {
-            path: "/servererror",
+            path: "servererror",
             element: <ServerError />
         }, {
             path: "*",
@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
             element: <LoginForm />
         },
         {
-            path: "passwordRest",
+            path: "passwordReset",
             element: <PasswordReset />
         }
         ]

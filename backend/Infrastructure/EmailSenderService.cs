@@ -73,11 +73,11 @@ namespace Infrastructure
             }
         }
 
-        public async Task SendForgotPasswordEmail(string userId, string toEmailId, string userName, string confirmationCode)
+        public async Task SendForgotPasswordEmail(string toEmailId, string userName, string confirmationCode)
         {
             var client = new SendGridClient(sendGridKey);
             var from = new EmailAddress("sauravguha0112@gmail.com");
-            var subject = "Email confirmation";
+            var subject = "Password Reset";
             var to = new EmailAddress(toEmailId, userName);
             var htmlContent = $@"
 <div style=""font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; color: #333;"">
@@ -91,7 +91,7 @@ namespace Infrastructure
         Click the button below to proceed.
     </p>
 
-    <a href=""{applicationUrl}/api/activityaccount/EmailConfirmation?userId={userId}&code={confirmationCode}""
+    <a href=""{applicationUrl}/passwordReset?code={confirmationCode}&email={toEmailId}""
        style=""display:inline-block; padding:10px 20px; background-color:#4CAF50;
               color:white; text-decoration:none; border-radius:5px; margin:20px 0;"">
         Reset Password
@@ -100,7 +100,7 @@ namespace Infrastructure
     <p>
         If the button above doesn't work, copy and paste the link into your browser:
         <br />
-        {applicationUrl}/api/activityaccount/EmailConfirmation?userId={userId}&code={confirmationCode}
+        {applicationUrl}/passwordReset?code={confirmationCode}&email={toEmailId}
     </p>
 
     <p style=""margin-top:30px; font-size:12px; color:#777;"">
