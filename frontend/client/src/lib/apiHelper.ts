@@ -45,7 +45,7 @@ instance.interceptors.response.use(async (response) => {
                 throw modelStateErros.flat();
             }
             else {
-                toast.error(error.response.data.title);
+                toast.error(data.title);
             }
             break;
         case 401:

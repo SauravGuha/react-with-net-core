@@ -1,5 +1,6 @@
 
 using System.Text;
+using Application.Core;
 using Application.ViewModels;
 using AutoMapper;
 using Domain.Infrastructure;
@@ -165,8 +166,10 @@ namespace Api.Controllers
 
             var actualResetCode = Encoding.UTF8.GetString(Convert.FromBase64String(resetModel.ResetCode));
             var result = await this.userManager.ResetPasswordAsync(user, actualResetCode, resetModel.NewPassword);
-
-            return Redirect("/");
+            if (result.Succeeded)
+                return Ok("Password reset successfull");
+            else
+                return BadRequest(new { Title = string.Join("\n", result.Errors.Select(e => e.Description)) });
         }
 
         private async Task SendConfirmationEmail(User user)
