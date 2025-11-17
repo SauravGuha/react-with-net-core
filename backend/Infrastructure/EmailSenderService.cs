@@ -46,7 +46,7 @@ namespace Infrastructure
         Thank you for registering. Please confirm your email address by clicking the button below.
     </p>
 
-    <a href=""{applicationUrl}/api/confirmEmail?userId={userId}&code={confirmationCode}"" 
+    <a href=""{applicationUrl}/api/activityaccount/EmailConfirmation?userId={userId}&code={confirmationCode}"" 
        style=""display:inline-block; padding:10px 20px; background-color:#4CAF50; 
               color:white; text-decoration:none; border-radius:5px; margin:20px 0;"">
         Confirm Email
@@ -55,7 +55,7 @@ namespace Infrastructure
     <p>
         If the button above doesn't work, copy and paste the link into your browser:
         <br />
-        {applicationUrl}/api/confirmEmail?userId={userId}&code={confirmationCode}
+        {applicationUrl}/api/activityaccount/EmailConfirmation?userId={userId}&code={confirmationCode}
     </p>
 
     <p style=""margin-top:30px; font-size:12px; color:#777;"">

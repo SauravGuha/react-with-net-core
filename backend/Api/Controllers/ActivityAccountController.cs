@@ -122,6 +122,26 @@ namespace Api.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> EmailConfirmation([FromQuery] string userId, [FromQuery] string code)
+        {
+            var user = await this.userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var actualCode = Encoding.UTF8.GetString(Convert.FromBase64String(code));
+                var codeConfirmation = await this.userManager.ConfirmEmailAsync(user, actualCode);
+                if (codeConfirmation.Succeeded)
+                    return Redirect("/");
+                else
+                    return Redirect("/register");
+            }
+            else
+            {
+                return Redirect("/notfound");
+            }
+        }
+
         private async Task SendConfirmationEmail(User user)
         {
             var code = await this.signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
