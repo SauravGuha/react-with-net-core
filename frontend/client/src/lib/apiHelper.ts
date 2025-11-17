@@ -197,6 +197,11 @@ const resendConfirmation = async function (email: string) {
     return result;
 }
 
+const passwordReset = async function (email: string) {
+    const result = await instance.get<string>(`activityaccount/ForgotPassword?email=${email}`);
+    return result;
+}
+
 export {
     getallactivities, updateActivity, createActivity,
     deleteActivity, getActivityByid, userLogin,
@@ -207,5 +212,5 @@ export {
     currentUserFollowers, currentUserFollowing,
     getAllActivitiesByParam, getUserEvents,
     locationInfo, reverseLocationInfo,
-    resendConfirmation
+    resendConfirmation, passwordReset
 };

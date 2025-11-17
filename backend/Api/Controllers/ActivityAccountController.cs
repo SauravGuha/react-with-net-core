@@ -142,11 +142,33 @@ namespace Api.Controllers
             }
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
+        {
+            var user = await this.userManager.FindByEmailAsync(email);
+            if (user == null)
+                return Redirect("/notfound");
+
+            await SendResetPasswordMail(user);
+
+            return Ok($"Password reset mail sent to {email}.");
+        }
+
         private async Task SendConfirmationEmail(User user)
         {
+            //signInManager.UserManager.GeneratePasswordResetTokenAsync
+            //signInManager.UserManager.ResetPasswordAsync()
             var code = await this.signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
             code = Convert.ToBase64String(Encoding.UTF8.GetBytes(code));
             await emailSenderService.SendConfirmationEmail(user.Id, user.Email!, user.DisplayName ?? "", code);
+        }
+
+        private async Task SendResetPasswordMail(User user)
+        {
+            var forgotPasswordCode = await this.userManager.GeneratePasswordResetTokenAsync(user);
+            forgotPasswordCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(forgotPasswordCode));
+            await emailSenderService.SendForgotPasswordEmail(user.Id, user.Email!, user.DisplayName ?? "", forgotPasswordCode);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Box, Button, Paper, TextField } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useRef, useState, type FormEvent } from "react";
 import { loginObject } from "../../types";
 import { ZodError } from "zod";
@@ -14,6 +14,7 @@ export default function LoginForm({ urlPath }: { urlPath?: string }) {
     const { isLogingIn, loginUser } = useAccountReactQuery();
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const userEmail = useRef<HTMLInputElement>(null);
+    const { isSendingPasswordReset, resetPassword } = useAccountReactQuery();
     const navigate = useNavigate();
 
     async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -68,6 +69,11 @@ export default function LoginForm({ urlPath }: { urlPath?: string }) {
                             <Button fullWidth size="large" type="submit" loading={isLogingIn} color="success" variant="contained">Submit</Button>
                         </Box>
                     </Box>
+                    <Button loading={isSendingPasswordReset} onClick={() => userEmail.current?.value
+                        ? resetPassword(userEmail.current?.value)
+                        : setFormErrors({ "email": "Email cannot be empty" })}>
+                        <Typography variant="h6">Forgot password?</Typography>
+                    </Button>
                 </Paper>
             }
         </>
