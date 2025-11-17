@@ -45,7 +45,7 @@ instance.interceptors.response.use(async (response) => {
                 throw modelStateErros.flat();
             }
             else {
-                toast.error(error.response.data.title);
+                toast.error(data.title);
             }
             break;
         case 401:
@@ -59,8 +59,8 @@ instance.interceptors.response.use(async (response) => {
             //toast.error(data.errorMessage);
             break;
         case 409:
-            toast.error("Data already exists");
-            //toast.error(data.errorMessage);
+            //toast.error("Data already exists");
+            toast.error(data.errorMessage ?? data);
             break;
         default:
             if (env == "Development") {
@@ -192,6 +192,22 @@ const reverseLocationInfo = async function (lat: number, lon: number) {
     return result.data.value;
 }
 
+const resendConfirmation = async function (email: string) {
+    const result = await instance.get<string>(`activityaccount/ResendConfirmationEmail?email=${email}`);
+    return result;
+}
+
+const forgotPassword = async function (email: string) {
+    const result = await instance.get<string>(`activityaccount/ForgotPassword?email=${email}`);
+    return result;
+}
+
+const passwordReset = async function (resetBody: Record<string, string>) {
+    const result = await instance.post<string>(`activityaccount/ResetPassword`, resetBody);
+    return result;
+}
+
+
 export {
     getallactivities, updateActivity, createActivity,
     deleteActivity, getActivityByid, userLogin,
@@ -201,5 +217,7 @@ export {
     deletePhoto, updateFollowing,
     currentUserFollowers, currentUserFollowing,
     getAllActivitiesByParam, getUserEvents,
-    locationInfo, reverseLocationInfo
+    locationInfo, reverseLocationInfo,
+    resendConfirmation, forgotPassword,
+    passwordReset
 };

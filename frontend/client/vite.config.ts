@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     outDir: '../../backend/webapp/wwwroot',
     chunkSizeWarningLimit: 1500,
-    
+    emptyOutDir: true
   },
   server: {
     port: 5000

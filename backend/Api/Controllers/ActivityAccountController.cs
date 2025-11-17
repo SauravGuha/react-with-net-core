@@ -1,10 +1,14 @@
 
+using System.Text;
 using Application.ViewModels;
 using AutoMapper;
+using Domain.Infrastructure;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
@@ -13,10 +17,17 @@ namespace Api.Controllers
         private readonly SignInManager<User> signInManager;
         private readonly UserManager<User> userManager;
         private readonly IMapper mapper;
+        private readonly IEmailSenderService emailSenderService;
+        private readonly ILogger<ActivityAccountController> logger;
 
-        public ActivityAccountController(SignInManager<User> signInManager, UserManager<User> userManager, IMapper mapper)
+        public ActivityAccountController(SignInManager<User> signInManager,
+        UserManager<User> userManager,
+        IMapper mapper, IEmailSenderService emailSenderService,
+        ILogger<ActivityAccountController> logger)
         {
             this.mapper = mapper;
+            this.emailSenderService = emailSenderService;
+            this.logger = logger;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
@@ -29,7 +40,10 @@ namespace Api.Controllers
                 request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
-                return NotFound("Invalid username or password");
+                if (result.IsNotAllowed)
+                    return Unauthorized("Not allowed");
+                else
+                    return NotFound("Invalid username or password");
 
             return Ok("Logged in successfully");
         }
@@ -48,7 +62,7 @@ namespace Api.Controllers
             var userDetails = await this.userManager.FindByEmailAsync(viewModel.Email);
             if (userDetails == null)
             {
-                await userManager.CreateAsync(new User
+                var user = new User
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = viewModel.Email,
@@ -56,12 +70,39 @@ namespace Api.Controllers
                     Bio = viewModel.Bio,
                     DisplayName = viewModel.DisplayName,
                     ImageUrl = viewModel.ImageUrl
-                }, viewModel.Password);
-                return Ok("User created");
+                };
+                var identityResult = await userManager.CreateAsync(user, viewModel.Password);
+                if (identityResult.Succeeded)
+                {
+                    await SendConfirmationEmail(user);
+                    return Ok("User created");
+                }
+                else
+                    return this.Problem(string.Join("\n", identityResult.Errors));
+            }
+            else if (!userDetails.EmailConfirmed)
+            {
+                return this.Conflict("User registered but not confirmed email");
             }
             else
             {
                 return Conflict("Email already exists");
+            }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResendConfirmationEmail([FromQuery] string email)
+        {
+            var user = await userManager.Users.FirstOrDefaultAsync(e => e.Email == email);
+            if (user == null)
+            {
+                return NotFound($"{email} not found");
+            }
+            else
+            {
+                await SendConfirmationEmail(user);
+                return Ok("Confirmatiion email sent again");
             }
         }
 
@@ -79,6 +120,69 @@ namespace Api.Controllers
             {
                 return NoContent();
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> EmailConfirmation([FromQuery] string userId, [FromQuery] string code)
+        {
+            var user = await this.userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var actualCode = Encoding.UTF8.GetString(Convert.FromBase64String(code));
+                var codeConfirmation = await this.userManager.ConfirmEmailAsync(user, actualCode);
+                if (codeConfirmation.Succeeded)
+                    return Redirect("/");
+                else
+                    return Redirect("/register");
+            }
+            else
+            {
+                return Redirect("/notfound");
+            }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
+        {
+            var user = await this.userManager.FindByEmailAsync(email);
+            if (user == null)
+                return Redirect("/notfound");
+
+            await SendResetPasswordMail(user);
+
+            return Ok($"Password reset mail sent to {email}.");
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel resetModel)
+        {
+            var user = this.userManager.Users.FirstOrDefault(e => e.Email == resetModel.EmailId);
+            if (user == null)
+                return Redirect("/notfound");
+
+            var actualResetCode = Encoding.UTF8.GetString(Convert.FromBase64String(resetModel.ResetCode));
+            var result = await this.userManager.ResetPasswordAsync(user, actualResetCode, resetModel.NewPassword);
+            if (result.Succeeded)
+                return Ok("Password reset successfull");
+            else
+                return BadRequest(new { Title = string.Join("\n", result.Errors.Select(e => e.Description)) });
+        }
+
+        private async Task SendConfirmationEmail(User user)
+        {
+            var code = await this.signInManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
+            code = Convert.ToBase64String(Encoding.UTF8.GetBytes(code));
+            await emailSenderService.SendConfirmationEmail(user.Id, user.Email!, user.DisplayName ?? "", code);
+        }
+
+        private async Task SendResetPasswordMail(User user)
+        {
+            var forgotPasswordCode = await this.userManager.GeneratePasswordResetTokenAsync(user);
+            forgotPasswordCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(forgotPasswordCode));
+            await emailSenderService.SendForgotPasswordEmail(user.Email!, user.DisplayName ?? "", forgotPasswordCode);
         }
     }
 }

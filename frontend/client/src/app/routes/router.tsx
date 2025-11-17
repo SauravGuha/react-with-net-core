@@ -10,6 +10,7 @@ import LoginForm from "../../features/account/LoginForm";
 import Authorization from "./Authorization";
 import RegisterForm from "../../features/account/RegisterForm";
 import ProfilePage from "../../features/profile/ProfilePage";
+import PasswordReset from "../../features/account/PasswordReset";
 
 
 export const router = createBrowserRouter([
@@ -46,14 +47,14 @@ export const router = createBrowserRouter([
             ]
         },
         {
-            path: '/register',
+            path: 'register',
             element: <RegisterForm />
         },
         {
-            path: "/notfound",
+            path: "notfound",
             element: <NotFound />
         }, {
-            path: "/servererror",
+            path: "servererror",
             element: <ServerError />
         }, {
             path: "*",
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
         {
             path: "login",
             element: <LoginForm />
+        },
+        {
+            path: "passwordReset",
+            element: <PasswordReset />
         }
         ]
     }
