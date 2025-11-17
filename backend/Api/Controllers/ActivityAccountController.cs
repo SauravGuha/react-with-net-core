@@ -1,6 +1,5 @@
 
 using System.Text;
-using Application.Core;
 using Application.ViewModels;
 using AutoMapper;
 using Domain.Infrastructure;
