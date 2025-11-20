@@ -1,5 +1,5 @@
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
-import { useRef, useState, type FormEvent } from "react";
+import React, { useRef, useState, type FormEvent } from "react";
 import { loginObject } from "../../types";
 import { ZodError } from "zod";
 import { camelCase } from 'lodash';
@@ -75,6 +75,9 @@ export default function LoginForm({ urlPath }: { urlPath?: string }) {
                             : setFormErrors({ "email": "Email cannot be empty" })}>
                         <Typography variant="h6">Forgot password?</Typography>
                     </Button>
+                    <a href={`https://localhost:7135/api/externalauth/SignIn?provider=GitHub`} target="_blank">
+                        Login with Github
+                    </a>
                 </Paper>
             }
         </>

@@ -52,10 +52,9 @@ public class Program
         {
             options.ClientId = builder.Configuration.GetSection("Authentication:Github_ClientId")?.Value ?? "";
             options.ClientSecret = builder.Configuration.GetSection("Authentication:Github_ClientSecret")?.Value ?? "";
-            options.CallbackPath = "api/ExternalAuth/github-callback";
+            options.CallbackPath = "/api/ExternalAuth/callback";
             options.Scope.Add("user:email");
-        })
-        .AddIdentityCookies();
+        });
         builder.Services.AddHttpContextAccessor();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
