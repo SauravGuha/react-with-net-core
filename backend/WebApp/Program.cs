@@ -43,18 +43,6 @@ public class Program
         })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ActivityDbContext>();
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-            options.DefaultChallengeScheme = IdentityConstants.ExternalScheme;
-        })
-        .AddGitHub(options =>
-        {
-            options.ClientId = builder.Configuration.GetSection("Authentication:Github_ClientId")?.Value ?? "";
-            options.ClientSecret = builder.Configuration.GetSection("Authentication:Github_ClientSecret")?.Value ?? "";
-            options.CallbackPath = "/api/ExternalAuth/callback";
-            options.Scope.Add("user:email");
-        });
         builder.Services.AddHttpContextAccessor();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
