@@ -1,8 +1,10 @@
 
 using Api.Controllers;
+using Api.Filters;
 using Api.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,10 +22,15 @@ namespace Api
                 .Build();
 
                 options.Filters.Add(new AuthorizeFilter(pb));
+                options.Filters.Add(typeof(ValidateCSRFFilter));
             })
             .AddApplicationPart(typeof(HomeController).Assembly);
             collection.AddSignalR();
             collection.AddMemoryCache();
+            collection.AddAntiforgery(options =>
+            {
+                options.HeaderName = "reactivitycsrftoken";
+            });
             return collection;
         }
 
