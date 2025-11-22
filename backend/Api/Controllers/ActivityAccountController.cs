@@ -4,7 +4,9 @@ using Application.ViewModels;
 using AutoMapper;
 using Domain.Infrastructure;
 using Domain.Models;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,15 +21,18 @@ namespace Api.Controllers
         private readonly IMapper mapper;
         private readonly IEmailSenderService emailSenderService;
         private readonly ILogger<ActivityAccountController> logger;
+        private readonly IAntiforgery antiforgery;
 
         public ActivityAccountController(SignInManager<User> signInManager,
         UserManager<User> userManager,
         IMapper mapper, IEmailSenderService emailSenderService,
-        ILogger<ActivityAccountController> logger)
+        ILogger<ActivityAccountController> logger,
+        IAntiforgery antiforgery)
         {
             this.mapper = mapper;
             this.emailSenderService = emailSenderService;
             this.logger = logger;
+            this.antiforgery = antiforgery;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
@@ -169,6 +174,19 @@ namespace Api.Controllers
                 return Ok("Password reset successfull");
             else
                 return BadRequest(new { Title = string.Join("\n", result.Errors.Select(e => e.Description)) });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCSRFToken()
+        {
+            var token = antiforgery.GetAndStoreTokens(this.HttpContext);
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Lax
+            };
+            this.HttpContext.Response.Cookies.Append("x-csrf-token", token.RequestToken ?? "", cookieOptions);
+            return Ok(new { token = token.RequestToken });
         }
 
         private async Task SendConfirmationEmail(User user)

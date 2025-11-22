@@ -26,6 +26,15 @@ const delayer = function (timeSpan: number) {
     });
 }
 
+instance.interceptors.request.use((config) => {
+    const tokenData = localStorage.getItem("tokenData");
+    if (tokenData) {
+        const token = JSON.parse(tokenData);
+        config.headers["reactivitycsrftoken"] = token.token;
+    }
+    return config;
+}, (error) => Promise.reject(error));
+
 instance.interceptors.response.use(async (response) => {
     if (env != "Production") {
         await delayer(1000);
@@ -207,6 +216,11 @@ const passwordReset = async function (resetBody: Record<string, string>) {
     return result;
 }
 
+const getCsrfToken = async function () {
+    const result = await instance.get<{ token: string }>(`activityaccount/getcsrftoken`);
+    return result.data;
+}
+
 
 export {
     getallactivities, updateActivity, createActivity,
@@ -219,5 +233,5 @@ export {
     getAllActivitiesByParam, getUserEvents,
     locationInfo, reverseLocationInfo,
     resendConfirmation, forgotPassword,
-    passwordReset
+    passwordReset, getCsrfToken
 };

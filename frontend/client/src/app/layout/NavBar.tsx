@@ -20,7 +20,7 @@ export default function NavBar() {
                                 <Group fontSize="large" />
                                 <Typography variant="h4" fontWeight='bold'>Reactivities</Typography>
                             </MenuItem>
-                            {isLoading ? <CircularProgress size={20} thickness={7} sx={{ color: 'white', alignItems:'center' }} /> : <></>}
+                            {isLoading ? <CircularProgress size={20} thickness={7} sx={{ color: 'white', alignItems: 'center' }} /> : <></>}
                         </Box>
                         <Box sx={{ display: "flex" }}>
                             <MenuItem component={NavLink} to="/activities"

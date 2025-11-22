@@ -4,6 +4,7 @@ using Application;
 using Domain.Models;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Persistence;
 
 namespace WebApp;
@@ -18,6 +19,7 @@ public class Program
         builder.Services.AddApi();
         builder.Services.AddPersistence(builder.Configuration);
         builder.Services.AddApplication();
+        builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddCors(options =>
         {
             var whiteListedSection = builder.Configuration.GetSection("WhiteListed");
@@ -42,7 +44,6 @@ public class Program
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ActivityDbContext>();
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddInfrastructure(builder.Configuration);
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { forgotPassword, passwordReset, resendConfirmation, userDetails, userLogin, userLogout, userRegistration } from "../lib/apiHelper";
+import { forgotPassword, getCsrfToken, passwordReset, resendConfirmation, userDetails, userLogin, userLogout, userRegistration } from "../lib/apiHelper";
 import { useLoading } from "./appDataContext";
+import type { LoginSchema } from "../types";
 
 
 export default function useAccountReactQuery() {
@@ -8,9 +9,13 @@ export default function useAccountReactQuery() {
     const { loading } = useLoading();
 
     const { isPending: isLogingIn, mutateAsync: loginUser } = useMutation({
-        mutationFn: userLogin,
-        onSuccess: () => {
+        mutationFn: async (data: LoginSchema) => {
+            return await userLogin(data);
+        },
+        onSuccess: async () => {
             queryClient.invalidateQueries({ queryKey: ["user"] });
+            const tokenData = await getCsrfToken();
+            localStorage.setItem("tokenData", JSON.stringify(tokenData));
         },
         onError: (err) => {
             console.error(err);
@@ -22,6 +27,7 @@ export default function useAccountReactQuery() {
         onSuccess: () => {
             queryClient.removeQueries({ queryKey: ["user"] });
             queryClient.removeQueries({ queryKey: ["activities"] });
+            localStorage.removeItem("tokenData");
         },
         onError: (err) => {
             console.error(err);
@@ -50,7 +56,7 @@ export default function useAccountReactQuery() {
     });
 
     const { isPending: isResettingPassword, mutateAsync: resetPassword } = useMutation({
-        mutationFn: async (resetBody: Record<string,string>) => await passwordReset(resetBody),
+        mutationFn: async (resetBody: Record<string, string>) => await passwordReset(resetBody),
         onError: (err) => {
             console.log(err);
         }

@@ -20,10 +20,15 @@ namespace Api
                 .Build();
 
                 options.Filters.Add(new AuthorizeFilter(pb));
+                //options.Filters.Add(typeof(ValidateCSRFFilter));
             })
             .AddApplicationPart(typeof(HomeController).Assembly);
             collection.AddSignalR();
             collection.AddMemoryCache();
+            collection.AddAntiforgery(options =>
+            {
+                options.HeaderName = "reactivitycsrftoken";
+            });
             return collection;
         }
 
