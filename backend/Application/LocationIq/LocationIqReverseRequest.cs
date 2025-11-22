@@ -28,7 +28,10 @@ namespace Application.LocationIq
         {
             var result = await locationService.ReverseGeoCoding(request.Latitude, request.Longitude);
             var returnResult = mapper.Map<LocationIqViewModel>(result);
-            return Result<LocationIqViewModel>.SetSuccess(returnResult);
+            if (returnResult != null)
+                return Result<LocationIqViewModel>.SetSuccess(returnResult);
+            else
+                return Result<LocationIqViewModel>.SetError("Location information not found",404);
         }
     }
 
