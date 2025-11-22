@@ -48,7 +48,7 @@ namespace Api.Controllers
         public async Task<IActionResult> SignIn()
         {
             //currently only for github
-            var authorizeUrl = $"https://github.com/login/oauth/authorize?client_id={githubclientId}&redirect_uri={Uri.EscapeDataString(applicationUrl + "/api/externalauth/callback")}&scopes=read:user%20user:email";
+            var authorizeUrl = $"https://github.com/login/oauth/authorize?client_id={githubclientId}&redirect_uri={Uri.EscapeDataString(applicationUrl + "/api/externalauth/callback")}&scope=read:user%20user:email";
             return Redirect(authorizeUrl);
         }
 
